@@ -1,7 +1,8 @@
+
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>RIFA LOS COMPÁS</title>
+  <title>Rifa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -15,11 +16,26 @@
 
     h1 {
       color: #1e7d32;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
+    }
+
+    h2 {
+      color: #145a23;
+      margin-top: 30px;
     }
 
     .info {
       margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .premios {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 20px auto;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       font-size: 16px;
     }
 
@@ -49,9 +65,10 @@
     .pago {
       background: #fff;
       padding: 15px;
-      border-radius: 10px;
+      border-radius: 12px;
       max-width: 400px;
       margin: 20px auto;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     button {
@@ -73,21 +90,30 @@
 
 <body>
 
-  <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
+  <h1>🎟️ RIFA 🎟️</h1>
 
   <div class="info">
     Costo del boleto: <strong>$50</strong><br>
-    200 boletos disponibles (000 – 199)
+    Total: <strong>$5,000</strong>
   </div>
 
-  <h3>Selecciona tus boletos</h3>
+  <!-- PREMIOS -->
+  <h2>🏆 Premios</h2>
+  <div class="premios">
+    🥇 <strong>1er lugar:</strong> $3,000<br><br>
+    🥈 <strong>2do lugar:</strong> $1,500<br><br>
+    🥉 <strong>3er lugar:</strong> $500
+  </div>
 
+  <!-- BOLETOS -->
+  <h2>Selecciona tus boletos</h2>
   <div class="boletos" id="boletos"></div>
 
+  <!-- FORMAS DE PAGO -->
   <div class="pago">
     <strong>Formas de pago</strong><br><br>
     💵 Efectivo<br>
-    🏦 Transferencia (se muestra en el formulario)
+    🏦 Transferencia bancaria
   </div>
 
   <button onclick="pagar()">Pagar</button>
@@ -123,7 +149,8 @@
 
       const boletos = Array.from(seleccionados).join(", ");
 
-      const url = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116="
+      const url =
+        "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116="
         + encodeURIComponent(boletos);
 
       window.location.href = url;
