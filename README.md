@@ -12,6 +12,13 @@
       margin: 0;
       padding: 20px;
       text-align: center;
+      .descripcion {
+  font-size: 16px;
+  margin: 10px auto 20px;
+  color: #2e7d32;
+  max-width: 500px;
+  font-weight: bold;
+}
     }
 
     img.logo {
@@ -109,7 +116,9 @@
   <img src="logo.JPG" alt="Logo Rifa Los Compás" class="logo">
 
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
-
+<p class="descripcion">
+  Por cada boleto que compren tienen <strong>4 posibilidades de ganar</strong> totalmente <strong>GRATIS</strong>
+</p>
   <div class="info">
     Costo del boleto: <strong>$50</strong><br>
     Total de boletos: <strong>200</strong>
