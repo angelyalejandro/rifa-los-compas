@@ -17,77 +17,91 @@
       color: #2e7d32;
     }
 
-    .logo-rifa {
-      width: 140px;
-      margin: 15px auto;
-      display: block;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    .precio {
+      font-size: 18px;
+      margin-bottom: 10px;
     }
 
     .numeros {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
       gap: 10px;
       max-width: 500px;
       margin: 20px auto;
     }
 
-    .numero {
+    .boleto {
       padding: 12px;
       background: #4caf50;
       color: white;
-      font-weight: bold;
       border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .boleto:hover {
+      background: #388e3c;
+    }
+
+    .boleto.seleccionado {
+      background: #ff9800;
+      color: black;
+    }
+
+    .resumen {
+      margin-top: 20px;
+      font-size: 18px;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .pagar {
+      margin-top: 15px;
+      padding: 15px 25px;
+      font-size: 18px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    .vendido {
-      background: #9e9e9e;
-      cursor: not-allowed;
-    }
-
-    .pago {
-      margin-top: 25px;
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      display: inline-block;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    .pagar:hover {
+      background: #1b5e20;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- LOGO (mañana lo arreglamos bien) -->
-  <!-- <img src="logo.jpg" class="logo-rifa"> -->
-
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
-  <p><strong>Costo del boleto:</strong> $50</p>
-  <p>200 boletos disponibles (000 – 199)</p>
+  <div class="precio">Costo del boleto: <strong>$50</strong></div>
 
-  <h2>Selecciona tu boleto</h2>
+  <h2>Selecciona tus boletos</h2>
 
-  <div id="numeros" class="numeros">
-    <p>Cargando boletos...</p>
+  <div class="numeros" id="listaBoletos"></div>
+
+  <div class="resumen">
+    Boletos seleccionados:
+    <div id="boletosSeleccionados">Ninguno</div>
+    <br>
+    Total a pagar: <strong>$<span id="total">0</span></strong>
   </div>
 
-  <div class="pago">
-    <h3>Formas de pago</h3>
-    💵 Efectivo <br>
-    🏦 Transferencia (se muestra en el formulario)
-  </div>
+  <br>
+
+  <button class="pagar" onclick="irAPago()">PAGAR</button>
 
   <script>
-    const apiURL = (https://script.google.com/macros/s/AKfycbxFnl1zxI0TeLOmdEdigJZz7EOyEHIgwJH2XGJVy5yzRx5eg72t4ZEkCoJf8knD9Z6p/exec);
+    const precio = 50;
+    const maxBoletos = 200;
+    const boletosElegidos = [];
 
-    fetch(apiURL)
-      .then(res => res.json())
-      .then(vendidos => {
-        const contenedor = document.getElementById("numeros");
-        contenedor.innerHTML = "";
+    const contenedor = document.getElementById("listaBoletos");
 
-        for (let i = 0; i < 200; i++) {
-          const num = i.toString().pad
+    for (let
+
