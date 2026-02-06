@@ -9,7 +9,6 @@
       display: none !important;
     }
 
-    /* 2. DISEÑO GENERAL */
     body {
       font-family: Arial, sans-serif;
       background: #e6ffe6;
@@ -19,7 +18,7 @@
     }
     
     .logo-rifa {
-      width: 150px; /* Ajustado para que se vea bien */
+      width: 150px;
       margin-top: 20px;
       margin-bottom: 10px;
       border-radius: 15px;
