@@ -112,7 +112,7 @@
 
     const boletos = Array.from(seleccionados).join(", ");
 
-    const url = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116="
+    const url = (https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=000)
       + encodeURIComponent(boletos);
 
     window.open(url, "_blank");
