@@ -70,7 +70,3 @@
 
 </body>
 </html>
-rifa-los-compas
-│─ index.html
-│─ img/
-   └─ logo.png
