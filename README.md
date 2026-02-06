@@ -1,5 +1,4 @@
 <img src="img/logo.JPG" alt="Logo Rifa Los Compas" class="logo-rifa">
-  <style>
     body {
       font-family: Arial, sans-serif;
       background: #e6ffe6;
