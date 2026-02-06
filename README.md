@@ -1,4 +1,4 @@
-
+<img src="img/logo.png" alt="Logo Rifa Los Compas" style="width:120px; margin-bottom:10px;">
 <head>
   <meta charset="UTF-8">
  
