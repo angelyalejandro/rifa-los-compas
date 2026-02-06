@@ -137,7 +137,7 @@
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
   <p class="descripcion">
-    Por cada boleto que compren tienen <strong>4 posibilidades de ganar</strong>
+    Por cada boleto que compren tienen <strong>4 posibilidades mas de ganar</strong>
     totalmente <strong>GRATIS</strong>
   </p>
 
