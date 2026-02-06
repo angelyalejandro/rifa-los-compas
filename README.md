@@ -87,21 +87,30 @@
     💳 Transferencia
   </div>
 
-  <script>
-    const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
-    const contenedor = document.getElementById("numeros");
+ <script>
+  const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
+  const apiURL = (https://script.google.com/macros/s/AKfycbxFnl1zxI0TeLOmdEdigJZz7EOyEHIgwJH2XGJVy5yzRx5eg72t4ZEkCoJf8knD9Z6p/exec)
 
-    // Generar los 200 números
-    for (let i = 0; i < 200; i++) {
-      const numero = i.toString().padStart(3, "0");
-      const btn = document.createElement("button");
-      btn.textContent = numero;
-      btn.onclick = () => {
-        window.open(formBaseURL + numero, "_blank");
-      };
-      contenedor.appendChild(btn);
-    }
-  </script>
+  const contenedor = document.getElementById("numeros");
 
-</body>
-</html>
+  fetch(apiURL)
+    .then(res => res.json())
+    .then(vendidos => {
+      for (let i = 0; i < 200; i++) {
+        const numero = i.toString().padStart(3, "0");
+        const btn = document.createElement("button");
+        btn.textContent = numero;
+
+        if (vendidos.includes(numero)) {
+          btn.classList.add("vendido");
+          btn.disabled = true;
+        } else {
+          btn.onclick = () => {
+            window.open(formBaseURL + numero, "_blank");
+          };
+        }
+
+        contenedor.appendChild(btn);
+      }
+    });
+</script>
