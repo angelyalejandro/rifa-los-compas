@@ -1,86 +1,52 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rifa Los Compas</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #e6ffe6;
-      text-align: center;
-      padding: 20px;
-    }
-    .logo-rifa {
-      width: 120px;
-      margin-bottom: 10px;
-      border-radius: 10px; /* Opcional: le da bordes redondeados */
-    }
-    h1 { color: #2e7d32; }
-    .numeros {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 10px;
-      max-width: 500px;
-      margin: 20px auto;
-    }
-    button {
-      padding: 10px;
-      border: none;
-      background: #4caf50;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    button:hover {
-      background: #388e3c;
-    }
-    .pago {
-      margin-top: 20px;
-      font-size: 18px;
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      display: inline-block;
-    }
-  </style>
-</head>
-<body>
+body {
+  font-family: Arial, sans-serif;
+  background: #e6ffe6;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+}
 
-  <img src="img/logo.JPG" alt="Logo Rifa Los Compas" class="logo-rifa">
+.logo-rifa {
+  width: 150px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
 
-  <h1>🎟️ Rifa Los Compas</h1>
-  <p><strong>Boleto:</strong> $50</p>
-  <p><strong>Premios:</strong><br>
-    🥇 1er lugar: $5,000<br>
-    🥈 2do lugar: $1,000<br>
-    🥉 3er lugar: $500
-  </p>
+h1 { color: #2e7d32; margin-top: 5px; }
 
-  <h2>Selecciona tu boleto</h2>
-  <div class="numeros" id="numeros"></div>
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 10px;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 10px;
+}
 
-  <div class="pago">
-    <h3>Formas de pago</h3>
-    💵 Efectivo<br>
-    💳 Transferencia
-  </div>
+button {
+  padding: 10px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: transform 0.2s;
+}
 
-  <script>
-    const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
-    const contenedor = document.getElementById("numeros");
+button:hover {
+  background: #388e3c;
+  transform: scale(1.05);
+}
 
-    for (let i = 0; i < 200; i++) {
-      const numero = i.toString().padStart(3, "0");
-      const btn = document.createElement("button");
-      btn.textContent = numero;
-      btn.onclick = () => {
-        window.open(formBaseURL + numero, "_blank");
-      };
-      contenedor.appendChild(btn);
-    }
-  </script>
-
-</body>
-</html>
+.pago {
+  margin-top: 20px;
+  font-size: 18px;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  display: inline-block;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
