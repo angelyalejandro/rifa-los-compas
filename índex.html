@@ -12,14 +12,7 @@
       margin: 0;
       padding: 20px;
       text-align: center;
-      .descripcion {
-  font-size: 16px;
-  margin: 10px auto 20px;
-  color: #2e7d32;
-  max-width: 500px;
-  font-weight: bold;
-}
-
+    }
 
     img.logo {
       width: 160px;
@@ -32,6 +25,21 @@
     h1 {
       color: #1e7d32;
       margin-bottom: 5px;
+    }
+
+    .descripcion {
+      font-size: 16px;
+      margin: 10px auto 15px;
+      color: #2e7d32;
+      max-width: 500px;
+      font-weight: bold;
+    }
+
+    .contador {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1e7d32;
+      margin-bottom: 20px;
     }
 
     h2 {
@@ -59,7 +67,7 @@
       grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
       gap: 10px;
       max-width: 600px;
-      margin: 0 auto 20px;
+      margin: 0 auto 15px;
     }
 
     .boleto {
@@ -82,6 +90,17 @@
       color: #666;
       cursor: not-allowed;
       border-color: #999;
+    }
+
+    .resumen {
+      font-size: 18px;
+      margin: 15px auto;
+      padding: 15px;
+      background: #ffffff;
+      border-radius: 12px;
+      max-width: 400px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-weight: bold;
     }
 
     .pago {
@@ -117,6 +136,15 @@
 
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
+  <p class="descripcion">
+    Por cada boleto que compren tienen <strong>4 posibilidades de ganar</strong>
+    totalmente <strong>GRATIS</strong>
+  </p>
+
+  <div id="contador" class="contador">
+    🎟️ Boletos vendidos: 0 / 200
+  </div>
+
   <div class="info">
     Costo del boleto: <strong>$50</strong><br>
     Total de boletos: <strong>200</strong>
@@ -134,6 +162,11 @@
   <h2>Selecciona tus boletos</h2>
   <div class="boletos" id="boletos"></div>
 
+  <div class="resumen">
+    🎟️ Boletos seleccionados: <span id="cantidad">0</span><br>
+    💰 Total a pagar: $<span id="total">0</span>
+  </div>
+
   <!-- PAGOS -->
   <div class="pago">
     <strong>Formas de pago</strong><br><br>
@@ -145,28 +178,32 @@
 
   <!-- SCRIPT -->
   <script>
+    const PRECIO_BOLETO = 50;
+    const TOTAL_BOLETOS = 200;
+
     const contenedor = document.getElementById("boletos");
     const seleccionados = new Set();
     let vendidos = [];
 
-    // 👇 TU WEB APP (YA PEGADA)
-    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyS65zM0Yogdj7m-IGwWL8k1Aaikx_WOSmFIsVMnQUPB6m09G2-a7uSkhhr6v9iLLGu/exec";
+    const URL_SCRIPT =
+      "https://script.google.com/macros/s/AKfycbyS65zM0Yogdj7m-IGwWL8k1Aaikx_WOSmFIsVMnQUPB6m09G2-a7uSkhhr6v9iLLGu/exec";
 
     fetch(URL_SCRIPT)
       .then(res => res.json())
       .then(data => {
         vendidos = data;
+        actualizarContador();
         generarBoletos();
       })
-      .catch(err => {
-        console.error("Error cargando vendidos", err);
+      .catch(() => {
+        actualizarContador();
         generarBoletos();
       });
 
     function generarBoletos() {
       contenedor.innerHTML = "";
 
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < TOTAL_BOLETOS; i++) {
         const num = i.toString().padStart(3, "0");
         const div = document.createElement("div");
         div.className = "boleto";
@@ -190,6 +227,18 @@
         seleccionados.add(num);
         div.classList.add("seleccionado");
       }
+      actualizarResumen();
+    }
+
+    function actualizarResumen() {
+      document.getElementById("cantidad").textContent = seleccionados.size;
+      document.getElementById("total").textContent =
+        seleccionados.size * PRECIO_BOLETO;
+    }
+
+    function actualizarContador() {
+      document.getElementById("contador").textContent =
+        `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
     }
 
     function pagar() {
