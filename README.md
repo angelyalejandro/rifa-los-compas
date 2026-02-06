@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Rifa</title>
+  <title>RIFA LOS COMPÁS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -62,11 +62,19 @@
       border: 2px solid #1e7d32;
       cursor: pointer;
       font-weight: bold;
+      user-select: none;
     }
 
     .boleto.seleccionado {
       background: #1e7d32;
       color: #fff;
+    }
+
+    .boleto.vendido {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+      border-color: #999;
     }
 
     .pago {
@@ -98,15 +106,16 @@
 <body>
 
   <!-- LOGO -->
-  <img src="logo.JPG" alt="Logo Rifa" class="logo">
+  <img src="logo.jpeg" alt="Logo Rifa Los Compás" class="logo">
 
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
   <div class="info">
     Costo del boleto: <strong>$50</strong><br>
-
+    Total de boletos: <strong>200</strong>
   </div>
 
+  <!-- PREMIOS -->
   <h2>🏆 Premios</h2>
   <div class="premios">
     🥇 <strong>1er lugar:</strong> $5,000<br><br>
@@ -114,9 +123,11 @@
     🥉 <strong>3er lugar:</strong> $500
   </div>
 
+  <!-- BOLETOS -->
   <h2>Selecciona tus boletos</h2>
   <div class="boletos" id="boletos"></div>
 
+  <!-- PAGOS -->
   <div class="pago">
     <strong>Formas de pago</strong><br><br>
     💵 Efectivo<br>
@@ -125,27 +136,53 @@
 
   <button onclick="pagar()">Pagar</button>
 
+  <!-- SCRIPT -->
   <script>
     const contenedor = document.getElementById("boletos");
     const seleccionados = new Set();
+    let vendidos = [];
 
-    for (let i = 0; i < 200; i++) {
-      const num = i.toString().padStart(3, "0");
-      const div = document.createElement("div");
-      div.className = "boleto";
-      div.textContent = num;
+    // 👇 TU WEB APP (YA PEGADA)
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyS65zM0Yogdj7m-IGwWL8k1Aaikx_WOSmFIsVMnQUPB6m09G2-a7uSkhhr6v9iLLGu/exec";
 
-      div.onclick = () => {
-        if (seleccionados.has(num)) {
-          seleccionados.delete(num);
-          div.classList.remove("seleccionado");
+    fetch(URL_SCRIPT)
+      .then(res => res.json())
+      .then(data => {
+        vendidos = data;
+        generarBoletos();
+      })
+      .catch(err => {
+        console.error("Error cargando vendidos", err);
+        generarBoletos();
+      });
+
+    function generarBoletos() {
+      contenedor.innerHTML = "";
+
+      for (let i = 0; i < 200; i++) {
+        const num = i.toString().padStart(3, "0");
+        const div = document.createElement("div");
+        div.className = "boleto";
+        div.textContent = num;
+
+        if (vendidos.includes(num)) {
+          div.classList.add("vendido");
         } else {
-          seleccionados.add(num);
-          div.classList.add("seleccionado");
+          div.onclick = () => toggleBoleto(num, div);
         }
-      };
 
-      contenedor.appendChild(div);
+        contenedor.appendChild(div);
+      }
+    }
+
+    function toggleBoleto(num, div) {
+      if (seleccionados.has(num)) {
+        seleccionados.delete(num);
+        div.classList.remove("seleccionado");
+      } else {
+        seleccionados.add(num);
+        div.classList.add("seleccionado");
+      }
     }
 
     function pagar() {
@@ -156,8 +193,8 @@
 
       const boletos = Array.from(seleccionados).join(", ");
       const url =
-        "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116="
-        + encodeURIComponent(boletos);
+        "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=" +
+        encodeURIComponent(boletos);
 
       window.location.href = url;
     }
