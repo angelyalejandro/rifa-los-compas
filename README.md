@@ -142,6 +142,19 @@
   🎰 Nos basamos en la <strong>Lotería Nacional</strong><br>
   ✅ Nuestras rifas son <strong>totalmente confiables</strong>
 </p>
+<div class="whatsapp-box">
+  <p>
+    📢 <strong>Únete a nuestro grupo</strong><br>
+    para conocer todas las actualizaciones de la rifa
+  </p>
+  <a
+    href="https://chat.whatsapp.com/EMSiYrtGDzv0JZWdhMvvzm?mode=gi_t"
+    target="_blank"
+    class="btn-whatsapp"
+  >
+    📲 Clic aquí
+  </a>
+</div>
 
 
   <div id="contador" class="contador">
