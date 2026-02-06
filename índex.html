@@ -98,7 +98,7 @@
 <body>
 
   <!-- LOGO -->
-  <img src="logo.jpeg" alt="Logo Rifa" class="logo">
+  <img src="logo.JPG" alt="Logo Rifa" class="logo">
 
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
