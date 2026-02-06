@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rifa Los Compas</title>
   <style>
-    /* 1. CÓDIGO PARA OCULTAR EL ENCABEZADO AZUL DE GITHUB */
     header, .page-header, #header, .header {
       display: none !important;
     }
