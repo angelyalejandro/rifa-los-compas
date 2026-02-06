@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rifa Los Compas</title>
-  <style>
-    body {
+  <style>/
+header, #header, .header {
+  display: none !important;
+}    body {
       font-family: Arial, sans-serif;
       background: #e6ffe6;
       text-align: center;
