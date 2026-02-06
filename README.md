@@ -56,16 +56,20 @@
   </div>
 
   <script>
-    const contenedor = document.getElementById("numeros");
-    for (let i = 1; i <= 100; i++) {
-      const btn = document.createElement("button");
-      btn.textContent = i;
-      btn.onclick = () => {
-        btn.classList.add("vendido");
-        btn.disabled = true;
-      };
-      contenedor.appendChild(btn);
-    }
-  </script>
+  const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
 
-</body>
+  const contenedor = document.getElementById("numeros");
+
+  for (let i = 0; i < 200; i++) {
+    const numero = i.toString().padStart(3, "0");
+    const btn = document.createElement("button");
+
+    btn.textContent = numero;
+
+    btn.onclick = () => {
+      window.open(formBaseURL + numero, "_blank");
+    };
+
+    contenedor.appendChild(btn);
+  }
+</script>
