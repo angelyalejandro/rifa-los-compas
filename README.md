@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -12,6 +12,14 @@
       margin: 0;
       padding: 20px;
       text-align: center;
+    }
+
+    img.logo {
+      width: 160px;
+      margin: 10px auto;
+      display: block;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
 
     h1 {
@@ -53,7 +61,6 @@
       background: #fff;
       border: 2px solid #1e7d32;
       cursor: pointer;
-      user-select: none;
       font-weight: bold;
     }
 
@@ -90,26 +97,26 @@
 
 <body>
 
-  <h1>🎟️ RIFA LOS COMPAS 🎟️</h1>
+  <!-- LOGO -->
+  <img src="logo.jpeg" alt="Logo Rifa" class="logo">
+
+  <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
   <div class="info">
     Costo del boleto: <strong>$50</strong><br>
     Total: <strong>$5,000</strong>
   </div>
 
-  <!-- PREMIOS -->
   <h2>🏆 Premios</h2>
   <div class="premios">
-    🥇 <strong>1er lugar:</strong> $3,000<br><br>
-    🥈 <strong>2do lugar:</strong> $1,500<br><br>
+    🥇 <strong>1er lugar:</strong> $5,000<br><br>
+    🥈 <strong>2do lugar:</strong> $1,000<br><br>
     🥉 <strong>3er lugar:</strong> $500
   </div>
 
-  <!-- BOLETOS -->
   <h2>Selecciona tus boletos</h2>
   <div class="boletos" id="boletos"></div>
 
-  <!-- FORMAS DE PAGO -->
   <div class="pago">
     <strong>Formas de pago</strong><br><br>
     💵 Efectivo<br>
@@ -148,7 +155,6 @@
       }
 
       const boletos = Array.from(seleccionados).join(", ");
-
       const url =
         "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116="
         + encodeURIComponent(boletos);
