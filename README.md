@@ -1,7 +1,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Rifa Los Compas</title>
+ 
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -69,4 +69,3 @@
   </script>
 
 </body>
-</html>
