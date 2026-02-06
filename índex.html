@@ -137,7 +137,7 @@
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
   <p class="descripcion">
-  Por cada boleto que compren tienen <strong>4 posibilidades mas de ganar</strong>
+  Por cada boleto que compres tienes <strong>4 posibilidades mas de ganar</strong>
   totalmente <strong>GRATIS</strong><br><br>
   🎰 Nos basamos en la <strong>Lotería Nacional</strong><br>
   ✅ Nuestras rifas son <strong>totalmente confiables</strong>
