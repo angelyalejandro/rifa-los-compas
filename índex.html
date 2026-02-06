@@ -12,6 +12,13 @@
       padding: 20px;
       margin: 0;
     }
+header,
+.page-header,
+#header,
+iframe,
+.google-header {
+  display: none !important;
+}
 
     h1 {
       color: #2e7d32;
