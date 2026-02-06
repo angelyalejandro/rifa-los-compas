@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rifa Los Compas</title>
   <style>
-    /* 1. CÓDIGO PARA OCULTAR EL ENCABEZADO AZUL DE GITHUB */
+  
     header, .page-header, #header, .header {
       display: none !important;
     }
 
-    /* 2. DISEÑO GENERAL */
+    
     body {
       font-family: Arial, sans-serif;
       background: #e6ffe6;
@@ -20,7 +20,7 @@
     }
     
     .logo-rifa {
-      width: 150px; /* Ajustado para que se vea bien */
+      width: 150px; 
       margin-top: 20px;
       margin-bottom: 10px;
       border-radius: 15px;
