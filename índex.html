@@ -90,7 +90,7 @@
 
 <body>
 
-  <h1>🎟️ RIFA 🎟️</h1>
+  <h1>🎟️ RIFA LOS COMPAS 🎟️</h1>
 
   <div class="info">
     Costo del boleto: <strong>$50</strong><br>
