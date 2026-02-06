@@ -1,9 +1,8 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Rifa Los Compás</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,16 +16,11 @@
       color: #2e7d32;
     }
 
-    .precio {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
     .numeros {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
       gap: 10px;
-      max-width: 500px;
+      max-width: 600px;
       margin: 20px auto;
     }
 
@@ -40,26 +34,12 @@
       user-select: none;
     }
 
-    .boleto:hover {
-      background: #388e3c;
-    }
-
     .boleto.seleccionado {
-      background: #ff9800;
-      color: black;
-    }
-
-    .resumen {
-      margin-top: 20px;
-      font-size: 18px;
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      display: inline-block;
+      background: #1b5e20;
     }
 
     .pagar {
-      margin-top: 15px;
+      margin-top: 25px;
       padding: 15px 25px;
       font-size: 18px;
       background: #2e7d32;
@@ -72,36 +52,72 @@
     .pagar:hover {
       background: #1b5e20;
     }
+
+    .info {
+      background: white;
+      display: inline-block;
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
   </style>
 </head>
-
 <body>
 
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
-
-  <div class="precio">Costo del boleto: <strong>$50</strong></div>
+  <p><strong>Costo del boleto:</strong> $50</p>
+  <p>200 boletos disponibles (000 – 199)</p>
 
   <h2>Selecciona tus boletos</h2>
 
-  <div class="numeros" id="listaBoletos"></div>
+  <div class="numeros" id="numeros"></div>
 
-  <div class="resumen">
-    Boletos seleccionados:
-    <div id="boletosSeleccionados">Ninguno</div>
-    <br>
-    Total a pagar: <strong>$<span id="total">0</span></strong>
+  <button class="pagar" onclick="irAPago()">Pagar</button>
+
+  <div class="info">
+    <h3>Formas de pago</h3>
+    💵 Efectivo <br>
+    🏦 Transferencia (se muestra en el formulario)
   </div>
 
-  <br>
+<script>
+  const contenedor = document.getElementById("numeros");
+  const seleccionados = new Set();
 
-  <button class="pagar" onclick="irAPago()">PAGAR</button>
+  for (let i = 0; i < 200; i++) {
+    const num = String(i).padStart(3, "0");
+    const div = document.createElement("div");
+    div.className = "boleto";
+    div.textContent = num;
 
-  <script>
-    const precio = 50;
-    const maxBoletos = 200;
-    const boletosElegidos = [];
+    div.onclick = () => {
+      if (seleccionados.has(num)) {
+        seleccionados.delete(num);
+        div.classList.remove("seleccionado");
+      } else {
+        seleccionados.add(num);
+        div.classList.add("seleccionado");
+      }
+    };
 
-    const contenedor = document.getElementById("listaBoletos");
+    contenedor.appendChild(div);
+  }
 
-    for (let
+  function irAPago() {
+    if (seleccionados.size === 0) {
+      alert("Selecciona al menos un boleto");
+      return;
+    }
 
+    const boletos = Array.from(seleccionados).join(", ");
+
+    const url = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116="
+      + encodeURIComponent(boletos);
+
+    window.open(url, "_blank");
+  }
+</script>
+
+</body>
+</html>
