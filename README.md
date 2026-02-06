@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Rifa Los Compás</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,26 +21,26 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
       gap: 10px;
-      max-width: 600px;
+      max-width: 500px;
       margin: 20px auto;
     }
 
-    .boleto {
+    .numero {
       padding: 12px;
       background: #4caf50;
       color: white;
+      font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
       user-select: none;
     }
 
-    .boleto.seleccionado {
+    .numero.seleccionado {
       background: #1b5e20;
     }
 
     .pagar {
-      margin-top: 25px;
+      margin-top: 20px;
       padding: 15px 25px;
       font-size: 18px;
       background: #2e7d32;
@@ -52,22 +53,13 @@
     .pagar:hover {
       background: #1b5e20;
     }
-
-    .info {
-      background: white;
-      display: inline-block;
-      padding: 15px 25px;
-      border-radius: 12px;
-      margin-top: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
-    }
   </style>
 </head>
+
 <body>
 
   <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
   <p><strong>Costo del boleto:</strong> $50</p>
-  <p>200 boletos disponibles (000 – 199)</p>
 
   <h2>Selecciona tus boletos</h2>
 
@@ -75,50 +67,44 @@
 
   <button class="pagar" onclick="irAPago()">Pagar</button>
 
-  <div class="info">
-    <h3>Formas de pago</h3>
-    💵 Efectivo <br>
-    🏦 Transferencia (se muestra en el formulario)
-  </div>
+  <script>
+    const contenedor = document.getElementById("numeros");
+    const seleccionados = [];
 
-<script>
-  const contenedor = document.getElementById("numeros");
-  const seleccionados = new Set();
+    // Crear boletos 000 - 199
+    for (let i = 0; i < 200; i++) {
+      const num = i.toString().padStart(3, "0");
+      const div = document.createElement("div");
+      div.className = "numero";
+      div.textContent = num;
 
-  for (let i = 0; i < 200; i++) {
-    const num = String(i).padStart(3, "0");
-    const div = document.createElement("div");
-    div.className = "boleto";
-    div.textContent = num;
+      div.onclick = () => {
+        if (seleccionados.includes(num)) {
+          seleccionados.splice(seleccionados.indexOf(num), 1);
+          div.classList.remove("seleccionado");
+        } else {
+          seleccionados.push(num);
+          div.classList.add("seleccionado");
+        }
+      };
 
-    div.onclick = () => {
-      if (seleccionados.has(num)) {
-        seleccionados.delete(num);
-        div.classList.remove("seleccionado");
-      } else {
-        seleccionados.add(num);
-        div.classList.add("seleccionado");
-      }
-    };
-
-    contenedor.appendChild(div);
-  }
-
-  function irAPago() {
-    if (seleccionados.size === 0) {
-      alert("Selecciona al menos un boleto");
-      return;
+      contenedor.appendChild(div);
     }
 
-    const boletos = Array.from(seleccionados).join(", ");
+    function irAPago() {
+      if (seleccionados.length === 0) {
+        alert("Selecciona al menos un boleto");
+        return;
+      }
 
-    const url = https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=000
-      + encodeURIComponent(boletos);
+      const boletos = seleccionados.join(", ");
+      const url =
+        "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url" +
+        "&entry.1324693116=" + encodeURIComponent(boletos);
 
-    window.open(url, "_blank");
-  }
-</script>
+      window.open(url, "_blank");
+    }
+  </script>
 
 </body>
 </html>
-
