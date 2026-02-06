@@ -1,16 +1,14 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rifa Los Compas</title>
+  <title>RIFA LOS COMPÁS</title>
+
   <style>
-  
     header, .page-header, #header, .header {
       display: none !important;
     }
 
-    
     body {
       font-family: Arial, sans-serif;
       background: #e6ffe6;
@@ -18,7 +16,7 @@
       padding: 20px;
       margin: 0;
     }
-    
+
     .logo-rifa {
       width: 150px; 
       margin-top: 20px;
@@ -27,7 +25,10 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    h1 { color: #2e7d32; margin-top: 5px; }
+    h1 {
+      color: #2e7d32;
+      margin-top: 5px;
+    }
 
     .numeros {
       display: grid;
@@ -54,6 +55,12 @@
       transform: scale(1.05);
     }
 
+    button.vendido {
+      background: #9e9e9e;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .pago {
       margin-top: 20px;
       font-size: 18px;
@@ -65,54 +72,59 @@
     }
   </style>
 </head>
+
 <body>
 
-  <img src="img/logo.JPG" alt="Logo Rifa Los Compas" class="logo-rifa">
+  <!-- LOGO (luego lo arreglamos si quieres) -->
+  <!-- <img src="logo.jpeg" class="logo-rifa"> -->
 
-  <h1>🎟️ Rifa Los Compas</h1>
-  
-  <p><strong>Boleto:</strong> $50</p>
-  <p><strong>Premios:</strong><br>
-    🥇 1er lugar: $5,000<br>
-    🥈 2do lugar: $1,000<br>
-    🥉 3er lugar: $500
-  </p>
+  <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
+  <p>Costo del boleto: <strong>$50</strong></p>
+  <p>200 boletos disponibles (000 – 199)</p>
 
   <h2>Selecciona tu boleto</h2>
-  <div class="numeros" id="numeros"></div>
+
+  <!-- CONTENEDOR DE BOLETOS -->
+  <div id="numeros" class="numeros"></div>
 
   <div class="pago">
-    <h3>Formas de pago</h3>
-    💵 Efectivo<br>
-    💳 Transferencia
+    <p><strong>Formas de pago:</strong></p>
+    <p>💵 Efectivo</p>
+    <p>🏦 Transferencia (se muestra en el formulario)</p>
   </div>
 
-<div id="numeros"></div>
+  <script>
+    const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
 
-<script>
-  const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
-  const apiURL = "TU_URL_DEL_WEB_APP";
+    const apiURL = "PEGA_AQUÍ_TU_URL_DEL_WEB_APP";
 
-  const contenedor = document.getElementById("numeros");
+    const contenedor = document.getElementById("numeros");
 
-  fetch(apiURL)
-    .then(res => res.json())
-    .then(vendidos => {
-      for (let i = 0; i < 200; i++) {
-        const numero = i.toString().padStart(3, "0");
-        const btn = document.createElement("button");
-        btn.textContent = numero;
+    fetch(apiURL)
+      .then(res => res.json())
+      .then(vendidos => {
+        for (let i = 0; i < 200; i++) {
+          const numero = i.toString().padStart(3, "0");
+          const btn = document.createElement("button");
+          btn.textContent = numero;
 
-        if (vendidos.includes(numero)) {
-          btn.classList.add("vendido");
-          btn.disabled = true;
-        } else {
-          btn.onclick = () => {
-            window.open(formBaseURL + numero, "_blank");
-          };
+          if (vendidos.includes(numero)) {
+            btn.classList.add("vendido");
+            btn.disabled = true;
+          } else {
+            btn.onclick = () => {
+              window.open(formBaseURL + numero, "_blank");
+            };
+          }
+
+          contenedor.appendChild(btn);
         }
+      })
+      .catch(err => {
+        contenedor.innerHTML = "Error cargando boletos";
+        console.error(err);
+      });
+  </script>
 
-        contenedor.appendChild(btn);
-      }
-    });
-</script>
+</body>
+</html>
