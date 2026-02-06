@@ -1,9 +1,20 @@
-<img src="img/logo.JPG" alt="Logo Rifa Los Compas" class="logo-rifa">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rifa Los Compas</title>
+  <style>
     body {
       font-family: Arial, sans-serif;
       background: #e6ffe6;
       text-align: center;
       padding: 20px;
+    }
+    .logo-rifa {
+      width: 120px;
+      margin-bottom: 10px;
+      border-radius: 10px; /* Opcional: le da bordes redondeados */
     }
     h1 { color: #2e7d32; }
     .numeros {
@@ -22,17 +33,22 @@
       cursor: pointer;
       border-radius: 5px;
     }
-    button.vendido {
-      background: gray;
-      cursor: not-allowed;
+    button:hover {
+      background: #388e3c;
     }
     .pago {
       margin-top: 20px;
       font-size: 18px;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      display: inline-block;
     }
   </style>
 </head>
 <body>
+
+  <img src="img/logo.JPG" alt="Logo Rifa Los Compas" class="logo-rifa">
 
   <h1>🎟️ Rifa Los Compas</h1>
   <p><strong>Boleto:</strong> $50</p>
@@ -52,20 +68,19 @@
   </div>
 
   <script>
-  const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
+    const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
+    const contenedor = document.getElementById("numeros");
 
-  const contenedor = document.getElementById("numeros");
+    for (let i = 0; i < 200; i++) {
+      const numero = i.toString().padStart(3, "0");
+      const btn = document.createElement("button");
+      btn.textContent = numero;
+      btn.onclick = () => {
+        window.open(formBaseURL + numero, "_blank");
+      };
+      contenedor.appendChild(btn);
+    }
+  </script>
 
-  for (let i = 0; i < 200; i++) {
-    const numero = i.toString().padStart(3, "0");
-    const btn = document.createElement("button");
-
-    btn.textContent = numero;
-
-    btn.onclick = () => {
-      window.open(formBaseURL + numero, "_blank");
-    };
-
-    contenedor.appendChild(btn);
-  }
-</script>
+</body>
+</html>
