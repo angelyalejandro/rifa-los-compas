@@ -87,9 +87,11 @@
     💳 Transferencia
   </div>
 
- <script>
+<div id="numeros"></div>
+
+<script>
   const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
-  const apiURL = (https://script.google.com/macros/s/AKfycbxFnl1zxI0TeLOmdEdigJZz7EOyEHIgwJH2XGJVy5yzRx5eg72t4ZEkCoJf8knD9Z6p/exec)
+  const apiURL = "TU_URL_DEL_WEB_APP";
 
   const contenedor = document.getElementById("numeros");
 
