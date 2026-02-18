@@ -233,13 +233,37 @@ function pagar(){
   }
 
   const nombre=document.getElementById("nombreCliente").value.trim();
+
   if(nombre===""){
     alert("Escribe tu nombre");
     return;
   }
 
   const boletosArray=Array.from(seleccionados);
+  const total = boletosArray.length * PRECIO_BOLETO;
 
+  // MENSAJE PROVISIONAL (WhatsApp se abre inmediatamente)
+  const mensajeBase =
+`🎟️ *RIFA LOS COMPAS*
+
+━━━━━━━━━━━━━━
+🎫 BOLETOS: ${boletosArray.join(", ")}
+
+💰 TOTAL: $${total}
+
+👤 Nombre: ${nombre}
+━━━━━━━━━━━━━━
+
+Envío comprobante enseguida.`;
+
+  // ABRE WHATSAPP INMEDIATAMENTE (esto evita bloqueos)
+  window.open(
+    "https://wa.me/527421199270?text="+
+    encodeURIComponent(mensajeBase),
+    "_blank"
+  );
+
+  // AHORA GUARDAMOS EN GOOGLE SHEETS
   fetch(URL_SCRIPT,{
     method:"POST",
     body:JSON.stringify({
@@ -249,34 +273,15 @@ function pagar(){
   })
   .then(res=>res.json())
   .then(data=>{
+      console.log("Guardado correctamente");
+      location.reload();
+  })
+  .catch(err=>{
+      console.log("Error al guardar");
+  });
 
-    const extras=data.gratis||[];
+}
 
-    document.getElementById("previewExtras").innerHTML=
-    `🎁 Números EXTRA: ${extras.join(", ")}`;
-
-    setTimeout(()=>{
-
-      const mensaje =
-`🎟️ *RIFA LOS COMPAS*
-
-━━━━━━━━━━━━━━
-🎫 BOLETOS: ${boletosArray.join(", ")}
-
-🎁 EXTRAS GRATIS: ${extras.join(", ")}
-
-💰 TOTAL: $${data.total}
-
-👤 Nombre: ${nombre}
-━━━━━━━━━━━━━━
-
-Envío comprobante enseguida.`;
-
-      window.open(
-        "https://wa.me/527421199270?text="+
-        encodeURIComponent(mensaje),
-        "_blank"
-      );
 
       location.reload();
 
