@@ -1,4 +1,3 @@
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -72,13 +71,18 @@ body{
   cursor:not-allowed;
 }
 
+.preview{
+  margin-top:10px;
+  font-weight:bold;
+  color:#00c853;
+}
+
 input{
   padding:12px;
   width:260px;
   border-radius:8px;
   border:none;
   margin-top:15px;
-  font-size:15px;
 }
 
 button{
@@ -90,11 +94,6 @@ button{
   color:white;
   font-size:16px;
   cursor:pointer;
-  transition:.2s;
-}
-
-button:hover{
-  background:#00a843;
 }
 
 .resumen{
@@ -113,8 +112,9 @@ button:hover{
 <h1>🎟️ RIFA LOS COMPAS 🎟️</h1>
 
 <p>
-Por cada boleto obtienes 4 números EXTRA GRATIS 🎁<br>
-Basado en la Lotería Nacional
+Por cada boleto obtienes <strong>4 números EXTRA GRATIS</strong> 🎁<br>
+🎰 Basado en la Lotería Nacional<br>
+✅ Rifa confiable
 </p>
 
 <div class="card premios">
@@ -135,6 +135,8 @@ Boletos seleccionados: <span id="cantidad">0</span><br>
 Total: $<span id="total">0</span>
 </div>
 
+<div class="preview" id="previewExtras"></div>
+
 <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
 
 <br>
@@ -142,6 +144,7 @@ Total: $<span id="total">0</span>
 <button onclick="pagar()">Finalizar Compra</button>
 
 </div>
+
 </div>
 
 <script>
@@ -203,21 +206,36 @@ function pagar(){
   }
 
   const nombre=document.getElementById("nombreCliente").value.trim();
-
   if(nombre===""){
     alert("Escribe tu nombre");
     return;
   }
 
   const boletosArray=Array.from(seleccionados);
-  const total=boletosArray.length*PRECIO_BOLETO;
 
-  // ABRE WHATSAPP INMEDIATAMENTE (anti bloqueo)
-  const mensaje =
+  fetch(URL_SCRIPT,{
+    method:"POST",
+    body:JSON.stringify({
+      nombre:nombre,
+      boletos:boletosArray
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+
+    const extras=data.gratis||[];
+    const total=data.total;
+
+    document.getElementById("previewExtras").innerHTML=
+    "🎁 Números EXTRA: "+extras.join(", ");
+
+    const mensaje =
 `🎟️ *RIFA LOS COMPAS*
 
 ━━━━━━━━━━━━━━
 🎫 BOLETOS: ${boletosArray.join(", ")}
+
+🎁 EXTRAS GRATIS: ${extras.join(", ")}
 
 💰 TOTAL: $${total}
 
@@ -226,22 +244,16 @@ function pagar(){
 
 Envío comprobante enseguida.`;
 
-  window.open(
-    "https://api.whatsapp.com/send?phone=527421199270&text="+
-    encodeURIComponent(mensaje),
-    "_blank"
-  );
+    setTimeout(()=>{
+      window.open(
+        "https://api.whatsapp.com/send?phone=527421199270&text="+
+        encodeURIComponent(mensaje),
+        "_blank"
+      );
+      location.reload();
+    },1500);
 
-  // GUARDA EN GOOGLE SHEETS
-  fetch(URL_SCRIPT,{
-    method:"POST",
-    body:JSON.stringify({
-      nombre:nombre,
-      boletos:boletosArray
-    })
   });
-
-  setTimeout(()=>location.reload(),1500);
 }
 
 </script>
