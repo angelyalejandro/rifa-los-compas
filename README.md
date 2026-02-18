@@ -20,6 +20,13 @@ body{
   margin:auto;
 }
 
+.logo{
+  width:170px;
+  border-radius:15px;
+  margin-bottom:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
+}
+
 h1{
   margin-bottom:5px;
   font-size:28px;
@@ -27,7 +34,7 @@ h1{
 
 .descripcion{
   font-size:15px;
-  opacity:.9;
+  opacity:.95;
   margin-bottom:20px;
 }
 
@@ -40,10 +47,16 @@ h1{
   box-shadow:0 10px 25px rgba(0,0,0,.3);
 }
 
+.premios{
+  font-size:16px;
+  line-height:1.8;
+}
+
 .boletos{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(60px,1fr));
   gap:8px;
+  margin-top:15px;
 }
 
 .boleto{
@@ -71,12 +84,12 @@ h1{
 }
 
 .resumen{
-  font-size:16px;
-  margin-top:10px;
+  margin-top:15px;
+  font-weight:bold;
 }
 
 .preview{
-  margin-top:15px;
+  margin-top:10px;
   font-size:15px;
   color:#00c853;
   font-weight:bold;
@@ -107,12 +120,6 @@ button:hover{
   background:#00a843;
 }
 
-.totalBox{
-  margin-top:10px;
-  font-weight:bold;
-  font-size:18px;
-}
-
 </style>
 </head>
 
@@ -120,19 +127,32 @@ button:hover{
 
 <div class="container">
 
+<img src="logo.JPG" class="logo">
+
 <h1>🎟️ RIFA LOS COMPAS 🎟️</h1>
 
 <p class="descripcion">
-Por cada boleto obtienes <strong>4 números EXTRA GRATIS</strong> 🎁
+Por cada boleto que compres tienes <strong>4 oportunidades EXTRA totalmente GRATIS</strong> 🎁<br>
+🎰 Basado en la Lotería Nacional<br>
+✅ Rifa totalmente confiable
 </p>
 
+<div class="card premios">
+<h2>🏆 Premios</h2>
+🥇 1er lugar: $5,000<br>
+🥈 2do lugar: $1,000<br>
+🥉 3er lugar: $500
+</div>
+
 <div class="card">
+
+<h2>Selecciona tus boletos</h2>
 
 <div class="boletos" id="boletos"></div>
 
 <div class="resumen">
-Boletos seleccionados: <span id="cantidad">0</span>
-<div class="totalBox">Total: $<span id="total">0</span></div>
+Boletos seleccionados: <span id="cantidad">0</span><br>
+Total: $<span id="total">0</span>
 </div>
 
 <div class="preview" id="previewExtras"></div>
@@ -141,7 +161,7 @@ Boletos seleccionados: <span id="cantidad">0</span>
 
 <br>
 
-<button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
+<button onclick="pagar()">Finalizar Compra</button>
 
 </div>
 
@@ -149,14 +169,13 @@ Boletos seleccionados: <span id="cantidad">0</span>
 
 <script>
 
-const PRECIO_BOLETO = 50;
-const TOTAL_BOLETOS = 200;
+const PRECIO_BOLETO=50;
+const TOTAL_BOLETOS=200;
+const URL_SCRIPT="https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
 
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
-
-const contenedor = document.getElementById("boletos");
-const seleccionados = new Set();
-let vendidos = [];
+const contenedor=document.getElementById("boletos");
+const seleccionados=new Set();
+let vendidos=[];
 
 fetch(URL_SCRIPT)
 .then(res=>res.json())
@@ -200,7 +219,7 @@ function actualizarResumen(){
 
   if(seleccionados.size>0){
     document.getElementById("previewExtras").innerHTML=
-    "🎁 Tus números EXTRA se mostrarán antes de enviar a WhatsApp";
+    "🎁 Tus números EXTRA aparecerán antes de enviarte a WhatsApp";
   }else{
     document.getElementById("previewExtras").innerHTML="";
   }
@@ -214,7 +233,6 @@ function pagar(){
   }
 
   const nombre=document.getElementById("nombreCliente").value.trim();
-
   if(nombre===""){
     alert("Escribe tu nombre");
     return;
@@ -232,9 +250,8 @@ function pagar(){
   .then(res=>res.json())
   .then(data=>{
 
-    const extras=data.gratis || [];
+    const extras=data.gratis||[];
 
-    // MOSTRAR EN PANTALLA ANTES
     document.getElementById("previewExtras").innerHTML=
     `🎁 Números EXTRA: ${extras.join(", ")}`;
 
@@ -243,19 +260,17 @@ function pagar(){
       const mensaje =
 `🎟️ *RIFA LOS COMPAS*
 
-Hola! Realicé la siguiente reserva:
-
 ━━━━━━━━━━━━━━
-🎫 *BOLETOS:* ${boletosArray.join(", ")}
+🎫 BOLETOS: ${boletosArray.join(", ")}
 
-🎁 *EXTRAS GRATIS:* ${extras.join(", ")}
+🎁 EXTRAS GRATIS: ${extras.join(", ")}
 
-💰 *TOTAL:* $${data.total}
+💰 TOTAL: $${data.total}
 
-👤 *Nombre:* ${nombre}
+👤 Nombre: ${nombre}
 ━━━━━━━━━━━━━━
 
-Envío comprobante de pago enseguida.`;
+Envío comprobante enseguida.`;
 
       window.open(
         "https://wa.me/527421199270?text="+
@@ -268,12 +283,9 @@ Envío comprobante de pago enseguida.`;
     },1500);
 
   });
-
 }
 
 </script>
 
 </body>
 </html>
-
-
