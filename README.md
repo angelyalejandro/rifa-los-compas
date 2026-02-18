@@ -193,7 +193,6 @@ Hola! Reserve los siguientes boletos:
 TOTAL A PAGAR: $${total}
 
 Nombre: ${nombre}`;
-    
 ENVIARE MI COMPROBANTE EN UN MOMENTO    
 
     // 🔥 REDIRECCIÓN DIRECTA (NUNCA FALLA)
