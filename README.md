@@ -221,7 +221,7 @@ function pagar(){
 
     const mensaje =
 `🎟️ RIFA LOS COMPAS
-
+Hola! Reserve los siguientes boletos:
 🎫 BOLETOS: ${boletosArray.join(", ")}
 
 🎁 BOLETOS GRATIS: ${extras.join(", ")}
