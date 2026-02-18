@@ -251,40 +251,46 @@
         `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
     }
 
-    function pagar() {
-      if (seleccionados.size === 0) {
-        alert("Selecciona al menos un boleto");
-        return;
-      }
+   function pagar() {
+  if (seleccionados.size === 0) {
+    alert("Selecciona al menos un boleto");
+    return;
+  }
 
-      const boletosArray = Array.from(seleccionados);
-      const total = boletosArray.length * PRECIO_BOLETO;
+  const boletosArray = Array.from(seleccionados);
+  const boletosTexto = boletosArray.join(", ");
+  const total = boletosArray.length * PRECIO_BOLETO;
 
-      fetch(URL_SCRIPT + "?accion=gratis&numeros=" + boletosArray.join(","))
-        .then(res => res.json())
-        .then(gratis => {
-
-          const mensaje =
+  // 🔹 MENSAJE WHATSAPP (sin depender del script)
+  const mensaje =
 `Hola! Reserve los siguientes boletos:
 
-BOLETOS🎫: ${boletosArray.join(", ")}
-EXTRAS🎫: (${gratis.join(", ")})
+BOLETOS🎫: ${boletosTexto}
 
 COSTO TOTAL: $${total}
 NOMBRE DE LA RIFA: Los Compas
 ————————
 EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
 
-          const numeroWhatsApp = "527421199270";
-          const urlWhats =
-            "https://wa.me/" +
-            numeroWhatsApp +
-            "?text=" +
-            encodeURIComponent(mensaje);
+  const numeroWhatsApp = "527421199270";
+  const urlWhats =
+    "https://wa.me/" +
+    numeroWhatsApp +
+    "?text=" +
+    encodeURIComponent(mensaje);
 
-          window.open(urlWhats, "_blank");
-        });
-    }
+  // 🔹 FORMULARIO (como lo tenías antes)
+  const urlFormulario =
+    "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=" +
+    encodeURIComponent(boletosTexto);
+
+  // 🔥 ABRE WHATSAPP
+  window.open(urlWhats, "_blank");
+
+  // 🔥 REDIRIGE AL FORMULARIO
+  window.location.href = urlFormulario;
+}
+
   </script>
 
 </body>
