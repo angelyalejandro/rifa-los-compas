@@ -16,7 +16,12 @@ body{
 }
 
 .container{max-width:1000px;margin:auto;}
-.logo{width:170px;border-radius:15px;margin-bottom:15px;}
+
+.logo{
+  width:170px;
+  border-radius:15px;
+  margin-bottom:15px;
+}
 
 .card{
   background:white;
@@ -24,6 +29,14 @@ body{
   border-radius:15px;
   padding:20px;
   margin-bottom:25px;
+}
+
+.pagos-img{
+  width:100%;
+  max-width:600px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
+  margin-top:15px;
 }
 
 .boletos{
@@ -85,6 +98,14 @@ Basado en la Lotería Nacional
 🥉 3er lugar: $500
 </div>
 
+<!-- 🔥 NUEVA SECCIÓN FORMAS DE PAGO -->
+<div class="card">
+<h2>💳 Formas de Pago</h2>
+<p>Puedes realizar transferencia o depósito a cualquiera de nuestros vendedores autorizados:</p>
+
+<img src="pagos.jpg" class="pagos-img">
+</div>
+
 <div class="card">
 
 <h2>Selecciona tus boletos</h2>
@@ -113,15 +134,13 @@ const contenedor=document.getElementById("boletos");
 const seleccionados=new Set();
 let vendidos=[];
 
-// 🔥 Siempre genera boletos aunque falle el servidor
 fetch(URL_SCRIPT)
 .then(res=>res.json())
 .then(data=>{
   vendidos=data;
   generarBoletos();
 })
-.catch(error=>{
-  console.log("No se pudieron cargar vendidos, generando todos disponibles");
+.catch(()=>{
   generarBoletos();
 });
 
@@ -191,26 +210,20 @@ function pagar(){
     const mensaje =
 `🎟️ RIFA LOS COMPAS
 
-Hola! Reservé los siguientes boletos:
-
 🎫 BOLETOS: ${boletosArray.join(", ")}
 
 🎁 BOLETOS GRATIS: ${extras.join(", ")}
 
-💰 TOTAL A PAGAR: $${total}
+💰 TOTAL: $${total}
 
 👤 Nombre: ${nombre}
 
 ENVIARÉ MI COMPROBANTE EN UN MOMENTO.`;
 
-    // 🔥 Redirección directa (no falla)
     window.location.href =
     "https://api.whatsapp.com/send?phone=527421199270&text="+
     encodeURIComponent(mensaje);
 
-  })
-  .catch(error=>{
-    alert("Error enviando datos. Revisa tu Apps Script.");
   });
 
 }
