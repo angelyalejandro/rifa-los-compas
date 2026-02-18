@@ -31,14 +31,6 @@ body{
   margin-bottom:25px;
 }
 
-.pagos-img{
-  width:100%;
-  max-width:600px;
-  border-radius:15px;
-  box-shadow:0 10px 25px rgba(0,0,0,.4);
-  margin-top:15px;
-}
-
 .boletos{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(60px,1fr));
@@ -57,12 +49,28 @@ body{
 .boleto.seleccionado{background:#00c853;color:white;}
 .boleto.vendido{background:#ccc;color:#666;cursor:not-allowed;}
 
+.resumen{
+  margin-top:15px;
+  font-weight:bold;
+}
+
+.pagos-box{
+  margin-top:25px;
+}
+
+.pagos-img{
+  width:100%;
+  max-width:420px;   /* 🔥 MÁS PEQUEÑA */
+  border-radius:12px;
+  box-shadow:0 8px 18px rgba(0,0,0,.35);
+}
+
 input{
   padding:12px;
   width:260px;
   border-radius:8px;
   border:none;
-  margin-top:15px;
+  margin-top:20px;
 }
 
 button{
@@ -98,22 +106,26 @@ Basado en la Lotería Nacional
 🥉 3er lugar: $500
 </div>
 
-<!-- 🔥 NUEVA SECCIÓN FORMAS DE PAGO -->
-<div class="card">
-<h2>💳 Formas de Pago</h2>
-<p>Puedes realizar transferencia o depósito a cualquiera de nuestros vendedores autorizados:</p>
-
-<img src="pagos.jpg" class="pagos-img">
-</div>
-
 <div class="card">
 
 <h2>Selecciona tus boletos</h2>
 
 <div class="boletos" id="boletos"></div>
 
-<p>Boletos: <span id="cantidad">0</span></p>
-<p>Total: $<span id="total">0</span></p>
+<div class="resumen">
+Boletos: <span id="cantidad">0</span><br>
+Total: $<span id="total">0</span>
+</div>
+
+<!-- 🔥 FORMAS DE PAGO EXACTAMENTE AQUÍ -->
+<div class="pagos-box">
+<h3 style="margin-top:25px;">💳 Formas de Pago</h3>
+<p style="font-size:14px;">
+Realiza tu transferencia o depósito a cualquiera de nuestros vendedores autorizados:
+</p>
+
+<img src="pagos.jpg" class="pagos-img">
+</div>
 
 <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
 
