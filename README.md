@@ -246,12 +246,25 @@ function pagar(){
   boton.innerText = "Procesando...";
 
   const boletosArray = Array.from(seleccionados);
-  const total = boletosArray.length * PRECIO_BOLETO;
 
-  const mensaje =
+  fetch(URL_SCRIPT,{
+    method:"POST",
+    body:JSON.stringify({
+      nombre:nombre,
+      boletos:boletosArray
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+
+    const total = data.total;
+    const extras = data.gratis || [];
+
+    const mensaje =
 `Hola! Reserve los siguientes boletos:
 
 BOLETOS🎫: ${boletosArray.join(", ")}
+EXTRAS🎫: (${extras.join(", ")})
 
 COSTO TOTAL: $${total}
 NOMBRE DE LA RIFA: RIFA LOS COMPAS
@@ -260,11 +273,20 @@ NOMBRE DE LA RIFA: RIFA LOS COMPAS
 
 EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
 
-  window.open(
-    "https://wa.me/527421199270?text=" +
-    encodeURIComponent(mensaje),
-    "_blank"
-  );
+    window.open(
+      "https://wa.me/527421199270?text=" +
+      encodeURIComponent(mensaje),
+      "_blank"
+    );
+
+    location.reload();
+  })
+  .catch(()=>{
+    alert("Error al procesar la compra");
+    boton.disabled = false;
+    boton.innerText = "Pagar";
+  });
+}
 
   fetch(URL_SCRIPT,{
     method:"POST",
