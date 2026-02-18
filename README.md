@@ -21,10 +21,7 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
 
-    h1 {
-      color: #1e7d32;
-      margin-bottom: 5px;
-    }
+    h1 { color: #1e7d32; margin-bottom: 5px; }
 
     .descripcion {
       font-size: 16px;
@@ -41,15 +38,9 @@
       margin-bottom: 20px;
     }
 
-    h2 {
-      color: #145a23;
-      margin-top: 30px;
-    }
+    h2 { color: #145a23; margin-top: 30px; }
 
-    .info {
-      margin-bottom: 20px;
-      font-size: 16px;
-    }
+    .info { margin-bottom: 20px; font-size: 16px; }
 
     .premios {
       background: white;
@@ -79,10 +70,7 @@
       user-select: none;
     }
 
-    .boleto.seleccionado {
-      background: #1e7d32;
-      color: #fff;
-    }
+    .boleto.seleccionado { background: #1e7d32; color: #fff; }
 
     .boleto.vendido {
       background: #ccc;
@@ -111,6 +99,16 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
+    input {
+      padding: 12px;
+      width: 250px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      text-align: center;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+
     button {
       background: #1e7d32;
       color: #fff;
@@ -122,95 +120,71 @@
       margin-top: 15px;
     }
 
-    button:hover {
-      background: #145a23;
-    }
+    button:hover { background: #145a23; }
   </style>
 </head>
 
 <body>
 
-  <img src="logo.JPG" alt="Logo Rifa Los Compás" class="logo">
+<img src="logo.JPG" alt="Logo Rifa Los Compás" class="logo">
 
-  <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
+<h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
-  <p class="descripcion">
-  Por cada boleto que compres tienes <strong>4 posibilidades mas de ganar</strong>
-  totalmente <strong>GRATIS</strong><br><br>
-  🎰 Nos basamos en la <strong>Lotería Nacional</strong><br>
-  ✅ Nuestras rifas son <strong>totalmente confiables</strong>
+<p class="descripcion">
+Por cada boleto que compres tienes <strong>4 posibilidades mas de ganar</strong>
+totalmente <strong>GRATIS</strong><br><br>
+🎰 Nos basamos en la <strong>Lotería Nacional</strong><br>
+✅ Nuestras rifas son <strong>totalmente confiables</strong>
 </p>
 
-<div class="whatsapp-box">
-  <p>
-    📢 <strong>Únete a nuestro grupo</strong><br>
-    para conocer todas las actualizaciones de la rifa
-  </p>
-  <a
-    href="https://chat.whatsapp.com/EMSiYrtGDzv0JZWdhMvvzm?mode=gi_t"
-    target="_blank"
-    class="btn-whatsapp"
-  >
-    📲 Clic aquí
-  </a>
+<div id="contador" class="contador">
+🎟️ Boletos vendidos: 0 / 200
 </div>
 
-  <div id="contador" class="contador">
-    🎟️ Boletos vendidos: 0 / 200
-  </div>
+<div class="info">
+Costo del boleto: <strong>$50</strong><br>
+Total de boletos: <strong>200</strong>
+</div>
 
-  <div class="info">
-    Costo del boleto: <strong>$50</strong><br>
-    Total de boletos: <strong>200</strong>
-  </div>
+<h2>🏆 Premios</h2>
+<div class="premios">
+🥇 <strong>1er lugar:</strong> $5,000<br><br>
+🥈 <strong>2do lugar:</strong> $1,000<br><br>
+🥉 <strong>3er lugar:</strong> $500
+</div>
 
-  <h2>🏆 Premios</h2>
-  <div class="premios">
-    🥇 <strong>1er lugar:</strong> $5,000<br><br>
-    🥈 <strong>2do lugar:</strong> $1,000<br><br>
-    🥉 <strong>3er lugar:</strong> $500
-  </div>
+<h2>Selecciona tus boletos</h2>
+<div class="boletos" id="boletos"></div>
 
-  <h2>Selecciona tus boletos</h2>
-  <div class="boletos" id="boletos"></div>
+<div class="resumen">
+🎟️ Boletos seleccionados: <span id="cantidad">0</span><br>
+💰 Total a pagar: $<span id="total">0</span>
+</div>
 
-  <div class="resumen">
-    🎟️ Boletos seleccionados: <span id="cantidad">0</span><br>
-    💰 Total a pagar: $<span id="total">0</span>
-  </div>
+<input type="text" id="nombreCliente" placeholder="Escribe tu nombre completo">
 
-  <div class="pago">
-    <strong>Formas de pago</strong><br><br>
-    💵 Efectivo<br>
-    🏦 Transferencia bancaria
-  </div>
+<br>
 
-  <button onclick="pagar()">Pagar</button>
+<button id="btnPagar" onclick="pagar()">Pagar</button>
 
-  <script>
+<script>
 
 const PRECIO_BOLETO = 50;
 const TOTAL_BOLETOS = 200;
-
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
 
 const contenedor = document.getElementById("boletos");
 const seleccionados = new Set();
 let vendidos = [];
 
-// 🔹 Cargar boletos vendidos
 fetch(URL_SCRIPT)
 .then(res => res.json())
 .then(data => {
   vendidos = data;
   generarBoletos();
   actualizarContador();
-})
-.catch(err => {
-  console.error("Error cargando vendidos:", err);
 });
 
-// 🔹 Generar boletos
 function generarBoletos(){
   contenedor.innerHTML="";
   for(let i=0;i<TOTAL_BOLETOS;i++){
@@ -229,7 +203,6 @@ function generarBoletos(){
   }
 }
 
-// 🔹 Seleccionar boleto
 function toggle(num,div){
   if(seleccionados.has(num)){
     seleccionados.delete(num);
@@ -241,14 +214,12 @@ function toggle(num,div){
   actualizarResumen();
 }
 
-// 🔹 Actualizar resumen
 function actualizarResumen(){
   document.getElementById("cantidad").textContent=seleccionados.size;
   document.getElementById("total").textContent=
   seleccionados.size*PRECIO_BOLETO;
 }
 
-// 🔹 Actualizar contador
 function actualizarContador(){
   document.getElementById("contador").textContent=
   `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
@@ -261,14 +232,23 @@ function pagar(){
     return;
   }
 
-  const nombre = prompt("Escribe tu nombre completo:");
-  if(!nombre) return;
+  const nombreInput = document.getElementById("nombreCliente");
+  const nombre = nombreInput.value.trim();
+
+  if(nombre === ""){
+    alert("Escribe tu nombre completo");
+    nombreInput.focus();
+    return;
+  }
+
+  const boton = document.getElementById("btnPagar");
+  boton.disabled = true;
+  boton.innerText = "Procesando...";
 
   const boletosArray = Array.from(seleccionados);
   const total = boletosArray.length * PRECIO_BOLETO;
 
-  // 🔹 Abrimos WhatsApp primero (para evitar bloqueo)
-  const mensajeBase =
+  const mensaje =
 `Hola! Reserve los siguientes boletos:
 
 BOLETOS🎫: ${boletosArray.join(", ")}
@@ -280,13 +260,12 @@ NOMBRE DE LA RIFA: RIFA LOS COMPAS
 
 EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
 
-  const urlWhats =
-  "https://wa.me/527421199270?text=" +
-  encodeURIComponent(mensajeBase);
+  window.open(
+    "https://wa.me/527421199270?text=" +
+    encodeURIComponent(mensaje),
+    "_blank"
+  );
 
-  window.open(urlWhats, "_blank");
-
-  // 🔹 Después guardamos en la hoja (sin afectar WhatsApp)
   fetch(URL_SCRIPT,{
     method:"POST",
     body:JSON.stringify({
@@ -295,12 +274,15 @@ EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
     })
   })
   .then(()=>location.reload())
-  .catch(err=>console.log(err));
+  .catch(()=>{
+    alert("Error al guardar la compra");
+    boton.disabled = false;
+    boton.innerText = "Pagar";
+  });
 }
-
 
 </script>
 
-
 </body>
 </html>
+
