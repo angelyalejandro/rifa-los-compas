@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -113,14 +113,20 @@ const contenedor=document.getElementById("boletos");
 const seleccionados=new Set();
 let vendidos=[];
 
+// 🔥 Siempre genera boletos aunque falle el servidor
 fetch(URL_SCRIPT)
 .then(res=>res.json())
 .then(data=>{
   vendidos=data;
   generarBoletos();
+})
+.catch(error=>{
+  console.log("No se pudieron cargar vendidos, generando todos disponibles");
+  generarBoletos();
 });
 
 function generarBoletos(){
+  contenedor.innerHTML="";
   for(let i=0;i<TOTAL_BOLETOS;i++){
     const num=i.toString().padStart(3,"0");
     const div=document.createElement("div");
@@ -180,26 +186,31 @@ function pagar(){
   .then(data=>{
 
     const extras=data.gratis||[];
-    const total=data.total;
+    const total=data.total || boletosArray.length*PRECIO_BOLETO;
 
     const mensaje =
 `🎟️ RIFA LOS COMPAS
-Hola! Reserve los siguientes boletos:
+
+Hola! Reservé los siguientes boletos:
 
 🎫 BOLETOS: ${boletosArray.join(", ")}
 
 🎁 BOLETOS GRATIS: ${extras.join(", ")}
 
-TOTAL A PAGAR: $${total}
+💰 TOTAL A PAGAR: $${total}
 
-Nombre: ${nombre}`;
-ENVIARE MI COMPROBANTE EN UN MOMENTO   
+👤 Nombre: ${nombre}
 
-    // 🔥 REDIRECCIÓN DIRECTA (NUNCA FALLA)
+ENVIARÉ MI COMPROBANTE EN UN MOMENTO.`;
+
+    // 🔥 Redirección directa (no falla)
     window.location.href =
     "https://api.whatsapp.com/send?phone=527421199270&text="+
     encodeURIComponent(mensaje);
 
+  })
+  .catch(error=>{
+    alert("Error enviando datos. Revisa tu Apps Script.");
   });
 
 }
