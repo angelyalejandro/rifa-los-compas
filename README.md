@@ -1,176 +1,157 @@
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>RIFA LOS COMPÁS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifa Los Compas</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #eaffea;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
+<style>
+body{
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  margin:0;
+  padding:20px;
+  color:white;
+  text-align:center;
+}
 
-    img.logo {
-      width: 160px;
-      margin: 10px auto;
-      display: block;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
+.container{
+  max-width:1000px;
+  margin:auto;
+}
 
-    h1 { color: #1e7d32; margin-bottom: 5px; }
+h1{
+  margin-bottom:5px;
+  font-size:28px;
+}
 
-    .descripcion {
-      font-size: 16px;
-      margin: 10px auto 15px;
-      color: #2e7d32;
-      max-width: 500px;
-      font-weight: bold;
-    }
+.descripcion{
+  font-size:15px;
+  opacity:.9;
+  margin-bottom:20px;
+}
 
-    .contador {
-      font-size: 18px;
-      font-weight: bold;
-      color: #1e7d32;
-      margin-bottom: 20px;
-    }
+.card{
+  background:white;
+  color:#333;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:25px;
+  box-shadow:0 10px 25px rgba(0,0,0,.3);
+}
 
-    h2 { color: #145a23; margin-top: 30px; }
+.boletos{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(60px,1fr));
+  gap:8px;
+}
 
-    .info { margin-bottom: 20px; font-size: 16px; }
+.boleto{
+  padding:10px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#f2f2f2;
+  transition:.2s;
+}
 
-    .premios {
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      max-width: 500px;
-      margin: 20px auto;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      font-size: 16px;
-    }
+.boleto:hover{
+  transform:scale(1.05);
+}
 
-    .boletos {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 10px;
-      max-width: 600px;
-      margin: 0 auto 15px;
-    }
+.boleto.seleccionado{
+  background:#00c853;
+  color:white;
+}
 
-    .boleto {
-      padding: 10px;
-      border-radius: 6px;
-      background: #fff;
-      border: 2px solid #1e7d32;
-      cursor: pointer;
-      font-weight: bold;
-      user-select: none;
-    }
+.boleto.vendido{
+  background:#ccc;
+  color:#666;
+  cursor:not-allowed;
+}
 
-    .boleto.seleccionado { background: #1e7d32; color: #fff; }
+.resumen{
+  font-size:16px;
+  margin-top:10px;
+}
 
-    .boleto.vendido {
-      background: #ccc;
-      color: #666;
-      cursor: not-allowed;
-      border-color: #999;
-    }
+.preview{
+  margin-top:15px;
+  font-size:15px;
+  color:#00c853;
+  font-weight:bold;
+}
 
-    .resumen {
-      font-size: 18px;
-      margin: 15px auto;
-      padding: 15px;
-      background: #ffffff;
-      border-radius: 12px;
-      max-width: 400px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      font-weight: bold;
-    }
+input{
+  padding:12px;
+  width:260px;
+  border-radius:8px;
+  border:none;
+  margin-top:15px;
+  font-size:15px;
+}
 
-    .pago {
-      background: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      max-width: 400px;
-      margin: 20px auto;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+button{
+  margin-top:15px;
+  padding:14px 25px;
+  border:none;
+  border-radius:10px;
+  background:#00c853;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  transition:.2s;
+}
 
-    input {
-      padding: 12px;
-      width: 250px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      text-align: center;
-      font-size: 16px;
-      margin-top: 15px;
-    }
+button:hover{
+  background:#00a843;
+}
 
-    button {
-      background: #1e7d32;
-      color: #fff;
-      border: none;
-      padding: 15px 25px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
+.totalBox{
+  margin-top:10px;
+  font-weight:bold;
+  font-size:18px;
+}
 
-    button:hover { background: #145a23; }
-  </style>
+</style>
 </head>
 
 <body>
 
-<img src="logo.JPG" alt="Logo Rifa Los Compás" class="logo">
+<div class="container">
 
-<h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
+<h1>🎟️ RIFA LOS COMPAS 🎟️</h1>
 
 <p class="descripcion">
-Por cada boleto que compres tienes <strong>4 posibilidades mas de ganar</strong>
-totalmente <strong>GRATIS</strong><br><br>
-🎰 Nos basamos en la <strong>Lotería Nacional</strong><br>
-✅ Nuestras rifas son <strong>totalmente confiables</strong>
+Por cada boleto obtienes <strong>4 números EXTRA GRATIS</strong> 🎁
 </p>
 
-<div id="contador" class="contador">
-🎟️ Boletos vendidos: 0 / 200
-</div>
+<div class="card">
 
-<div class="info">
-Costo del boleto: <strong>$50</strong><br>
-Total de boletos: <strong>200</strong>
-</div>
-
-<h2>🏆 Premios</h2>
-<div class="premios">
-🥇 <strong>1er lugar:</strong> $5,000<br><br>
-🥈 <strong>2do lugar:</strong> $1,000<br><br>
-🥉 <strong>3er lugar:</strong> $500
-</div>
-
-<h2>Selecciona tus boletos</h2>
 <div class="boletos" id="boletos"></div>
 
 <div class="resumen">
-🎟️ Boletos seleccionados: <span id="cantidad">0</span><br>
-💰 Total a pagar: $<span id="total">0</span>
+Boletos seleccionados: <span id="cantidad">0</span>
+<div class="totalBox">Total: $<span id="total">0</span></div>
 </div>
 
-<input type="text" id="nombreCliente" placeholder="Escribe tu nombre completo">
+<div class="preview" id="previewExtras"></div>
+
+<input type="text" id="nombreCliente" placeholder="Tu nombre completo">
 
 <br>
 
-<button id="btnPagar" onclick="pagar()">Pagar</button>
+<button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
+
+</div>
+
+</div>
 
 <script>
 
 const PRECIO_BOLETO = 50;
 const TOTAL_BOLETOS = 200;
+
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
 
 const contenedor = document.getElementById("boletos");
@@ -178,15 +159,13 @@ const seleccionados = new Set();
 let vendidos = [];
 
 fetch(URL_SCRIPT)
-.then(res => res.json())
-.then(data => {
-  vendidos = data;
+.then(res=>res.json())
+.then(data=>{
+  vendidos=data;
   generarBoletos();
-  actualizarContador();
 });
 
 function generarBoletos(){
-  contenedor.innerHTML="";
   for(let i=0;i<TOTAL_BOLETOS;i++){
     const num=i.toString().padStart(3,"0");
     const div=document.createElement("div");
@@ -218,11 +197,13 @@ function actualizarResumen(){
   document.getElementById("cantidad").textContent=seleccionados.size;
   document.getElementById("total").textContent=
   seleccionados.size*PRECIO_BOLETO;
-}
 
-function actualizarContador(){
-  document.getElementById("contador").textContent=
-  `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
+  if(seleccionados.size>0){
+    document.getElementById("previewExtras").innerHTML=
+    "🎁 Tus números EXTRA se mostrarán antes de enviar a WhatsApp";
+  }else{
+    document.getElementById("previewExtras").innerHTML="";
+  }
 }
 
 function pagar(){
@@ -232,20 +213,14 @@ function pagar(){
     return;
   }
 
-  const nombreInput = document.getElementById("nombreCliente");
-  const nombre = nombreInput.value.trim();
+  const nombre=document.getElementById("nombreCliente").value.trim();
 
-  if(nombre === ""){
-    alert("Escribe tu nombre completo");
-    nombreInput.focus();
+  if(nombre===""){
+    alert("Escribe tu nombre");
     return;
   }
 
-  const boton = document.getElementById("btnPagar");
-  boton.disabled = true;
-  boton.innerText = "Procesando...";
-
-  const boletosArray = Array.from(seleccionados);
+  const boletosArray=Array.from(seleccionados);
 
   fetch(URL_SCRIPT,{
     method:"POST",
@@ -257,54 +232,48 @@ function pagar(){
   .then(res=>res.json())
   .then(data=>{
 
-    const total = data.total;
-    const extras = data.gratis || [];
+    const extras=data.gratis || [];
 
-    const mensaje =
-`Hola! Reserve los siguientes boletos:
+    // MOSTRAR EN PANTALLA ANTES
+    document.getElementById("previewExtras").innerHTML=
+    `🎁 Números EXTRA: ${extras.join(", ")}`;
 
-BOLETOS🎫: ${boletosArray.join(", ")}
-EXTRAS🎫: (${extras.join(", ")})
+    setTimeout(()=>{
 
-COSTO TOTAL: $${total}
-NOMBRE DE LA RIFA: RIFA LOS COMPAS
-————————
-🟥Nombre: ${nombre}
+      const mensaje =
+`🎟️ *RIFA LOS COMPAS*
 
-EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
+Hola! Realicé la siguiente reserva:
 
-    window.open(
-      "https://wa.me/527421199270?text=" +
-      encodeURIComponent(mensaje),
-      "_blank"
-    );
+━━━━━━━━━━━━━━
+🎫 *BOLETOS:* ${boletosArray.join(", ")}
 
-    location.reload();
-  })
-  .catch(()=>{
-    alert("Error al procesar la compra");
-    boton.disabled = false;
-    boton.innerText = "Pagar";
+🎁 *EXTRAS GRATIS:* ${extras.join(", ")}
+
+💰 *TOTAL:* $${data.total}
+
+👤 *Nombre:* ${nombre}
+━━━━━━━━━━━━━━
+
+Envío comprobante de pago enseguida.`;
+
+      window.open(
+        "https://wa.me/527421199270?text="+
+        encodeURIComponent(mensaje),
+        "_blank"
+      );
+
+      location.reload();
+
+    },1500);
+
   });
-}
 
-  fetch(URL_SCRIPT,{
-    method:"POST",
-    body:JSON.stringify({
-      nombre:nombre,
-      boletos:boletosArray
-    })
-  })
-  .then(()=>location.reload())
-  .catch(()=>{
-    alert("Error al guardar la compra");
-    boton.disabled = false;
-    boton.innerText = "Pagar";
-  });
 }
 
 </script>
 
 </body>
 </html>
+
 
