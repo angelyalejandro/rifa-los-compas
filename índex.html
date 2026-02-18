@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -16,6 +17,7 @@ body{
 
 .container{max-width:1000px;margin:auto;}
 .logo{width:170px;border-radius:15px;margin-bottom:15px;}
+
 .card{
   background:white;
   color:#333;
@@ -167,12 +169,6 @@ function pagar(){
 
   const boletosArray=Array.from(seleccionados);
 
-  // 🔥 ABRIMOS WHATSAPP VACÍO PRIMERO (ANTI BLOQUEO)
-  const whatsappWindow = window.open(
-    "https://api.whatsapp.com/send?phone=527421199270",
-    "_blank"
-  );
-
   fetch(URL_SCRIPT,{
     method:"POST",
     body:JSON.stringify({
@@ -197,12 +193,10 @@ TOTAL: $${total}
 
 Nombre: ${nombre}`;
 
-    // 🔥 ACTUALIZAMOS ESA MISMA PESTAÑA
-    whatsappWindow.location.href =
+    // 🔥 REDIRECCIÓN DIRECTA (NUNCA FALLA)
+    window.location.href =
     "https://api.whatsapp.com/send?phone=527421199270&text="+
     encodeURIComponent(mensaje);
-
-    setTimeout(()=>location.reload(),1500);
 
   });
 
