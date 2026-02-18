@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -22,10 +22,7 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
 
-    h1 {
-      color: #1e7d32;
-      margin-bottom: 5px;
-    }
+    h1 { color: #1e7d32; margin-bottom: 5px; }
 
     .descripcion {
       font-size: 16px;
@@ -42,15 +39,9 @@
       margin-bottom: 20px;
     }
 
-    h2 {
-      color: #145a23;
-      margin-top: 30px;
-    }
+    h2 { color: #145a23; margin-top: 30px; }
 
-    .info {
-      margin-bottom: 20px;
-      font-size: 16px;
-    }
+    .info { margin-bottom: 20px; font-size: 16px; }
 
     .premios {
       background: white;
@@ -123,154 +114,148 @@
       margin-top: 15px;
     }
 
-    button:hover {
-      background: #145a23;
-    }
+    button:hover { background: #145a23; }
   </style>
 </head>
 
 <body>
 
-  <!-- LOGO -->
-  <img src="logo.JPG" alt="Logo Rifa Los Compás" class="logo">
+<img src="logo.JPG" alt="Logo Rifa Los Compás" class="logo">
 
-  <h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
+<h1>🎟️ RIFA LOS COMPÁS 🎟️</h1>
 
-  <p class="descripcion">
-  Por cada boleto que compres tienes <strong>4 posibilidades mas de ganar</strong>
-  totalmente <strong>GRATIS</strong><br><br>
-  🎰 Nos basamos en la <strong>Lotería Nacional</strong><br>
-  ✅ Nuestras rifas son <strong>totalmente confiables</strong>
+<p class="descripcion">
+Por cada boleto que compres tienes <strong>4 posibilidades más de ganar</strong>
+totalmente <strong>GRATIS</strong><br><br>
+🎰 Nos basamos en la <strong>Lotería Nacional</strong><br>
+✅ Nuestras rifas son <strong>totalmente confiables</strong>
 </p>
-<div class="whatsapp-box">
-  <p>
-    📢 <strong>Únete a nuestro grupo</strong><br>
-    para conocer todas las actualizaciones de la rifa
-  </p>
-  <a
-    href="https://chat.whatsapp.com/EMSiYrtGDzv0JZWdhMvvzm?mode=gi_t"
-    target="_blank"
-    class="btn-whatsapp"
-  >
-    📲 Clic aquí
-  </a>
+
+<div id="contador" class="contador">
+🎟️ Boletos vendidos: 0 / 200
 </div>
 
+<div class="info">
+Costo del boleto: <strong>$50</strong><br>
+Total de boletos: <strong>200</strong>
+</div>
 
-  <div id="contador" class="contador">
-    🎟️ Boletos vendidos: 0 / 200
-  </div>
+<h2>🏆 Premios</h2>
+<div class="premios">
+🥇 <strong>1er lugar:</strong> $5,000<br><br>
+🥈 <strong>2do lugar:</strong> $1,000<br><br>
+🥉 <strong>3er lugar:</strong> $500
+</div>
 
-  <div class="info">
-    Costo del boleto: <strong>$50</strong><br>
-    Total de boletos: <strong>200</strong>
-  </div>
+<h2>Selecciona tus boletos</h2>
+<div class="boletos" id="boletos"></div>
 
-  <!-- PREMIOS -->
-  <h2>🏆 Premios</h2>
-  <div class="premios">
-    🥇 <strong>1er lugar:</strong> $5,000<br><br>
-    🥈 <strong>2do lugar:</strong> $1,000<br><br>
-    🥉 <strong>3er lugar:</strong> $500
-  </div>
+<div class="resumen">
+🎟️ Boletos seleccionados: <span id="cantidad">0</span><br>
+💰 Total a pagar: $<span id="total">0</span>
+</div>
 
-  <!-- BOLETOS -->
-  <h2>Selecciona tus boletos</h2>
-  <div class="boletos" id="boletos"></div>
+<div class="pago">
+<strong>Formas de pago</strong><br><br>
+💵 Efectivo<br>
+🏦 Transferencia bancaria
+</div>
 
-  <div class="resumen">
-    🎟️ Boletos seleccionados: <span id="cantidad">0</span><br>
-    💰 Total a pagar: $<span id="total">0</span>
-  </div>
+<button onclick="pagar()">Pagar</button>
 
-  <!-- PAGOS -->
-  <div class="pago">
-    <strong>Formas de pago</strong><br><br>
-    💵 Efectivo<br>
-    🏦 Transferencia bancaria
-  </div>
+<script>
+const PRECIO_BOLETO = 50;
+const TOTAL_BOLETOS = 200;
 
-  <button onclick="pagar()">Pagar</button>
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyS65zM0Yogdj7m-IGwWL8k1Aaikx_WOSmFIsVMnQUPB6m09G2-a7uSkhhr6v9iLLGu/exec";
 
-  <!-- SCRIPT -->
-  <script>
-    const PRECIO_BOLETO = 50;
-    const TOTAL_BOLETOS = 200;
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=";
 
-    const contenedor = document.getElementById("boletos");
-    const seleccionados = new Set();
-    let vendidos = [];
+const contenedor = document.getElementById("boletos");
+const seleccionados = new Set();
+let vendidos = [];
 
-    const URL_SCRIPT =
-      "https://script.google.com/macros/s/AKfycbyS65zM0Yogdj7m-IGwWL8k1Aaikx_WOSmFIsVMnQUPB6m09G2-a7uSkhhr6v9iLLGu/exec";
+fetch(URL_SCRIPT + "?accion=vendidos")
+.then(res => res.json())
+.then(data => {
+  vendidos = data;
+  actualizarContador();
+  generarBoletos();
+})
+.catch(() => {
+  actualizarContador();
+  generarBoletos();
+});
 
-    fetch(URL_SCRIPT)
-      .then(res => res.json())
-      .then(data => {
-        vendidos = data;
-        actualizarContador();
-        generarBoletos();
-      })
-      .catch(() => {
-        actualizarContador();
-        generarBoletos();
-      });
+function generarBoletos() {
+  contenedor.innerHTML = "";
+  for (let i = 0; i < TOTAL_BOLETOS; i++) {
+    const num = i.toString().padStart(3,"0");
+    const div = document.createElement("div");
+    div.className = "boleto";
+    div.textContent = num;
 
-    function generarBoletos() {
-      contenedor.innerHTML = "";
-
-      for (let i = 0; i < TOTAL_BOLETOS; i++) {
-        const num = i.toString().padStart(3, "0");
-        const div = document.createElement("div");
-        div.className = "boleto";
-        div.textContent = num;
-
-        if (vendidos.includes(num)) {
-          div.classList.add("vendido");
-        } else {
-          div.onclick = () => toggleBoleto(num, div);
-        }
-
-        contenedor.appendChild(div);
-      }
+    if (vendidos.includes(num)) {
+      div.classList.add("vendido");
+    } else {
+      div.onclick = () => toggleBoleto(num, div);
     }
 
-    function toggleBoleto(num, div) {
-      if (seleccionados.has(num)) {
-        seleccionados.delete(num);
-        div.classList.remove("seleccionado");
-      } else {
-        seleccionados.add(num);
-        div.classList.add("seleccionado");
-      }
-      actualizarResumen();
+    contenedor.appendChild(div);
+  }
+}
+
+function toggleBoleto(num, div) {
+  if (seleccionados.has(num)) {
+    seleccionados.delete(num);
+    div.classList.remove("seleccionado");
+  } else {
+    seleccionados.add(num);
+    div.classList.add("seleccionado");
+  }
+  actualizarResumen();
+}
+
+function actualizarResumen() {
+  document.getElementById("cantidad").textContent = seleccionados.size;
+  document.getElementById("total").textContent =
+    seleccionados.size * PRECIO_BOLETO;
+}
+
+function actualizarContador() {
+  document.getElementById("contador").textContent =
+    `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
+}
+
+function pagar() {
+  if (seleccionados.size === 0) {
+    alert("Selecciona al menos un boleto");
+    return;
+  }
+
+  const boletosArray = Array.from(seleccionados);
+  const boletosTexto = boletosArray.join(",");
+
+  fetch(URL_SCRIPT + "?accion=gratis&numeros=" + boletosTexto)
+  .then(res => res.json())
+  .then(gratis => {
+
+    let mensaje = "🎟️ Boletos comprados:\n" + boletosArray.join(", ");
+
+    if (gratis.length > 0) {
+      mensaje += "\n\n🎁 Tus boletos GRATIS son:\n" + gratis.join(", ");
     }
 
-    function actualizarResumen() {
-      document.getElementById("cantidad").textContent = seleccionados.size;
-      document.getElementById("total").textContent =
-        seleccionados.size * PRECIO_BOLETO;
-    }
+    alert(mensaje);
 
-    function actualizarContador() {
-      document.getElementById("contador").textContent =
-        `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
-    }
-
-    function pagar() {
-      if (seleccionados.size === 0) {
-        alert("Selecciona al menos un boleto");
-        return;
-      }
-
-      const boletos = Array.from(seleccionados).join(", ");
-      const url =
-        "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=" +
-        encodeURIComponent(boletos);
-
-      window.location.href = url;
-    }
-  </script>
+    window.location.href = FORM_URL + encodeURIComponent(boletosArray.join(", "));
+  })
+  .catch(() => {
+    window.location.href = FORM_URL + encodeURIComponent(boletosArray.join(", "));
+  });
+}
+</script>
 
 </body>
 </html>
