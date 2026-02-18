@@ -188,110 +188,126 @@
   <button onclick="pagar()">Pagar</button>
 
   <script>
-    const PRECIO_BOLETO = 50;
-    const TOTAL_BOLETOS = 200;
 
-    const contenedor = document.getElementById("boletos");
-    const seleccionados = new Set();
-    let vendidos = [];
+const PRECIO_BOLETO = 50;
+const TOTAL_BOLETOS = 200;
 
-    const URL_SCRIPT =
-      "https://script.google.com/macros/s/AKfycbyS65zM0Yogdj7m-IGwWL8k1Aaikx_WOSmFIsVMnQUPB6m09G2-a7uSkhhr6v9iLLGu/exec";
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
 
-    fetch(URL_SCRIPT)
-      .then(res => res.json())
-      .then(data => {
-        vendidos = data;
-        actualizarContador();
-        generarBoletos();
-      })
-      .catch(() => {
-        actualizarContador();
-        generarBoletos();
-      });
+const contenedor = document.getElementById("boletos");
+const seleccionados = new Set();
+let vendidos = [];
 
-    function generarBoletos() {
-      contenedor.innerHTML = "";
+// 🔹 Cargar boletos vendidos
+fetch(URL_SCRIPT)
+.then(res => res.json())
+.then(data => {
+  vendidos = data;
+  generarBoletos();
+  actualizarContador();
+})
+.catch(err => {
+  console.error("Error cargando vendidos:", err);
+});
 
-      for (let i = 0; i < TOTAL_BOLETOS; i++) {
-        const num = i.toString().padStart(3, "0");
-        const div = document.createElement("div");
-        div.className = "boleto";
-        div.textContent = num;
+// 🔹 Generar boletos
+function generarBoletos(){
+  contenedor.innerHTML="";
+  for(let i=0;i<TOTAL_BOLETOS;i++){
+    const num=i.toString().padStart(3,"0");
+    const div=document.createElement("div");
+    div.className="boleto";
+    div.textContent=num;
 
-        if (vendidos.includes(num)) {
-          div.classList.add("vendido");
-        } else {
-          div.onclick = () => toggleBoleto(num, div);
-        }
-
-        contenedor.appendChild(div);
-      }
+    if(vendidos.includes(num)){
+      div.classList.add("vendido");
+    }else{
+      div.onclick=()=>toggle(num,div);
     }
 
-    function toggleBoleto(num, div) {
-      if (seleccionados.has(num)) {
-        seleccionados.delete(num);
-        div.classList.remove("seleccionado");
-      } else {
-        seleccionados.add(num);
-        div.classList.add("seleccionado");
-      }
-      actualizarResumen();
-    }
+    contenedor.appendChild(div);
+  }
+}
 
-    function actualizarResumen() {
-      document.getElementById("cantidad").textContent = seleccionados.size;
-      document.getElementById("total").textContent =
-        seleccionados.size * PRECIO_BOLETO;
-    }
+// 🔹 Seleccionar boleto
+function toggle(num,div){
+  if(seleccionados.has(num)){
+    seleccionados.delete(num);
+    div.classList.remove("seleccionado");
+  }else{
+    seleccionados.add(num);
+    div.classList.add("seleccionado");
+  }
+  actualizarResumen();
+}
 
-    function actualizarContador() {
-      document.getElementById("contador").textContent =
-        `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
-    }
+// 🔹 Actualizar resumen
+function actualizarResumen(){
+  document.getElementById("cantidad").textContent=seleccionados.size;
+  document.getElementById("total").textContent=
+  seleccionados.size*PRECIO_BOLETO;
+}
 
-   function pagar() {
-  if (seleccionados.size === 0) {
+// 🔹 Actualizar contador
+function actualizarContador(){
+  document.getElementById("contador").textContent=
+  `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
+}
+
+// 🔥 FUNCIÓN PRINCIPAL
+function pagar(){
+
+  if(seleccionados.size===0){
     alert("Selecciona al menos un boleto");
     return;
   }
 
-  const boletosArray = Array.from(seleccionados);
-  const boletosTexto = boletosArray.join(", ");
-  const total = boletosArray.length * PRECIO_BOLETO;
+  const nombre=prompt("Escribe tu nombre completo:");
 
-  // 🔹 MENSAJE WHATSAPP (sin depender del script)
-  const mensaje =
+  if(!nombre) return;
+
+  const boletosArray=Array.from(seleccionados);
+
+  fetch(URL_SCRIPT,{
+    method:"POST",
+    body:JSON.stringify({
+      nombre:nombre,
+      boletos:boletosArray
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+
+    const mensaje=
 `Hola! Reserve los siguientes boletos:
 
-BOLETOS🎫: ${boletosTexto}
+BOLETOS🎫: ${boletosArray.join(", ")}
+EXTRAS🎫: (${data.gratis.join(", ")})
 
-COSTO TOTAL: $${total}
+COSTO TOTAL: $${data.total}
 NOMBRE DE LA RIFA: Los Compas
 ————————
+🟥Nombre: ${nombre}
+
 EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
 
-  const numeroWhatsApp = "527421199270";
-  const urlWhats =
-    "https://wa.me/" +
-    numeroWhatsApp +
-    "?text=" +
+    const url=
+    "https://wa.me/527421199270?text="+
     encodeURIComponent(mensaje);
 
-  // 🔹 FORMULARIO (como lo tenías antes)
-  const urlFormulario =
-    "https://docs.google.com/forms/d/e/1FAIpQLSdQT3I0GSMZ_QEB5Wq-TEXoIK-VHeKegK2q8UdLJQPZ0Ba8nw/viewform?usp=pp_url&entry.1324693116=" +
-    encodeURIComponent(boletosTexto);
+    window.open(url,"_blank");
 
-  // 🔥 ABRE WHATSAPP
-  window.open(urlWhats, "_blank");
+    location.reload();
 
-  // 🔥 REDIRIGE AL FORMULARIO
-  window.location.href = urlFormulario;
+  })
+  .catch(err=>{
+    console.error("Error enviando datos:", err);
+    alert("Hubo un error al procesar la compra.");
+  });
 }
 
-  </script>
+</script>
+
 
 </body>
 </html>
