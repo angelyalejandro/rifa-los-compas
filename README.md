@@ -274,7 +274,7 @@ function pagar(){
 BOLETOS🎫: ${boletosArray.join(", ")}
 
 COSTO TOTAL: $${total}
-NOMBRE DE LA RIFA: Los Compas
+NOMBRE DE LA RIFA: RIFA LOS COMPAS
 ————————
 🟥Nombre: ${nombre}
 
