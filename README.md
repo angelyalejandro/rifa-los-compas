@@ -254,7 +254,6 @@ function actualizarContador(){
   `🎟️ Boletos vendidos: ${vendidos.length} / ${TOTAL_BOLETOS}`;
 }
 
-// 🔥 FUNCIÓN PRINCIPAL
 function pagar(){
 
   if(seleccionados.size===0){
@@ -262,12 +261,32 @@ function pagar(){
     return;
   }
 
-  const nombre=prompt("Escribe tu nombre completo:");
-
+  const nombre = prompt("Escribe tu nombre completo:");
   if(!nombre) return;
 
-  const boletosArray=Array.from(seleccionados);
+  const boletosArray = Array.from(seleccionados);
+  const total = boletosArray.length * PRECIO_BOLETO;
 
+  // 🔹 Abrimos WhatsApp primero (para evitar bloqueo)
+  const mensajeBase =
+`Hola! Reserve los siguientes boletos:
+
+BOLETOS🎫: ${boletosArray.join(", ")}
+
+COSTO TOTAL: $${total}
+NOMBRE DE LA RIFA: Los Compas
+————————
+🟥Nombre: ${nombre}
+
+EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
+
+  const urlWhats =
+  "https://wa.me/527421199270?text=" +
+  encodeURIComponent(mensajeBase);
+
+  window.open(urlWhats, "_blank");
+
+  // 🔹 Después guardamos en la hoja (sin afectar WhatsApp)
   fetch(URL_SCRIPT,{
     method:"POST",
     body:JSON.stringify({
@@ -275,36 +294,10 @@ function pagar(){
       boletos:boletosArray
     })
   })
-  .then(res=>res.json())
-  .then(data=>{
-
-    const mensaje=
-`Hola! Reserve los siguientes boletos:
-
-BOLETOS🎫: ${boletosArray.join(", ")}
-EXTRAS🎫: (${data.gratis.join(", ")})
-
-COSTO TOTAL: $${data.total}
-NOMBRE DE LA RIFA: Los Compas
-————————
-🟥Nombre: ${nombre}
-
-EL SIGUIENTE PASO ES ENVIAR LA FOTO DEL COMPROBANTE DE PAGO AQUI.`;
-
-    const url=
-    "https://wa.me/527421199270?text="+
-    encodeURIComponent(mensaje);
-
-    window.open(url,"_blank");
-
-    location.reload();
-
-  })
-  .catch(err=>{
-    console.error("Error enviando datos:", err);
-    alert("Hubo un error al procesar la compra.");
-  });
+  .then(()=>location.reload())
+  .catch(err=>console.log(err));
 }
+
 
 </script>
 
