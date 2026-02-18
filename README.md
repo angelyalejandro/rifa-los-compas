@@ -1,4 +1,3 @@
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -7,8 +6,8 @@
 
 <style>
 body{
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   margin:0;
   padding:20px;
   color:white;
@@ -25,17 +24,6 @@ body{
   border-radius:15px;
   margin-bottom:15px;
   box-shadow:0 10px 25px rgba(0,0,0,.4);
-}
-
-h1{
-  margin-bottom:5px;
-  font-size:28px;
-}
-
-.descripcion{
-  font-size:15px;
-  opacity:.95;
-  margin-bottom:20px;
 }
 
 .card{
@@ -83,18 +71,6 @@ h1{
   cursor:not-allowed;
 }
 
-.resumen{
-  margin-top:15px;
-  font-weight:bold;
-}
-
-.preview{
-  margin-top:10px;
-  font-size:15px;
-  color:#00c853;
-  font-weight:bold;
-}
-
 input{
   padding:12px;
   width:260px;
@@ -120,6 +96,10 @@ button:hover{
   background:#00a843;
 }
 
+.resumen{
+  margin-top:15px;
+  font-weight:bold;
+}
 </style>
 </head>
 
@@ -131,10 +111,9 @@ button:hover{
 
 <h1>🎟️ RIFA LOS COMPAS 🎟️</h1>
 
-<p class="descripcion">
-Por cada boleto que compres tienes <strong>4 oportunidades EXTRA totalmente GRATIS</strong> 🎁<br>
-🎰 Basado en la Lotería Nacional<br>
-✅ Rifa totalmente confiable
+<p>
+Por cada boleto obtienes 4 números EXTRA GRATIS 🎁<br>
+Basado en la Lotería Nacional
 </p>
 
 <div class="card premios">
@@ -155,8 +134,6 @@ Boletos seleccionados: <span id="cantidad">0</span><br>
 Total: $<span id="total">0</span>
 </div>
 
-<div class="preview" id="previewExtras"></div>
-
 <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
 
 <br>
@@ -164,7 +141,6 @@ Total: $<span id="total">0</span>
 <button onclick="pagar()">Finalizar Compra</button>
 
 </div>
-
 </div>
 
 <script>
@@ -216,13 +192,6 @@ function actualizarResumen(){
   document.getElementById("cantidad").textContent=seleccionados.size;
   document.getElementById("total").textContent=
   seleccionados.size*PRECIO_BOLETO;
-
-  if(seleccionados.size>0){
-    document.getElementById("previewExtras").innerHTML=
-    "🎁 Tus números EXTRA aparecerán antes de enviarte a WhatsApp";
-  }else{
-    document.getElementById("previewExtras").innerHTML="";
-  }
 }
 
 function pagar(){
@@ -240,10 +209,10 @@ function pagar(){
   }
 
   const boletosArray=Array.from(seleccionados);
-  const total = boletosArray.length * PRECIO_BOLETO;
+  const total=boletosArray.length*PRECIO_BOLETO;
 
-  // MENSAJE PROVISIONAL (WhatsApp se abre inmediatamente)
-  const mensajeBase =
+  // ABRE WHATSAPP INMEDIATAMENTE (anti bloqueo)
+  const mensaje =
 `🎟️ *RIFA LOS COMPAS*
 
 ━━━━━━━━━━━━━━
@@ -256,38 +225,22 @@ function pagar(){
 
 Envío comprobante enseguida.`;
 
-  // ABRE WHATSAPP INMEDIATAMENTE (esto evita bloqueos)
   window.open(
-    "https://wa.me/527421199270?text="+
-    encodeURIComponent(mensajeBase),
+    "https://api.whatsapp.com/send?phone=527421199270&text="+
+    encodeURIComponent(mensaje),
     "_blank"
   );
 
-  // AHORA GUARDAMOS EN GOOGLE SHEETS
+  // GUARDA EN GOOGLE SHEETS
   fetch(URL_SCRIPT,{
     method:"POST",
     body:JSON.stringify({
       nombre:nombre,
       boletos:boletosArray
     })
-  })
-  .then(res=>res.json())
-  .then(data=>{
-      console.log("Guardado correctamente");
-      location.reload();
-  })
-  .catch(err=>{
-      console.log("Error al guardar");
   });
 
-}
-
-
-      location.reload();
-
-    },1500);
-
-  });
+  setTimeout(()=>location.reload(),1500);
 }
 
 </script>
