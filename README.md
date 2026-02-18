@@ -14,30 +14,14 @@ body{
   text-align:center;
 }
 
-.container{
-  max-width:1000px;
-  margin:auto;
-}
-
-.logo{
-  width:170px;
-  border-radius:15px;
-  margin-bottom:15px;
-  box-shadow:0 10px 25px rgba(0,0,0,.4);
-}
-
+.container{max-width:1000px;margin:auto;}
+.logo{width:170px;border-radius:15px;margin-bottom:15px;}
 .card{
   background:white;
   color:#333;
   border-radius:15px;
   padding:20px;
   margin-bottom:25px;
-  box-shadow:0 10px 25px rgba(0,0,0,.3);
-}
-
-.premios{
-  font-size:16px;
-  line-height:1.8;
 }
 
 .boletos{
@@ -53,29 +37,10 @@ body{
   font-weight:bold;
   cursor:pointer;
   background:#f2f2f2;
-  transition:.2s;
 }
 
-.boleto:hover{
-  transform:scale(1.05);
-}
-
-.boleto.seleccionado{
-  background:#00c853;
-  color:white;
-}
-
-.boleto.vendido{
-  background:#ccc;
-  color:#666;
-  cursor:not-allowed;
-}
-
-.preview{
-  margin-top:10px;
-  font-weight:bold;
-  color:#00c853;
-}
+.boleto.seleccionado{background:#00c853;color:white;}
+.boleto.vendido{background:#ccc;color:#666;cursor:not-allowed;}
 
 input{
   padding:12px;
@@ -95,11 +60,6 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-
-.resumen{
-  margin-top:15px;
-  font-weight:bold;
-}
 </style>
 </head>
 
@@ -113,11 +73,10 @@ button{
 
 <p>
 Por cada boleto obtienes <strong>4 números EXTRA GRATIS</strong> 🎁<br>
-🎰 Basado en la Lotería Nacional<br>
-✅ Rifa confiable
+Basado en la Lotería Nacional
 </p>
 
-<div class="card premios">
+<div class="card">
 <h2>🏆 Premios</h2>
 🥇 1er lugar: $5,000<br>
 🥈 2do lugar: $1,000<br>
@@ -130,12 +89,8 @@ Por cada boleto obtienes <strong>4 números EXTRA GRATIS</strong> 🎁<br>
 
 <div class="boletos" id="boletos"></div>
 
-<div class="resumen">
-Boletos seleccionados: <span id="cantidad">0</span><br>
-Total: $<span id="total">0</span>
-</div>
-
-<div class="preview" id="previewExtras"></div>
+<p>Boletos: <span id="cantidad">0</span></p>
+<p>Total: $<span id="total">0</span></p>
 
 <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
 
@@ -144,7 +99,6 @@ Total: $<span id="total">0</span>
 <button onclick="pagar()">Finalizar Compra</button>
 
 </div>
-
 </div>
 
 <script>
@@ -213,6 +167,12 @@ function pagar(){
 
   const boletosArray=Array.from(seleccionados);
 
+  // 🔥 ABRIMOS WHATSAPP VACÍO PRIMERO (ANTI BLOQUEO)
+  const whatsappWindow = window.open(
+    "https://api.whatsapp.com/send?phone=527421199270",
+    "_blank"
+  );
+
   fetch(URL_SCRIPT,{
     method:"POST",
     body:JSON.stringify({
@@ -226,34 +186,26 @@ function pagar(){
     const extras=data.gratis||[];
     const total=data.total;
 
-    document.getElementById("previewExtras").innerHTML=
-    "🎁 Números EXTRA: "+extras.join(", ");
-
     const mensaje =
-`🎟️ *RIFA LOS COMPAS*
+`🎟️ RIFA LOS COMPAS
 
-━━━━━━━━━━━━━━
-🎫 BOLETOS: ${boletosArray.join(", ")}
+BOLETOS: ${boletosArray.join(", ")}
 
-🎁 EXTRAS GRATIS: ${extras.join(", ")}
+EXTRAS GRATIS: ${extras.join(", ")}
 
-💰 TOTAL: $${total}
+TOTAL: $${total}
 
-👤 Nombre: ${nombre}
-━━━━━━━━━━━━━━
+Nombre: ${nombre}`;
 
-Envío comprobante enseguida.`;
+    // 🔥 ACTUALIZAMOS ESA MISMA PESTAÑA
+    whatsappWindow.location.href =
+    "https://api.whatsapp.com/send?phone=527421199270&text="+
+    encodeURIComponent(mensaje);
 
-    setTimeout(()=>{
-      window.open(
-        "https://api.whatsapp.com/send?phone=527421199270&text="+
-        encodeURIComponent(mensaje),
-        "_blank"
-      );
-      location.reload();
-    },1500);
+    setTimeout(()=>location.reload(),1500);
 
   });
+
 }
 
 </script>
