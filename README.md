@@ -61,7 +61,7 @@ button{margin-top:15px;padding:14px 25px;border:none;border-radius:10px;backgrou
 <div class="banner">
 
 <h1>RIFAS LOS COMPAS</h1>
-<div class="precio">COSTO $40</div>
+<div class="precio">COSTO $50</div>
 <h2>🥇 1ER LUGAR $8000</h2>
 <h2>🥈 2DO LUGAR $3000</h2>
 <h2>🥉 3ER LUGAR $1000</h2>
