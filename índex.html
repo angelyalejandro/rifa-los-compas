@@ -234,7 +234,7 @@ const PRECIO_BOLETO = 50;
 const TOTAL_BOLETOS = 400;
 
 const URL_SCRIPT =
-"https://script.google.com/macros/s/AKfycbwNNIRy0cxHTAttdssLt74wEmGWMBXbWhB2vVXDreEQprMraNc8psO1sHYPwCOq8ds4/exec";
+"https://script.google.com/macros/s/AKfycby0OnCLD2FBH3QLH6hKckEiPHpPOB_hcje9Ai8UvmAgPyYB5n6hJFi1dQFlEesgfIKb/exec";
 
 const TELEFONO = "527421199220";
 
