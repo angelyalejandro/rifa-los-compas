@@ -1,325 +1,125 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RIFAS LOS COMPAS</title>
+<title>Rifa Los Compas</title>
 
 <style>
 body{
-font-family:'Segoe UI',sans-serif;
-margin:0;
-background:#e9f7e9;
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    margin:0;
+    padding:0;
+    text-align:center;
 }
 
-/* MENU */
-.menu{
-display:flex;
-justify-content:center;
-gap:10px;
-padding:15px;
-background:#0d47a1;
-}
-
-.menu button{
-background:white;
-color:#0d47a1;
-font-weight:bold;
-border:none;
-padding:10px 20px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.menu button:hover{
-background:#ffe082;
-}
-
-/* BANNER */
-.banner{
-background:linear-gradient(135deg,#ffe082,#80deea);
-padding:25px;
-text-align:center;
-}
-
-.banner h1{
-font-size:34px;
-margin:10px 0;
-color:#0d47a1;
-}
-
-.precio{
-font-size:26px;
-color:#d50000;
-font-weight:bold;
-}
-
-/* CONTENIDO */
 .container{
-max-width:1000px;
-margin:auto;
-padding:20px;
+    max-width:500px;
+    margin:20px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0px 0px 10px rgba(0,0,0,0.1);
 }
 
-.card{
-background:white;
-border-radius:15px;
-padding:20px;
+.logo{
+    width:150px;
+    margin-bottom:10px;
 }
 
-/* BOLETOS */
-.boletos{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
-gap:10px;
+h1{
+    color:#333;
 }
 
-.boleto{
-padding:14px 6px;
-border-radius:12px;
-font-weight:bold;
-cursor:pointer;
-background:#eeeeee;
-text-align:center;
-white-space:nowrap;
-font-size:15px;
-box-shadow:0 3px 6px rgba(0,0,0,.15);
-position:relative;
-transition:all .2s ease;
+input{
+    width:90%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+    font-size:16px;
 }
 
-.boleto:hover{
-transform:scale(1.05);
-}
-
-.boleto.seleccionado{
-background:#00c853;
-color:white;
-}
-
-.boleto.vendido{
-background:#ccc;
-color:#666;
-cursor:not-allowed;
-}
-
-.boleto.vendido::after{
-content:"✖";
-position:absolute;
-top:2px;
-right:5px;
-font-size:12px;
-}
-
-/* BOTON */
 button{
-margin-top:15px;
-padding:14px 25px;
-border:none;
-border-radius:10px;
-background:#00c853;
-color:white;
-font-size:16px;
-cursor:pointer;
+    background:#28a745;
+    color:white;
+    border:none;
+    padding:12px;
+    width:95%;
+    font-size:18px;
+    border-radius:5px;
+    cursor:pointer;
 }
 
-button:disabled{
-background:gray;
-cursor:not-allowed;
+button:hover{
+    background:#218838;
 }
 
-/* VENDEDORES */
-.vendedor{
-background:#f5f5f5;
-padding:15px;
-border-radius:10px;
-margin-top:10px;
-}
-
-hr{
-margin:20px 0;
+#mensaje{
+    margin-top:10px;
+    font-weight:bold;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<!-- MENU -->
-<nav class="menu">
-<button onclick="mostrarSeccion('rifa')">Inicio</button>
-<button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
-</nav>
-
-<!-- SECCION RIFA -->
-<div id="rifa" class="seccion">
-
-<div class="banner">
-<h1>RIFAS LOS COMPAS</h1>
-<div class="precio">BOLETO $50</div>
-<h2>🥇 $8000</h2>
-<h2>🥈 $3000</h2>
-<h2>🥉 $1000</h2>
-<h2>🏅 $500</h2>
-<h2>🎖️ $500</h2>
-</div>
-
 <div class="container">
-<div class="card">
 
-<div class="boletos" id="boletos"></div>
+<img src="https://github.com/angelyalejandro/rifa-los-compas/blob/main/logo.JPG?raw=true" class="logo">
 
-<div>
-Boletos: <span id="cantidad">0</span><br>
-Total: $<span id="total">0</span>
-</div>
+<h1>Rifa Los Compas</h1>
 
-<input type="text" id="nombreCliente" placeholder="Tu nombre completo">
-<br>
-<button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
+<input type="text" id="nombre" placeholder="Nombre" required>
+<input type="text" id="telefono" placeholder="Teléfono" required>
+<input type="number" id="cantidad" placeholder="Cantidad de boletos" required>
 
-</div>
-</div>
-</div>
+<button onclick="enviarDatos()">Participar</button>
 
-<!-- SECCION PAGOS -->
-<div id="pagos" class="seccion" style="display:none;">
-<div class="container">
-<div class="card">
+<div id="mensaje"></div>
 
-<h2>💳 Formas de Pago</h2>
-
-<div class="vendedor">
-<h3>✅ Luis Alejandro Romero Sebastian</h3>
-<p><strong>📱 Tel:</strong> 7421199270</p>
-<p><strong>Tarjeta Débito BBVA:</strong><br>4152 3140 2646 1213</p>
-<p><strong>Cuenta Clave BBVA:</strong><br>012 180 01540607589 1</p>
-</div>
-
-<hr>
-
-<div class="vendedor">
-<h3>✅ Angel Gabriel Urioste Luciano</h3>
-<p><strong>📱 Tel:</strong> 7421292436</p>
-<p><strong>Tarjeta Débito BBVA:</strong><br>4152 3145 7352 6715</p>
-<p><strong>Cuenta Clave BBVA:</strong><br>012 18001575143370 6</p>
-</div>
-
-</div>
-</div>
 </div>
 
 <script>
-const PRECIO_BOLETO=50;
-const TOTAL_BOLETOS=400;
-const URL_SCRIPT="https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
 
-const contenedor=document.getElementById("boletos");
-const seleccionados=new Set();
-let vendidos=[];
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwNNIRy0cxHTAttdssLt74wEmGWMBXbWhB2vVXDreEQprMraNc8psO1sHYPwCOq8ds4/exec";
 
-/* CAMBIO DE SECCION */
-function mostrarSeccion(id){
-document.querySelectorAll(".seccion").forEach(sec=>{
-sec.style.display="none";
-});
-document.getElementById(id).style.display="block";
+function enviarDatos(){
+
+    let nombre = document.getElementById("nombre").value;
+    let telefono = document.getElementById("telefono").value;
+    let cantidad = document.getElementById("cantidad").value;
+
+    if(!nombre || !telefono || !cantidad){
+        document.getElementById("mensaje").innerHTML = "⚠️ Completa todos los campos";
+        return;
+    }
+
+    fetch(URL_SCRIPT,{
+        method:"POST",
+        body:JSON.stringify({
+            nombre:nombre,
+            telefono:telefono,
+            cantidad:cantidad
+        }),
+        headers:{
+            "Content-Type":"application/json"
+        }
+    })
+    .then(res=>res.text())
+    .then(data=>{
+        document.getElementById("mensaje").innerHTML = "✅ Registro enviado correctamente";
+        document.getElementById("nombre").value="";
+        document.getElementById("telefono").value="";
+        document.getElementById("cantidad").value="";
+    })
+    .catch(err=>{
+        document.getElementById("mensaje").innerHTML = "❌ Error al enviar";
+    });
+
 }
 
-/* CARGA INICIAL */
-fetch(URL_SCRIPT)
-.then(res=>res.json())
-.then(data=>{
-vendidos=data;
-generarBoletos();
-})
-.catch(()=>generarBoletos());
-
-/* ACTUALIZACION AUTOMATICA */
-setInterval(()=>{
-fetch(URL_SCRIPT)
-.then(res=>res.json())
-.then(data=>{
-vendidos=data;
-generarBoletos();
-});
-},10000);
-
-function generarBoletos(){
-contenedor.innerHTML="";
-for(let i=1;i<=TOTAL_BOLETOS;i++){
-const num=i.toString().padStart(4,"0");
-const div=document.createElement("div");
-div.className="boleto";
-div.textContent=num;
-
-if(vendidos.includes(num)){
-div.classList.add("vendido");
-}else{
-if(seleccionados.has(num)){
-div.classList.add("seleccionado");
-}
-div.onclick=()=>toggle(num,div);
-}
-
-contenedor.appendChild(div);
-}
-}
-
-function toggle(num,div){
-if(seleccionados.has(num)){
-seleccionados.delete(num);
-div.classList.remove("seleccionado");
-}else{
-seleccionados.add(num);
-div.classList.add("seleccionado");
-}
-actualizarResumen();
-}
-
-function actualizarResumen(){
-document.getElementById("cantidad").textContent=seleccionados.size;
-document.getElementById("total").textContent=seleccionados.size*PRECIO_BOLETO;
-}
-
-function pagar(){
-if(seleccionados.size===0)return alert("Selecciona boletos");
-
-const nombre=document.getElementById("nombreCliente").value.trim();
-if(nombre==="")return alert("Escribe tu nombre");
-
-const boletosArray=Array.from(seleccionados);
-
-/* Validar que no estén vendidos */
-for(let b of boletosArray){
-if(vendidos.includes(b)){
-alert("Uno de los boletos ya fue vendido. Actualiza la página.");
-return;
-}
-}
-
-const boton=document.getElementById("btnPagar");
-boton.disabled=true;
-boton.textContent="Procesando...";
-
-fetch(URL_SCRIPT,{
-method:"POST",
-body:JSON.stringify({nombre:nombre,boletos:boletosArray})
-})
-.then(res=>res.json())
-.then(()=>{
-alert("Boletos apartados correctamente");
-seleccionados.clear();
-boton.disabled=false;
-boton.textContent="Finalizar Compra";
-
-fetch(URL_SCRIPT)
-.then(res=>res.json())
-.then(data=>{
-vendidos=data;
-generarBoletos();
-});
-});
-}
 </script>
 
 </body>
