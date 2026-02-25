@@ -97,24 +97,20 @@ let vendidos = [];
 let gratisPorBoleto = {};
 
 /* SECCIONES */
-function mostrarSeccion(id){
-  document.querySelectorAll(".seccion").forEach(sec=>sec.style.display="none");
-  document.getElementById(id).style.display="block";
-}
-
-/* CARGAR VENDIDOS + BOLETOS GRATIS */
-function cargarVendidos(){
-  fetch(URL_SCRIPT)
-    .then(res => res.json())
+function cargarVendidos() {
+  fetch(URL_SCRIPT, { method: "GET" }) // Google Apps Script maneja bien el GET simple
+    .then(res => {
+      if (!res.ok) throw new Error('Error en la red');
+      return res.json();
+    })
     .then(data => {
+      console.log("Datos recibidos:", data); // Revisa esto en la consola F12
       vendidos = data.vendidos || [];
       gratisPorBoleto = data.gratisPorBoleto || {};
       generarBoletos();
     })
-    .catch(err => console.error("Error GET:", err));
+    .catch(err => console.error("Error al obtener datos:", err));
 }
-cargarVendidos();
-setInterval(cargarVendidos,10000);
 
 /* GENERAR BOLETOS */
 function generarBoletos(){
