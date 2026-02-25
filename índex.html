@@ -29,13 +29,11 @@
         .boleto.seleccionado { background: #00c853 !important; color: white !important; }
         .boleto.vendido { background: #666666 !important; color: white !important; cursor: not-allowed !important; opacity: 0.6; }
 
-        /* FORMAS DE PAGO (Estilo solicitado) */
+        /* FORMAS DE PAGO (Estilo tipo tarjeta blanca) */
         .vendedor-card { text-align: left; border-bottom: 1px solid #eee; padding: 20px 0; }
         .vendedor-card:last-child { border-bottom: none; }
         .vendedor-nombre { font-size: 18px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
         .vendedor-info { font-size: 15px; line-height: 1.6; color: #555; margin-left: 28px; }
-        .vendedor-info strong { color: #333; }
-        .check-icon { color: #00c853; font-size: 20px; }
 
         .resumen { background: #f1f8e9; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #00c853; }
         input { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
@@ -53,17 +51,17 @@
     <div class="banner">
         <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" alt="Logo">
         <h1>RIFAS LOS COMPAS</h1>
-        <p>POR CADA BOLETO QUE COMPRES TIENES 10 OPORTUNIDADES MÁS TOTALMENTE GRATIS</p>
+        <p>POR CADA BOLETO QUE COMPRES TIENES 10 OPORTUNIDADES MÁS GRATIS</p>
     </div>
     <div class="container">
         <div class="card">
-            <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Premios">
+            <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Flyer">
             <h3 style="text-align: center;">Selecciona tus boletos:</h3>
             <div class="boletos" id="boletos"></div>
             <div class="resumen">
                 <strong>Boletos:</strong> <span id="cantidad">0</span> | <strong>Total:</strong> $<span id="total">0</span>
             </div>
-            <input type="text" id="nombreCliente" placeholder="Escribe tu nombre completo">
+            <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
             <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
         </div>
     </div>
@@ -78,8 +76,8 @@
                 <div class="vendedor-nombre">✅ Luis Alejandro Romero Sebastian</div>
                 <div class="vendedor-info">
                     <strong>WhatsApp:</strong> 7421199270<br>
-                    <strong>Tarjeta Débito BBVA:</strong><br>4152 3140 2646 1213<br>
-                    <strong>Cuenta Clabe BBVA:</strong><br>012180015406075891
+                    <strong>Tarjeta Débito BBVA:</strong> 4152 3140 2646 1213<br>
+                    <strong>Cuenta Clabe BBVA:</strong> 012180015406075891
                 </div>
             </div>
 
@@ -87,8 +85,8 @@
                 <div class="vendedor-nombre">✅ Angel Gabriel Urioste Luciano</div>
                 <div class="vendedor-info">
                     <strong>WhatsApp:</strong> 7421292436<br>
-                    <strong>Tarjeta Débito BBVA:</strong><br>4152 3145 7352 6715<br>
-                    <strong>Cuenta Clabe BBVA:</strong><br>012180015751433706
+                    <strong>Tarjeta Débito BBVA:</strong> 4152 3145 7352 6715<br>
+                    <strong>Cuenta Clabe BBVA:</strong> 012180015751433706
                 </div>
             </div>
         </div>
@@ -120,10 +118,7 @@ function cargarDatos() {
         gratisPorBoleto = data.gratisPorBoleto || {};
         generarBoletos();
     })
-    .catch(err => {
-        console.error("Error:", err);
-        if(document.getElementById("boletos").innerHTML === "") generarBoletos();
-    });
+    .catch(err => console.error("Error:", err));
 }
 
 function generarBoletos() {
@@ -140,13 +135,9 @@ function generarBoletos() {
         } else {
             if(seleccionados.has(num)) div.classList.add("seleccionado");
             div.onclick = () => {
-                if(seleccionados.has(num)){
-                    seleccionados.delete(num);
-                    div.classList.remove("seleccionado");
-                } else {
-                    seleccionados.add(num);
-                    div.classList.add("seleccionado");
-                }
+                if(seleccionados.has(num)) seleccionados.delete(num);
+                else seleccionados.add(num);
+                generarBoletos();
                 actualizarTotales();
             };
         }
@@ -164,14 +155,20 @@ function pagar() {
     if(seleccionados.size === 0 || nombre === "") return alert("Faltan datos");
 
     const boletosArray = Array.from(seleccionados);
-    let todosLosGratis = [];
+    let boletosRegalo = [];
 
-    // Jalar boletos gratis de columnas D a L
+    // Extraer boletos gratis de la memoria (Columnas D a L)
     boletosArray.forEach(b => {
-        if(gratisPorBoleto[b]) todosLosGratis.push(...gratisPorBoleto[b]);
+        if(gratisPorBoleto[b]) boletosRegalo.push(...gratisPorBoleto[b]);
     });
 
-    const msg = `*RIFA LOS COMPAS*%0A👤 *Nombre:* ${nombre}%0A🎫 *Boletos:* ${boletosArray.join(", ")}%0A🎁 *Gratis:* ${todosLosGratis.length > 0 ? todosLosGratis.join(", ") : "Ninguno"}%0A💰 *Total:* $${boletosArray.length * PRECIO_BOLETO}`;
+    // MENSAJE DE WHATSAPP ACTUALIZADO
+    const msg = `*RIFA LOS COMPAS*%0A` +
+                `Hola, reserve los siguientes boletos:%0A%0A` +
+                `👤 *Nombre:* ${nombre}%0A` +
+                `🎫 *Boletos:* ${boletosArray.join(", ")}%0A` +
+                `🎁 *Gratis:* ${boletosRegalo.length > 0 ? boletosRegalo.join(", ") : "Ninguno"}%0A` +
+                `💰 *Total:* $${boletosArray.length * PRECIO_BOLETO}`;
 
     window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
 
