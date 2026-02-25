@@ -1,126 +1,163 @@
-
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rifa Los Compas</title>
-
-<style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    margin:0;
-    padding:0;
-    text-align:center;
-}
-
-.container{
-    max-width:500px;
-    margin:20px auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0px 0px 10px rgba(0,0,0,0.1);
-}
-
-.logo{
-    width:150px;
-    margin-bottom:10px;
-}
-
-h1{
-    color:#333;
-}
-
-input{
-    width:90%;
-    padding:10px;
-    margin:8px 0;
-    border-radius:5px;
-    border:1px solid #ccc;
-    font-size:16px;
-}
-
-button{
-    background:#28a745;
-    color:white;
-    border:none;
-    padding:12px;
-    width:95%;
-    font-size:18px;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#218838;
-}
-
-#mensaje{
-    margin-top:10px;
-    font-weight:bold;
-}
-</style>
-
-</head>
-<body>
-
-<div class="container">
-
-<img src="https://github.com/angelyalejandro/rifa-los-compas/blob/main/logo.JPG?raw=true" class="logo">
-
-<h1>Rifa Los Compas</h1>
-
-<input type="text" id="nombre" placeholder="Nombre" required>
-<input type="text" id="telefono" placeholder="Teléfono" required>
-<input type="number" id="cantidad" placeholder="Cantidad de boletos" required>
-
-<button onclick="enviarDatos()">Participar</button>
-
-<div id="mensaje"></div>
-
-</div>
-
 <script>
 
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwNNIRy0cxHTAttdssLt74wEmGWMBXbWhB2vVXDreEQprMraNc8psO1sHYPwCOq8ds4/exec";
+const PRECIO_BOLETO=50;
+const TOTAL_BOLETOS=400;
 
-function enviarDatos(){
+/* ✅ TU NUEVO SCRIPT */
+const URL_SCRIPT="https://script.google.com/macros/s/AKfycbwNNIRy0cxHTAttdssLt74wEmGWMBXbWhB2vVXDreEQprMraNc8psO1sHYPwCOq8ds4/exec";
 
-    let nombre = document.getElementById("nombre").value;
-    let telefono = document.getElementById("telefono").value;
-    let cantidad = document.getElementById("cantidad").value;
+/* ⚠️ CAMBIA POR TU NUMERO */
+const NUMERO_WHATSAPP="527421199270";
 
-    if(!nombre || !telefono || !cantidad){
-        document.getElementById("mensaje").innerHTML = "⚠️ Completa todos los campos";
-        return;
-    }
+const contenedor=document.getElementById("boletos");
+const seleccionados=new Set();
+let vendidos=[];
 
-    fetch(URL_SCRIPT,{
-        method:"POST",
-        body:JSON.stringify({
-            nombre:nombre,
-            telefono:telefono,
-            cantidad:cantidad
-        }),
-        headers:{
-            "Content-Type":"application/json"
-        }
-    })
-    .then(res=>res.text())
-    .then(data=>{
-        document.getElementById("mensaje").innerHTML = "✅ Registro enviado correctamente";
-        document.getElementById("nombre").value="";
-        document.getElementById("telefono").value="";
-        document.getElementById("cantidad").value="";
-    })
-    .catch(err=>{
-        document.getElementById("mensaje").innerHTML = "❌ Error al enviar";
-    });
+
+/* CAMBIO DE SECCION */
+function mostrarSeccion(id){
+ document.querySelectorAll(".seccion").forEach(sec=>{
+  sec.style.display="none";
+ });
+ document.getElementById(id).style.display="block";
+}
+
+
+/* CARGA INICIAL */
+async function cargarVendidos(){
+ try{
+  const res=await fetch(URL_SCRIPT);
+  const data=await res.json();
+  vendidos=data.map(x=>x.toString().padStart(4,"0"));
+  generarBoletos();
+ }catch(e){
+  generarBoletos();
+ }
+}
+
+cargarVendidos();
+
+/* ACTUALIZA CADA 10 SEG */
+setInterval(cargarVendidos,10000);
+
+
+
+function generarBoletos(){
+
+ contenedor.innerHTML="";
+
+ for(let i=1;i<=TOTAL_BOLETOS;i++){
+
+  const num=i.toString().padStart(4,"0");
+  const div=document.createElement("div");
+  div.className="boleto";
+  div.textContent=num;
+
+  if(vendidos.includes(num)){
+   div.classList.add("vendido");
+  }else{
+   if(seleccionados.has(num)){
+    div.classList.add("seleccionado");
+   }
+   div.onclick=()=>toggle(num,div);
+  }
+
+  contenedor.appendChild(div);
+ }
+}
+
+
+
+function toggle(num,div){
+
+ if(seleccionados.has(num)){
+  seleccionados.delete(num);
+  div.classList.remove("seleccionado");
+ }else{
+  seleccionados.add(num);
+  div.classList.add("seleccionado");
+ }
+
+ actualizarResumen();
+}
+
+
+
+function actualizarResumen(){
+
+ document.getElementById("cantidad").textContent=seleccionados.size;
+ document.getElementById("total").textContent=seleccionados.size*PRECIO_BOLETO;
+
+}
+
+
+
+/* PAGAR */
+async function pagar(){
+
+ if(seleccionados.size===0) return alert("Selecciona boletos");
+
+ const nombre=document.getElementById("nombreCliente").value.trim();
+
+ if(nombre==="") return alert("Escribe tu nombre");
+
+ const boletosArray=Array.from(seleccionados);
+
+ const boton=document.getElementById("btnPagar");
+ boton.disabled=true;
+ boton.textContent="Procesando...";
+
+
+ try{
+
+  await fetch(URL_SCRIPT,{
+   method:"POST",
+   body:JSON.stringify({
+    nombre:nombre,
+    boletos:boletosArray
+   })
+  });
+
+
+  /* MENSAJE WHATSAPP */
+  const total=boletosArray.length*PRECIO_BOLETO;
+
+  const mensaje=
+`🎟️ RIFA LOS COMPAS
+Hola! Reserve los siguientes boletos:
+
+🎫 BOLETOS: ${boletosArray.join(", ")}
+
+🎁 BOLETOS GRATIS: 0
+💰 TOTAL: $${total}
+
+👤 Nombre: ${nombre}
+
+ENVIARÉ MI COMPROBANTE EN UN MOMENTO.`;
+
+  const urlWhats=`https://wa.me/${527421199270}?text=${encodeURIComponent(mensaje)}`;
+
+  window.open(urlWhats,"_blank");
+
+
+  alert("Boletos apartados correctamente");
+
+  seleccionados.clear();
+
+  boton.disabled=false;
+  boton.textContent="Finalizar Compra";
+
+  cargarVendidos();
+
+ }catch(err){
+
+  alert("Error al guardar");
+
+  boton.disabled=false;
+  boton.textContent="Finalizar Compra";
+
+ }
 
 }
 
 </script>
-
-</body>
-</html>
