@@ -159,24 +159,14 @@ function actualizarResumen(){
 
 /* PAGAR */
 function pagar(){
-  if(seleccionados.size===0){
-    alert("Selecciona boletos");
-    return;
-  }
-
+  if(seleccionados.size===0){ alert("Selecciona boletos"); return; }
   const nombre = document.getElementById("nombreCliente").value.trim();
-  if(nombre===""){
-    alert("Escribe tu nombre");
-    return;
-  }
+  if(nombre===""){ alert("Escribe tu nombre"); return; }
 
   const boletosArray = Array.from(seleccionados);
-  const boton = document.getElementById("btnPagar");
-  boton.disabled = true;
-  boton.textContent = "Procesando...";
+  let boletosGratis = [];
 
   // Jalar los 10 boletos gratis de cada boleto seleccionado
-  let boletosGratis = [];
   boletosArray.forEach(b => {
     if(gratisPorBoleto[b]){
       boletosGratis.push(...gratisPorBoleto[b]);
@@ -193,11 +183,11 @@ function pagar(){
   // Abrir WhatsApp
   window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
 
-  // Registrar en Google Sheets
-  fetch(URL_SCRIPT,{
-    method: "POST",
-    body: JSON.stringify({ nombre, boletos: boletosArray })
-  })
+  // Registrar boletos en Sheets
+  fetch(URL_SCRIPT, { method:"POST", body:JSON.stringify({ nombre, boletos: boletosArray }) })
+    .finally(()=>{ 
+      seleccionados.clear(); actualizarResumen(); cargarVendidos(); 
+    });
   .then(res=>res.text())
   .finally(()=>{
     seleccionados.clear();
