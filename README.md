@@ -21,6 +21,7 @@ body{font-family:'Segoe UI',sans-serif;margin:0;background:#e9f7e9;}
 .boleto:hover{transform:scale(1.05);}
 .boleto.seleccionado{background:#00c853;color:white;}
 .boleto.vendido{background:#ccc;color:#666;cursor:not-allowed;}
+.boleto.vendido::after{content:"✖";position:absolute;top:2px;right:5px;font-size:12px;}
 button{margin-top:15px;padding:14px 25px;border:none;border-radius:10px;background:#00c853;color:white;font-size:16px;cursor:pointer;}
 button:disabled{background:gray;}
 </style>
@@ -38,22 +39,17 @@ button:disabled{background:gray;}
   <div class="banner">
     <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" alt="Logo">
     <h1>RIFAS LOS COMPAS</h1>
-   
+  
   </div>
 
   <div class="container">
     <div class="card">
-      <!-- FLYER -->
       <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Flyer">
-
-      <!-- BOLETOS -->
       <div class="boletos" id="boletos"></div>
-
       <div>
         Boletos: <span id="cantidad">0</span><br>
         Total: $<span id="total">0</span>
       </div>
-
       <input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%; padding:10px; margin-top:10px;">
       <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
     </div>
@@ -65,7 +61,6 @@ button:disabled{background:gray;}
   <div class="container">
     <div class="card" style="text-align:center; background:#0f6c6c; color:white;">
       <h1 style="font-size:40px;">VENDEDORES AUTORIZADOS</h1>
-
       <div style="margin-bottom:40px;">
         <h2>Luis Alejandro Romero Sebastian ✅</h2>
         <div style="background:red; padding:15px; border-radius:12px; font-size:26px; font-weight:bold;">
@@ -74,9 +69,7 @@ button:disabled{background:gray;}
         <p><strong>Tarjeta Débito BBVA:</strong><br>4152 3140 2646 1213</p>
         <p><strong>Cuenta Clabe BBVA:</strong><br>012180015406075891</p>
       </div>
-
       <hr style="margin:40px 0;">
-
       <div>
         <h2>Angel Gabriel Urioste Luciano ✅</h2>
         <div style="background:red; padding:15px; border-radius:12px; font-size:26px; font-weight:bold;">
@@ -100,7 +93,6 @@ const seleccionados = new Set();
 let vendidos = [];
 let gratisPorBoleto = {};
 
-/* SECCIONES */
 function mostrarSeccion(id){
   document.querySelectorAll(".seccion").forEach(sec=>sec.style.display="none");
   document.getElementById(id).style.display="block";
@@ -142,7 +134,7 @@ function generarBoletos(){
 
 /* TOGGLE */
 function toggle(num,div){
-  if(div.classList.contains("vendido")) return;
+  if(div.classList.contains("vendido")) return; // no permitir seleccionar
   if(seleccionados.has(num)){
     seleccionados.delete(num);
     div.classList.remove("seleccionado");
@@ -168,7 +160,6 @@ function pagar(){
   const boletosArray = Array.from(seleccionados);
   let boletosGratis = [];
 
-  // jalar los 10 boletos gratis de cada boleto seleccionado
   boletosArray.forEach(b => {
     if(gratisPorBoleto[b]){
       boletosGratis.push(...gratisPorBoleto[b]);
@@ -182,19 +173,16 @@ function pagar(){
 🎁 Boletos gratis: ${boletosGratis.join(", ")}
 💰 Total a pagar: $${boletosArray.length * PRECIO_BOLETO}`;
 
-  // Abrir WhatsApp
   window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
 
-  // Registrar boletos vendidos
   fetch(URL_SCRIPT,{
     method:"POST",
     body: JSON.stringify({ nombre, boletos: boletosArray })
   })
-  .then(res=>res.text())
   .finally(()=>{
     seleccionados.clear();
     actualizarResumen();
-    cargarVendidos(); // recarga boletos y bloquea vendidos
+    cargarVendidos();
   });
 }
 </script>
