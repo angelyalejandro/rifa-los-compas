@@ -153,7 +153,7 @@ button:disabled{
 const PRECIO_BOLETO = 50;
 const TOTAL_BOLETOS = 400;
 const TELEFONO = "527421199270"; // NUMERO CORRECTO
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz1yoGLxiuGVeEBaLvQFjmRkcNLQWntqcPnflpSGC2HF-g1gqMnxg1HNQlYQh0mRfs/exec";
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz5BC1y75iL7bQN5iv0qY6jvvxC2j75Zmtvj5zoLFiVWgLFze9kxXPNoLuDZ2ojvJaM/exec";
 
 const contenedor = document.getElementById("boletos");
 const seleccionados = new Set();
