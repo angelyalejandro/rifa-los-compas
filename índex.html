@@ -118,18 +118,19 @@ setInterval(cargarVendidos,10000);
 
 /* GENERAR BOLETOS */
 function generarBoletos(){
-  contenedor.innerHTML="";
+  contenedor.innerHTML = "";
   for(let i=1;i<=TOTAL_BOLETOS;i++){
-    const num=i.toString().padStart(4,"0");
-    const div=document.createElement("div");
-    div.className="boleto";
-    div.textContent=num;
+    const num = i.toString().padStart(4,"0");
+    const div = document.createElement("div");
+    div.className = "boleto";
+    div.textContent = num;
 
-    if(vendidos.includes(num)){ // bloquea si ya está vendido
+    // ✅ Bloquear boleto si está vendido
+    if(Array.isArray(vendidos) && vendidos.includes(num)){
       div.classList.add("vendido");
     } else {
       if(seleccionados.has(num)) div.classList.add("seleccionado");
-      div.onclick=()=>toggle(num,div);
+      div.onclick = () => toggle(num, div);
     }
 
     contenedor.appendChild(div);
