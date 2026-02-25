@@ -175,15 +175,15 @@ function pagar(){
   boton.disabled = true;
   boton.textContent = "Procesando...";
 
-  // Mensaje para WhatsApp con boletos gratis desde hoja D–M
+  // Mensaje WhatsApp con boletos gratis de la hoja
   const mensaje = 
-`🎟️ *RIFA LOS COMPAS*
+`Hola, reserve los siguientes boletos:
 👤 Nombre: ${nombre}
 🎫 Boletos seleccionados: ${boletosArray.join(", ")}
 🎁 Boletos gratis: ${boletosGratis.join(", ")}
 💰 Total a pagar: $${boletosArray.length * PRECIO_BOLETO}`;
 
-  // Abrir WhatsApp
+  // Abrir WhatsApp al número del vendedor
   window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
 
   // Registrar en Google Sheets
