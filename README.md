@@ -118,7 +118,7 @@ button:disabled{
 
   <div class="container">
     <div class="card">
-
+<img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
       <div class="boletos" id="boletos"></div>
 
       <div>
