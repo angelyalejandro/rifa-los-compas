@@ -190,22 +190,10 @@ function toggleMenu(){
   document.getElementById("menu").classList.toggle("active");
 }
 
-/* 🔥 CONTADOR */
-const fecha=new Date("2026-03-30T20:00:00").getTime();
-setInterval(()=>{
-  const ahora=new Date().getTime();
-  const d=fecha-ahora;
-  if(d<0)return;
-  const dias=Math.floor(d/(1000*60*60*24));
-  const hrs=Math.floor((d%(1000*60*60*24))/(1000*60*60));
-  const min=Math.floor((d%(1000*60*60))/(1000*60));
-  document.getElementById("countdown").innerHTML=
-  `⏳ Sorteo en ${dias}d ${hrs}h ${min}m`;
-},1000);
 
 /* 🔥 TU SISTEMA */
 const PRECIO_BOLETO=50;
-const TOTAL_BOLETOS=200;
+const TOTAL_BOLETOS=400;
 const URL_SCRIPT="https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
 
 const contenedor=document.getElementById("boletos");
