@@ -38,7 +38,7 @@ button:disabled{background:gray;}
   <div class="banner">
     <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" alt="Logo">
     <h1>RIFAS LOS COMPAS</h1>
-   
+  
   </div>
 
   <div class="container">
@@ -98,7 +98,7 @@ const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyxSwV7JliEFpRq5nuGH
 const contenedor = document.getElementById("boletos");
 const seleccionados = new Set();
 let vendidos = [];
-let boletosGratis = [];
+let gratisPorBoleto = {};
 
 /* SECCIONES */
 function mostrarSeccion(id){
@@ -112,7 +112,7 @@ function cargarVendidos(){
     .then(res => res.json())
     .then(data => {
       vendidos = data.vendidos || [];
-      boletosGratis = data.boletosGratis || [];
+      gratisPorBoleto = data.gratisPorBoleto || {};
       generarBoletos();
     })
     .catch(err => console.error("Error GET:", err));
@@ -175,7 +175,14 @@ function pagar(){
   boton.disabled = true;
   boton.textContent = "Procesando...";
 
-  // Mensaje WhatsApp con boletos gratis de la hoja
+  // Jalar los 10 boletos gratis de cada boleto seleccionado
+  let boletosGratis = [];
+  boletosArray.forEach(b => {
+    if(gratisPorBoleto[b]){
+      boletosGratis.push(...gratisPorBoleto[b]);
+    }
+  });
+
   const mensaje = 
 `Hola, reserve los siguientes boletos:
 👤 Nombre: ${nombre}
@@ -183,7 +190,7 @@ function pagar(){
 🎁 Boletos gratis: ${boletosGratis.join(", ")}
 💰 Total a pagar: $${boletosArray.length * PRECIO_BOLETO}`;
 
-  // Abrir WhatsApp al número del vendedor
+  // Abrir WhatsApp
   window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
 
   // Registrar en Google Sheets
@@ -207,5 +214,6 @@ function pagar(){
   });
 }
 </script>
+
 </body>
 </html>
