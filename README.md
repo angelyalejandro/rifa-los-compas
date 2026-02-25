@@ -59,7 +59,7 @@ const PRECIO_BOLETO = 50;
 const TOTAL_BOLETOS = 400;
 const TELEFONO = "527421199270";
 // IMPORTANTE: Asegúrate de que esta URL termine en /exec
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyxSwV7JliEFpRq5nuGHBP2OAQqAV3JsbqElFc6t51Bl5oH4So0gmWJ7eYlPIVXKjHw/exec";
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwECOIKV6pNBp2gi8Q51cPnNmVnTULWO0bRVi7-VK7xXUHN2isPL6HMgElhfHTkKSaN/exec";
 
 let seleccionados = new Set();
 let vendidos = [];
