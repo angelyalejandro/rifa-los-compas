@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -40,6 +40,7 @@
     <div class="banner">
         <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" alt="Logo">
         <h1>RIFAS LOS COMPAS</h1>
+        <h1>POR CADA BOLETO QUE COMPRES TIENES 10 OPORTUNIDADES MAS TOTALMENTE GRATIS</h1>
     </div>
     <div class="container">
         <div class="card">
