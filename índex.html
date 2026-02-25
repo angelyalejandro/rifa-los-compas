@@ -5,112 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RIFAS LOS COMPAS</title>
 <style>
-body{
-  font-family:'Segoe UI',sans-serif;
-  margin:0;
-  background:#e9f7e9;
-}
-/* MENU */
-.menu{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:15px;
-  background:#0d47a1;
-}
-.menu button{
-  background:white;
-  color:#0d47a1;
-  font-weight:bold;
-  border:none;
-  padding:10px 20px;
-  border-radius:8px;
-  cursor:pointer;
-}
-.menu button:hover{
-  background:#ffe082;
-}
-/* BANNER */
-.banner{
-  background:linear-gradient(135deg,#ffe082,#80deea);
-  padding:25px;
-  text-align:center;
-}
-.banner h1{
-  font-size:34px;
-  margin:10px 0;
-  color:#0d47a1;
-}
-.banner img{
-  max-width:200px;
-  display:block;
-  margin:auto;
-}
-.precio{
-  font-size:26px;
-  color:#d50000;
-  font-weight:bold;
-}
-/* CONTENIDO */
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
-.card{
-  background:white;
-  border-radius:15px;
-  padding:20px;
-}
-/* PLAYER */
-.player{
-  width:100%;
-  border-radius:15px;
-  margin-bottom:20px;
-  box-shadow:0 4px 10px rgba(0,0,0,.2);
-}
-/* BOLETOS */
-.boletos{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
-  gap:10px;
-}
-.boleto{
-  padding:14px 6px;
-  border-radius:12px;
-  font-weight:bold;
-  cursor:pointer;
-  background:#eeeeee;
-  text-align:center;
-  font-size:15px;
-  box-shadow:0 3px 6px rgba(0,0,0,.15);
-  transition:.2s;
-}
-.boleto:hover{
-  transform:scale(1.05);
-}
-.boleto.seleccionado{
-  background:#00c853;
-  color:white;
-}
-.boleto.vendido{
-  background:#ccc;
-  color:#666;
-  cursor:not-allowed;
-}
-button{
-  margin-top:15px;
-  padding:14px 25px;
-  border:none;
-  border-radius:10px;
-  background:#00c853;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
-button:disabled{
-  background:gray;
-}
+body{font-family:'Segoe UI',sans-serif;margin:0;background:#e9f7e9;}
+.menu{display:flex;justify-content:center;gap:10px;padding:15px;background:#0d47a1;}
+.menu button{background:white;color:#0d47a1;font-weight:bold;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+.menu button:hover{background:#ffe082;}
+.banner{background:linear-gradient(135deg,#ffe082,#80deea);padding:25px;text-align:center;}
+.banner h1{font-size:34px;margin:10px 0;color:#0d47a1;}
+.banner img{max-width:200px;display:block;margin:auto;}
+.precio{font-size:26px;color:#d50000;font-weight:bold;}
+.container{max-width:1100px;margin:auto;padding:20px;}
+.card{background:white;border-radius:15px;padding:20px;}
+.player{width:100%;border-radius:15px;margin-bottom:20px;box-shadow:0 4px 10px rgba(0,0,0,.2);}
+.boletos{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:10px;}
+.boleto{padding:14px 6px;border-radius:12px;font-weight:bold;cursor:pointer;background:#eeeeee;text-align:center;font-size:15px;box-shadow:0 3px 6px rgba(0,0,0,.15);transition:.2s;}
+.boleto:hover{transform:scale(1.05);}
+.boleto.seleccionado{background:#00c853;color:white;}
+.boleto.vendido{background:#ccc;color:#666;cursor:not-allowed;}
+button{margin-top:15px;padding:14px 25px;border:none;border-radius:10px;background:#00c853;color:white;font-size:16px;cursor:pointer;}
+button:disabled{background:gray;}
 </style>
 </head>
 <body>
@@ -186,6 +98,7 @@ const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyxSwV7JliEFpRq5nuGH
 const contenedor = document.getElementById("boletos");
 const seleccionados = new Set();
 let vendidos = [];
+let boletosGratis = [];
 
 /* SECCIONES */
 function mostrarSeccion(id){
@@ -193,15 +106,16 @@ function mostrarSeccion(id){
   document.getElementById(id).style.display="block";
 }
 
-/* CARGAR VENDIDOS */
+/* CARGAR VENDIDOS + BOLETOS GRATIS */
 function cargarVendidos(){
   fetch(URL_SCRIPT)
-    .then(res=>res.json())
-    .then(data=>{
-      vendidos = data || [];
+    .then(res => res.json())
+    .then(data => {
+      vendidos = data.vendidos || [];
+      boletosGratis = data.boletosGratis || [];
       generarBoletos();
     })
-    .catch(err=>console.error("Error GET:",err));
+    .catch(err => console.error("Error GET:", err));
 }
 cargarVendidos();
 setInterval(cargarVendidos,10000);
@@ -261,27 +175,35 @@ function pagar(){
   boton.disabled = true;
   boton.textContent = "Procesando...";
 
+  // Mensaje para WhatsApp con boletos gratis desde hoja D–M
+  const mensaje = 
+`🎟️ *RIFA LOS COMPAS*
+👤 Nombre: ${nombre}
+🎫 Boletos seleccionados: ${boletosArray.join(", ")}
+🎁 Boletos gratis: ${boletosGratis.join(", ")}
+💰 Total a pagar: $${boletosArray.length * PRECIO_BOLETO}`;
+
+  // Abrir WhatsApp
+  window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
+
+  // Registrar en Google Sheets
   fetch(URL_SCRIPT,{
     method: "POST",
-    body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
+    body: JSON.stringify({ nombre, boletos: boletosArray })
   })
-  .then(response => response.text())
-  .then(() => {
-      const total = boletosArray.length * PRECIO_BOLETO;
-      const mensaje = `🎟️ RIFA LOS COMPAS\nBoletos: ${boletosArray.join(", ")}\nTotal: $${total}\nNombre: ${nombre}`;
-      window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
-
-      seleccionados.clear();
-      actualizarResumen();
-      boton.disabled = false;
-      boton.textContent = "Finalizar Compra";
-      cargarVendidos();
+  .then(res=>res.text())
+  .finally(()=>{
+    seleccionados.clear();
+    actualizarResumen();
+    boton.disabled = false;
+    boton.textContent = "Finalizar Compra";
+    cargarVendidos();
   })
   .catch(err=>{
-      alert("Verifica que el Apps Script esté publicado como Aplicación web con acceso público.");
-      boton.disabled = false;
-      boton.textContent = "Finalizar Compra";
-      console.error(err);
+    alert("Verifica que el Apps Script esté publicado como Aplicación web con acceso público.");
+    boton.disabled = false;
+    boton.textContent = "Finalizar Compra";
+    console.error(err);
   });
 }
 </script>
