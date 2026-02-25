@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RIFAS LOS COMPAS</title>
-
 <style>
 body{
   font-family:'Segoe UI',sans-serif;
   margin:0;
   background:#e9f7e9;
 }
+/* MENU */
 .menu{
   display:flex;
   justify-content:center;
@@ -27,6 +27,10 @@ body{
   border-radius:8px;
   cursor:pointer;
 }
+.menu button:hover{
+  background:#ffe082;
+}
+/* BANNER */
 .banner{
   background:linear-gradient(135deg,#ffe082,#80deea);
   padding:25px;
@@ -37,11 +41,17 @@ body{
   margin:10px 0;
   color:#0d47a1;
 }
+.banner img{
+  max-width:200px;
+  display:block;
+  margin:auto;
+}
 .precio{
   font-size:26px;
   color:#d50000;
   font-weight:bold;
 }
+/* CONTENIDO */
 .container{
   max-width:1100px;
   margin:auto;
@@ -52,12 +62,14 @@ body{
   border-radius:15px;
   padding:20px;
 }
+/* PLAYER */
 .player{
   width:100%;
   border-radius:15px;
   margin-bottom:20px;
   box-shadow:0 4px 10px rgba(0,0,0,.2);
 }
+/* BOLETOS */
 .boletos{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
@@ -101,9 +113,9 @@ button:disabled{
 }
 </style>
 </head>
-
 <body>
 
+<!-- MENU -->
 <nav class="menu">
   <button onclick="mostrarSeccion('rifa')">Inicio</button>
   <button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
@@ -112,13 +124,17 @@ button:disabled{
 <!-- SECCIÓN RIFA -->
 <div id="rifa" class="seccion">
   <div class="banner">
+    <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" alt="Logo">
     <h1>RIFAS LOS COMPAS</h1>
-    
+   
   </div>
 
   <div class="container">
     <div class="card">
-<img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
+      <!-- FLYER -->
+      <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Flyer">
+
+      <!-- BOLETOS -->
       <div class="boletos" id="boletos"></div>
 
       <div>
@@ -128,7 +144,6 @@ button:disabled{
 
       <input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%; padding:10px; margin-top:10px;">
       <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
-
     </div>
   </div>
 </div>
@@ -137,7 +152,6 @@ button:disabled{
 <div id="pagos" class="seccion" style="display:none;">
   <div class="container">
     <div class="card" style="text-align:center; background:#0f6c6c; color:white;">
-      
       <h1 style="font-size:40px;">VENDEDORES AUTORIZADOS</h1>
 
       <div style="margin-bottom:40px;">
@@ -159,7 +173,6 @@ button:disabled{
         <p><strong>Tarjeta Débito BBVA:</strong><br>4152 3145 7352 6715</p>
         <p><strong>Cuenta Clabe BBVA:</strong><br>012180015751433706</p>
       </div>
-
     </div>
   </div>
 </div>
@@ -174,11 +187,13 @@ const contenedor = document.getElementById("boletos");
 const seleccionados = new Set();
 let vendidos = [];
 
+/* SECCIONES */
 function mostrarSeccion(id){
   document.querySelectorAll(".seccion").forEach(sec=>sec.style.display="none");
   document.getElementById(id).style.display="block";
 }
 
+/* CARGAR VENDIDOS */
 function cargarVendidos(){
   fetch(URL_SCRIPT)
     .then(res=>res.json())
@@ -191,6 +206,7 @@ function cargarVendidos(){
 cargarVendidos();
 setInterval(cargarVendidos,10000);
 
+/* GENERAR BOLETOS */
 function generarBoletos(){
   contenedor.innerHTML="";
   for(let i=1;i<=TOTAL_BOLETOS;i++){
@@ -205,11 +221,11 @@ function generarBoletos(){
       if(seleccionados.has(num)) div.classList.add("seleccionado");
       div.onclick=()=>toggle(num,div);
     }
-
     contenedor.appendChild(div);
   }
 }
 
+/* TOGGLE */
 function toggle(num,div){
   if(seleccionados.has(num)){
     seleccionados.delete(num);
@@ -221,11 +237,13 @@ function toggle(num,div){
   actualizarResumen();
 }
 
+/* RESUMEN */
 function actualizarResumen(){
   document.getElementById("cantidad").textContent = seleccionados.size;
   document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
 }
 
+/* PAGAR */
 function pagar(){
   if(seleccionados.size===0){
     alert("Selecciona boletos");
@@ -240,46 +258,32 @@ function pagar(){
 
   const boletosArray = Array.from(seleccionados);
   const boton = document.getElementById("btnPagar");
-  boton.disabled=true;
-  boton.textContent="Procesando...";
+  boton.disabled = true;
+  boton.textContent = "Procesando...";
 
   fetch(URL_SCRIPT,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      nombre:nombre,
-      boletos:boletosArray
-    })
+    method: "POST",
+    body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
   })
-  .then(res=>res.json())
-  .then(data=>{
-    if(data.error){
-      alert("Error al registrar: "+data.error);
-    }
+  .then(response => response.text())
+  .then(() => {
+      const total = boletosArray.length * PRECIO_BOLETO;
+      const mensaje = `🎟️ RIFA LOS COMPAS\nBoletos: ${boletosArray.join(", ")}\nTotal: $${total}\nNombre: ${nombre}`;
+      window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
+
+      seleccionados.clear();
+      actualizarResumen();
+      boton.disabled = false;
+      boton.textContent = "Finalizar Compra";
+      cargarVendidos();
   })
   .catch(err=>{
-    alert("Error de conexión con el servidor");
-  })
-  .finally(()=>{
-    const total = boletosArray.length * PRECIO_BOLETO;
-
-    const mensaje =
-`🎟️ RIFA LOS COMPAS
-Boletos: ${boletosArray.join(", ")}
-Total: $${total}
-Nombre: ${nombre}`;
-
-    const url = `https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`;
-    window.open(url,"_blank");
-
-    seleccionados.clear();
-    actualizarResumen();
-    boton.disabled=false;
-    boton.textContent="Finalizar Compra";
-    cargarVendidos();
+      alert("Verifica que el Apps Script esté publicado como Aplicación web con acceso público.");
+      boton.disabled = false;
+      boton.textContent = "Finalizar Compra";
+      console.error(err);
   });
 }
 </script>
-
 </body>
 </html>
