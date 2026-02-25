@@ -1,3 +1,4 @@
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -71,6 +72,15 @@ border-radius:15px;
 padding:20px;
 }
 
+/* PLAYER */
+
+.player{
+width:100%;
+border-radius:15px;
+margin-bottom:20px;
+box-shadow:0 4px 10px rgba(0,0,0,.2);
+}
+
 /* BOLETOS */
 
 .boletos{
@@ -134,17 +144,6 @@ background:gray;
 cursor:not-allowed;
 }
 
-.vendedor{
-background:#f5f5f5;
-padding:15px;
-border-radius:10px;
-margin-top:10px;
-}
-
-hr{
-margin:20px 0;
-}
-
 </style>
 
 </head>
@@ -175,11 +174,12 @@ style="max-width:200px; display:block; margin:auto;">
 
 <div class="card">
 
-<!-- IMAGEN PREMIOS -->
+<!-- PLAYER PREMIOS -->
 
-<img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG"
-style="width:100%; border-radius:15px; margin-bottom:15px;">
+<img class="player"
+src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
 
+<!-- BOLETOS -->
 
 <div class="boletos" id="boletos"></div>
 
@@ -188,7 +188,9 @@ Boletos: <span id="cantidad">0</span><br>
 Total: $<span id="total">0</span>
 </div>
 
-<input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%; padding:10px; margin-top:10px;">
+<input type="text" id="nombreCliente"
+placeholder="Tu nombre completo"
+style="width:100%; padding:10px; margin-top:10px;">
 
 <br>
 
@@ -198,18 +200,14 @@ Total: $<span id="total">0</span>
 </div>
 </div>
 
-<!-- SECCION PAGOS -->
+<!-- PAGOS -->
 
 <div id="pagos" class="seccion" style="display:none;">
 <div class="container">
 <div class="card">
 
-<h2>💳 Formas de Pago</h2>
-
-<div class="vendedor">
-<h3>📱 WhatsApp</h3>
+<h2>WhatsApp</h2>
 <p>7421199220</p>
-</div>
 
 </div>
 </div>
@@ -220,7 +218,8 @@ Total: $<span id="total">0</span>
 const PRECIO_BOLETO = 50;
 const TOTAL_BOLETOS = 400;
 
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwNNIRy0cxHTAttdssLt74wEmGWMBXbWhB2vVXDreEQprMraNc8psO1sHYPwCOq8ds4/exec";
+const URL_SCRIPT =
+"https://script.google.com/macros/s/AKfycbwNNIRy0cxHTAttdssLt74wEmGWMBXbWhB2vVXDreEQprMraNc8psO1sHYPwCOq8ds4/exec";
 
 const TELEFONO = "527421199220";
 
@@ -230,34 +229,32 @@ const seleccionados = new Set();
 
 let vendidos = [];
 
-/* CAMBIO DE SECCION */
+/* SECCIONES */
 
 function mostrarSeccion(id){
-document.querySelectorAll(".seccion").forEach(sec=>{
-sec.style.display="none";
-});
+
+document.querySelectorAll(".seccion")
+.forEach(sec=>sec.style.display="none");
+
 document.getElementById(id).style.display="block";
+
 }
 
-/* CARGA INICIAL */
-
-cargarVendidos();
+/* CARGAR VENDIDOS */
 
 function cargarVendidos(){
 
 fetch(URL_SCRIPT)
 .then(res=>res.json())
 .then(data=>{
-vendidos = data;
+vendidos = data || [];
 generarBoletos();
 })
-.catch(()=>{
-generarBoletos();
-});
+.catch(()=>generarBoletos());
 
 }
 
-/* ACTUALIZACION AUTOMATICA */
+cargarVendidos();
 
 setInterval(cargarVendidos,10000);
 
@@ -296,16 +293,20 @@ contenedor.appendChild(div);
 
 }
 
-/* SELECCION */
+/* TOGGLE */
 
 function toggle(num,div){
 
 if(seleccionados.has(num)){
+
 seleccionados.delete(num);
 div.classList.remove("seleccionado");
+
 }else{
+
 seleccionados.add(num);
 div.classList.add("seleccionado");
+
 }
 
 actualizarResumen();
@@ -316,8 +317,11 @@ actualizarResumen();
 
 function actualizarResumen(){
 
-document.getElementById("cantidad").textContent = seleccionados.size;
-document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
+document.getElementById("cantidad").textContent =
+seleccionados.size;
+
+document.getElementById("total").textContent =
+seleccionados.size * PRECIO_BOLETO;
 
 }
 
@@ -330,16 +334,17 @@ alert("Selecciona boletos");
 return;
 }
 
-const nombre=document.getElementById("nombreCliente").value.trim();
+const nombre =
+document.getElementById("nombreCliente").value.trim();
 
 if(nombre===""){
 alert("Escribe tu nombre");
 return;
 }
 
-const boletosArray=Array.from(seleccionados);
+const boletosArray = Array.from(seleccionados);
 
-const boton=document.getElementById("btnPagar");
+const boton = document.getElementById("btnPagar");
 
 boton.disabled=true;
 boton.textContent="Procesando...";
@@ -362,7 +367,7 @@ Hola! Reserve los siguientes boletos:
 
 🎫 BOLETOS: ${boletosArray.join(", ")}
 
-🎁 BOLETOS GRATIS: 
+🎁 BOLETOS GRATIS:
 
 💰 TOTAL: $${total}
 
@@ -370,7 +375,8 @@ Hola! Reserve los siguientes boletos:
 
 ENVIARÉ MI COMPROBANTE EN UN MOMENTO.`;
 
-const url = `https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`;
+const url =
+`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`;
 
 window.open(url,"_blank");
 
