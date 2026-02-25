@@ -144,13 +144,11 @@ margin:20px 0;
 
 <body>
 
-<!-- MENU -->
 <nav class="menu">
 <button onclick="mostrarSeccion('rifa')">Inicio</button>
 <button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
 </nav>
 
-<!-- SECCION RIFA -->
 <div id="rifa" class="seccion">
 
 <div class="banner">
@@ -181,7 +179,6 @@ Total: $<span id="total">0</span>
 </div>
 </div>
 
-<!-- SECCION PAGOS -->
 <div id="pagos" class="seccion" style="display:none;">
 <div class="container">
 <div class="card">
@@ -191,17 +188,6 @@ Total: $<span id="total">0</span>
 <div class="vendedor">
 <h3>✅ Luis Alejandro Romero Sebastian</h3>
 <p><strong>📱 Tel:</strong> 7421199270</p>
-<p><strong>Tarjeta Débito BBVA:</strong><br>4152 3140 2646 1213</p>
-<p><strong>Cuenta Clave BBVA:</strong><br>012 180 01540607589 1</p>
-</div>
-
-<hr>
-
-<div class="vendedor">
-<h3>✅ Angel Gabriel Urioste Luciano</h3>
-<p><strong>📱 Tel:</strong> 7421292436</p>
-<p><strong>Tarjeta Débito BBVA:</strong><br>4152 3145 7352 6715</p>
-<p><strong>Cuenta Clave BBVA:</strong><br>012 18001575143370 6</p>
 </div>
 
 </div>
@@ -209,15 +195,19 @@ Total: $<span id="total">0</span>
 </div>
 
 <script>
-const PRECIO_BOLETO=50;
-const TOTAL_BOLETOS=400;
-const URL_SCRIPT="https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
 
-const contenedor=document.getElementById("boletos");
-const seleccionados=new Set();
-let vendidos=[];
+const PRECIO_BOLETO = 50;
+const TOTAL_BOLETOS = 400;
 
-/* CAMBIO DE SECCION */
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwNNIRy0cxHTAttdssLt74wEmGWMBXbWhB2vVXDreEQprMraNc8psO1sHYPwCOq8ds4/exec";
+
+const contenedor = document.getElementById("boletos");
+const seleccionados = new Set();
+
+let vendidos = [];
+let gratisMap = {};
+
+/* CAMBIO SECCION */
 function mostrarSeccion(id){
 document.querySelectorAll(".seccion").forEach(sec=>{
 sec.style.display="none";
@@ -225,47 +215,54 @@ sec.style.display="none";
 document.getElementById(id).style.display="block";
 }
 
-/* CARGA INICIAL */
+/* CARGAR DATOS */
+function cargarDatos(){
 fetch(URL_SCRIPT)
 .then(res=>res.json())
 .then(data=>{
-vendidos=data;
-generarBoletos();
-})
-.catch(()=>generarBoletos());
-
-/* ACTUALIZACION AUTOMATICA */
-setInterval(()=>{
-fetch(URL_SCRIPT)
-.then(res=>res.json())
-.then(data=>{
-vendidos=data;
+vendidos = data.vendidos || [];
+gratisMap = data.gratisMap || {};
 generarBoletos();
 });
-},10000);
+}
 
+cargarDatos();
+setInterval(cargarDatos,10000);
+
+/* GENERAR BOLETOS */
 function generarBoletos(){
+
 contenedor.innerHTML="";
+
 for(let i=1;i<=TOTAL_BOLETOS;i++){
-const num=i.toString().padStart(4,"0");
-const div=document.createElement("div");
+
+const num = i.toString().padStart(4,"0");
+
+const div = document.createElement("div");
 div.className="boleto";
 div.textContent=num;
 
 if(vendidos.includes(num)){
+
 div.classList.add("vendido");
+
 }else{
+
 if(seleccionados.has(num)){
 div.classList.add("seleccionado");
 }
-div.onclick=()=>toggle(num,div);
+
+div.onclick = ()=>toggle(num,div);
+
 }
 
 contenedor.appendChild(div);
 }
 }
 
+/* SELECCIONAR */
 function toggle(num,div){
+
 if(seleccionados.has(num)){
 seleccionados.delete(num);
 div.classList.remove("seleccionado");
@@ -273,53 +270,75 @@ div.classList.remove("seleccionado");
 seleccionados.add(num);
 div.classList.add("seleccionado");
 }
+
 actualizarResumen();
 }
 
+/* RESUMEN */
 function actualizarResumen(){
-document.getElementById("cantidad").textContent=seleccionados.size;
-document.getElementById("total").textContent=seleccionados.size*PRECIO_BOLETO;
+
+document.getElementById("cantidad").textContent = seleccionados.size;
+document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
+
 }
 
+/* PAGAR */
 function pagar(){
-if(seleccionados.size===0)return alert("Selecciona boletos");
 
-const nombre=document.getElementById("nombreCliente").value.trim();
-if(nombre==="")return alert("Escribe tu nombre");
+if(seleccionados.size===0) return alert("Selecciona boletos");
 
-const boletosArray=Array.from(seleccionados);
+const nombre = document.getElementById("nombreCliente").value.trim();
+if(nombre==="") return alert("Escribe tu nombre");
 
-/* Validar que no estén vendidos */
-for(let b of boletosArray){
-if(vendidos.includes(b)){
-alert("Uno de los boletos ya fue vendido. Actualiza la página.");
-return;
-}
-}
+const boletosArray = Array.from(seleccionados);
 
-const boton=document.getElementById("btnPagar");
+const boton = document.getElementById("btnPagar");
 boton.disabled=true;
 boton.textContent="Procesando...";
 
 fetch(URL_SCRIPT,{
 method:"POST",
-body:JSON.stringify({nombre:nombre,boletos:boletosArray})
+body:JSON.stringify({
+nombre:nombre,
+boletos:boletosArray
+})
 })
 .then(res=>res.json())
-.then(()=>{
-alert("Boletos apartados correctamente");
+.then(resp=>{
+
+const gratis = resp.gratis || [];
+
+const total = boletosArray.length * PRECIO_BOLETO;
+
+const mensaje =
+`🎟️ RIFA LOS COMPAS
+Hola! Reserve los siguientes boletos:
+
+🎫 BOLETOS: ${boletosArray.join(", ")}
+
+🎁 BOLETOS GRATIS: ${gratis.join(", ")}
+
+💰 TOTAL: $${total}
+
+👤 Nombre: ${nombre}
+
+ENVIARÉ MI COMPROBANTE EN UN MOMENTO.`;
+
+const telefono = "527421199270";
+
+const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+window.open(url,"_blank");
+
 seleccionados.clear();
 boton.disabled=false;
 boton.textContent="Finalizar Compra";
 
-fetch(URL_SCRIPT)
-.then(res=>res.json())
-.then(data=>{
-vendidos=data;
-generarBoletos();
-});
+cargarDatos();
+
 });
 }
+
 </script>
 
 </body>
