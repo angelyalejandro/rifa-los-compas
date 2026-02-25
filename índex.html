@@ -8,34 +8,109 @@
 <style>
 body{
   font-family:'Segoe UI',sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   margin:0;
-  padding:20px;
-  color:white;
-  text-align:center;
+  background:#e9f7e9;
 }
 
-.container{max-width:1000px;margin:auto;}
+/* 🔥 HEADER */
+.header{
+  background:#27c24c;
+  padding:10px 15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
 
 .logo{
-  width:170px;
-  border-radius:15px;
-  margin-bottom:15px;
+  width:70px;
+  border-radius:50%;
 }
+
+.menu-btn{
+  font-size:26px;
+  color:white;
+  cursor:pointer;
+}
+
+/* 🔥 MENU */
+.menu{
+  position:fixed;
+  right:-220px;
+  top:0;
+  width:220px;
+  height:100%;
+  background:#1b5e20;
+  color:white;
+  padding:20px;
+  transition:.3s;
+}
+.menu.active{right:0;}
+
+.menu a{
+  display:block;
+  margin:15px 0;
+  color:white;
+  text-decoration:none;
+}
+
+/* 🔥 BANNER */
+.banner{
+  background:linear-gradient(135deg,#ffe082,#80deea);
+  padding:25px 15px;
+  text-align:center;
+  animation:fade 1s;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.banner h1{
+  font-size:36px;
+  margin:10px 0;
+  color:#0d47a1;
+}
+
+.banner h2{margin:5px 0;color:#e65100;}
+.precio{font-size:28px;color:#d50000;font-weight:bold;}
+
+.btn-banner{
+  margin-top:15px;
+  padding:14px 30px;
+  border:none;
+  border-radius:25px;
+  background:#4caf50;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.container{max-width:1000px;margin:auto;padding:20px;}
 
 .card{
   background:white;
-  color:#333;
   border-radius:15px;
   padding:20px;
-  margin-bottom:25px;
+  margin-bottom:20px;
 }
 
+/* 🔥 CONTADOR */
+.countdown{
+  font-size:22px;
+  font-weight:bold;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+/* 🔥 BOLETOS */
 .boletos{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(60px,1fr));
   gap:8px;
-  margin-top:15px;
 }
 
 .boleto{
@@ -44,34 +119,11 @@ body{
   font-weight:bold;
   cursor:pointer;
   background:#f2f2f2;
+  text-align:center;
 }
 
 .boleto.seleccionado{background:#00c853;color:white;}
 .boleto.vendido{background:#ccc;color:#666;cursor:not-allowed;}
-
-.resumen{
-  margin-top:15px;
-  font-weight:bold;
-}
-
-.pagos-box{
-  margin-top:25px;
-}
-
-.pagos-img{
-  width:100%;
-  max-width:420px;   /* 🔥 MÁS PEQUEÑA */
-  border-radius:12px;
-  box-shadow:0 8px 18px rgba(0,0,0,.35);
-}
-
-input{
-  padding:12px;
-  width:260px;
-  border-radius:8px;
-  border:none;
-  margin-top:20px;
-}
 
 button{
   margin-top:15px;
@@ -88,56 +140,70 @@ button{
 
 <body>
 
-<div class="container">
-
-<img src="logo.JPG" class="logo">
-
-<h1>🎟️ RIFA LOS COMPAS 🎟️</h1>
-
-<p>
-Por cada boleto obtienes <strong>4 números EXTRA GRATIS</strong> 🎁<br>
-Basado en la Lotería Nacional
-</p>
-
-<div class="card">
-<h2>🏆 Premios</h2>
-🥇 1er lugar: $5,000<br>
-🥈 2do lugar: $1,000<br>
-🥉 3er lugar: $500
+<div class="header">
+  <img src="logo.JPG" class="logo">
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
 </div>
 
+<div class="menu" id="menu">
+  <a href="#">Inicio</a>
+  <a href="#boletos">Boletos</a>
+  <a href="#">Premios</a>
+</div>
+
+<div class="banner">
+  <h2>EDICIÓN 76</h2>
+  <h1>SORTEOS COSTA GRANDE</h1>
+  <div class="precio">COSTO $40</div>
+  <h2>🥇 $4000</h2>
+  <h2>🥈 $1000</h2>
+  <h2>🥉 $500</h2>
+
+  <button class="btn-banner"
+  onclick="document.getElementById('boletos').scrollIntoView({behavior:'smooth'})">
+  COMPRAR BOLETO
+  </button>
+</div>
+
+<div class="container">
+
+<div class="countdown" id="countdown"></div>
+
 <div class="card">
-
 <h2>Selecciona tus boletos</h2>
-
 <div class="boletos" id="boletos"></div>
 
-<div class="resumen">
+<div>
 Boletos: <span id="cantidad">0</span><br>
 Total: $<span id="total">0</span>
 </div>
 
-<!-- 🔥 FORMAS DE PAGO EXACTAMENTE AQUÍ -->
-<div class="pagos-box">
-<h3 style="margin-top:25px;">💳 Formas de Pago</h3>
-<p style="font-size:14px;">
-Realiza tu transferencia o depósito a cualquiera de nuestros vendedores autorizados:
-</p>
-
-<img src="pagos.jpg" class="pagos-img">
-</div>
-
 <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
-
 <br>
-
 <button onclick="pagar()">Finalizar Compra</button>
-
 </div>
+
 </div>
 
 <script>
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("active");
+}
 
+/* 🔥 CONTADOR */
+const fecha=new Date("2026-03-30T20:00:00").getTime();
+setInterval(()=>{
+  const ahora=new Date().getTime();
+  const d=fecha-ahora;
+  if(d<0)return;
+  const dias=Math.floor(d/(1000*60*60*24));
+  const hrs=Math.floor((d%(1000*60*60*24))/(1000*60*60));
+  const min=Math.floor((d%(1000*60*60))/(1000*60));
+  document.getElementById("countdown").innerHTML=
+  `⏳ Sorteo en ${dias}d ${hrs}h ${min}m`;
+},1000);
+
+/* 🔥 TU SISTEMA */
 const PRECIO_BOLETO=50;
 const TOTAL_BOLETOS=200;
 const URL_SCRIPT="https://script.google.com/macros/s/AKfycbzTOWYzJCyo8by2wIQVea_okYTKMMmzDyJhNWfAEF4l44J9IRqsw-T6JpRNzP7k6fE/exec";
@@ -148,13 +214,8 @@ let vendidos=[];
 
 fetch(URL_SCRIPT)
 .then(res=>res.json())
-.then(data=>{
-  vendidos=data;
-  generarBoletos();
-})
-.catch(()=>{
-  generarBoletos();
-});
+.then(data=>{vendidos=data;generarBoletos();})
+.catch(()=>generarBoletos());
 
 function generarBoletos(){
   contenedor.innerHTML="";
@@ -192,54 +253,33 @@ function actualizarResumen(){
 }
 
 function pagar(){
-
-  if(seleccionados.size===0){
-    alert("Selecciona al menos un boleto");
-    return;
-  }
-
+  if(seleccionados.size===0)return alert("Selecciona boletos");
   const nombre=document.getElementById("nombreCliente").value.trim();
-  if(nombre===""){
-    alert("Escribe tu nombre");
-    return;
-  }
+  if(nombre==="")return alert("Escribe tu nombre");
 
   const boletosArray=Array.from(seleccionados);
 
   fetch(URL_SCRIPT,{
     method:"POST",
-    body:JSON.stringify({
-      nombre:nombre,
-      boletos:boletosArray
-    })
+    body:JSON.stringify({nombre:nombre,boletos:boletosArray})
   })
   .then(res=>res.json())
   .then(data=>{
-
     const extras=data.gratis||[];
     const total=data.total || boletosArray.length*PRECIO_BOLETO;
 
     const mensaje =
 `🎟️ RIFA LOS COMPAS
-Hola! Reserve los siguientes boletos:
 🎫 BOLETOS: ${boletosArray.join(", ")}
-
-🎁 BOLETOS GRATIS: ${extras.join(", ")}
-
+🎁 GRATIS: ${extras.join(", ")}
 💰 TOTAL: $${total}
-
-👤 Nombre: ${nombre}
-
-ENVIARÉ MI COMPROBANTE EN UN MOMENTO.`;
+👤 ${nombre}`;
 
     window.location.href =
     "https://api.whatsapp.com/send?phone=527421199270&text="+
     encodeURIComponent(mensaje);
-
   });
-
 }
-
 </script>
 
 </body>
