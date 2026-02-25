@@ -1,9 +1,7 @@
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>RIFAS LOS COMPAS</title>
 
 <style>
@@ -12,8 +10,6 @@ body{
   margin:0;
   background:#e9f7e9;
 }
-
-/* MENU */
 .menu{
   display:flex;
   justify-content:center;
@@ -33,8 +29,6 @@ body{
 .menu button:hover{
   background:#ffe082;
 }
-
-/* BANNER */
 .banner{
   background:linear-gradient(135deg,#ffe082,#80deea);
   padding:25px;
@@ -50,8 +44,6 @@ body{
   color:#d50000;
   font-weight:bold;
 }
-
-/* CONTENIDO */
 .container{
   max-width:1000px;
   margin:auto;
@@ -62,16 +54,12 @@ body{
   border-radius:15px;
   padding:20px;
 }
-
-/* PLAYER */
 .player{
   width:100%;
   border-radius:15px;
   margin-bottom:20px;
   box-shadow:0 4px 10px rgba(0,0,0,.2);
 }
-
-/* BOLETOS */
 .boletos{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
@@ -84,11 +72,9 @@ body{
   cursor:pointer;
   background:#eeeeee;
   text-align:center;
-  white-space:nowrap;
   font-size:15px;
   box-shadow:0 3px 6px rgba(0,0,0,.15);
-  position:relative;
-  transition:all .2s ease;
+  transition:.2s;
 }
 .boleto:hover{
   transform:scale(1.05);
@@ -102,15 +88,6 @@ body{
   color:#666;
   cursor:not-allowed;
 }
-.boleto.vendido::after{
-  content:"✖";
-  position:absolute;
-  top:2px;
-  right:5px;
-  font-size:12px;
-}
-
-/* BOTON */
 button{
   margin-top:15px;
   padding:14px 25px;
@@ -123,20 +100,17 @@ button{
 }
 button:disabled{
   background:gray;
-  cursor:not-allowed;
 }
 </style>
-
 </head>
+
 <body>
 
-<!-- MENU -->
 <nav class="menu">
   <button onclick="mostrarSeccion('rifa')">Inicio</button>
   <button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
 </nav>
 
-<!-- SECCION RIFA -->
 <div id="rifa" class="seccion">
   <div class="banner">
     <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" style="max-width:200px; display:block; margin:auto;">
@@ -146,10 +120,8 @@ button:disabled{
 
   <div class="container">
     <div class="card">
-      <!-- PLAYER PREMIOS -->
       <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
 
-      <!-- BOLETOS -->
       <div class="boletos" id="boletos"></div>
 
       <div>
@@ -158,13 +130,11 @@ button:disabled{
       </div>
 
       <input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%; padding:10px; margin-top:10px;">
-      <br>
       <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
     </div>
   </div>
 </div>
 
-<!-- PAGOS -->
 <div id="pagos" class="seccion" style="display:none;">
   <div class="container">
     <div class="card">
@@ -172,13 +142,9 @@ button:disabled{
       <hr>
       <h3>✅ Luis Alejandro Romero Sebastian</h3>
       <p><strong>WhatsApp:</strong> 7421199270</p>
-      <p><strong>Tarjeta Débito BBVA:</strong><br>4152 3140 2646 1213</p>
-      <p><strong>Cuenta Clabe BBVA:</strong><br>012180015406075891</p>
       <hr>
       <h3>✅ Angel Gabriel Urioste Luciano</h3>
       <p><strong>WhatsApp:</strong> 7421292436</p>
-      <p><strong>Tarjeta Débito BBVA:</strong><br>4152 3145 7352 6715</p>
-      <p><strong>Cuenta Clabe BBVA:</strong><br>012180015751433706</p>
     </div>
   </div>
 </div>
@@ -186,23 +152,18 @@ button:disabled{
 <script>
 const PRECIO_BOLETO = 50;
 const TOTAL_BOLETOS = 400;
-
-// NUEVO URL DE APP SCRIPT
+const TELEFONO = "527421199270"; // NUMERO CORRECTO
 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz1yoGLxiuGVeEBaLvQFjmRkcNLQWntqcPnflpSGC2HF-g1gqMnxg1HNQlYQh0mRfs/exec";
-
-const TELEFONO = "527421199220";
 
 const contenedor = document.getElementById("boletos");
 const seleccionados = new Set();
 let vendidos = [];
 
-/* SECCIONES */
 function mostrarSeccion(id){
   document.querySelectorAll(".seccion").forEach(sec=>sec.style.display="none");
   document.getElementById(id).style.display="block";
 }
 
-/* CARGAR VENDIDOS */
 function cargarVendidos(){
   fetch(URL_SCRIPT)
     .then(res=>res.json())
@@ -215,7 +176,6 @@ function cargarVendidos(){
 cargarVendidos();
 setInterval(cargarVendidos,10000);
 
-/* GENERAR BOLETOS */
 function generarBoletos(){
   contenedor.innerHTML="";
   for(let i=1;i<=TOTAL_BOLETOS;i++){
@@ -234,7 +194,6 @@ function generarBoletos(){
   }
 }
 
-/* TOGGLE */
 function toggle(num,div){
   if(seleccionados.has(num)){
     seleccionados.delete(num);
@@ -246,13 +205,11 @@ function toggle(num,div){
   actualizarResumen();
 }
 
-/* RESUMEN */
 function actualizarResumen(){
   document.getElementById("cantidad").textContent = seleccionados.size;
   document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
 }
 
-/* PAGAR */
 function pagar(){
   if(seleccionados.size===0){
     alert("Selecciona boletos");
@@ -272,19 +229,28 @@ function pagar(){
 
   fetch(URL_SCRIPT,{
     method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
     body:JSON.stringify({
       nombre:nombre,
       boletos:boletosArray
     })
   })
   .then(res=>res.json())
-  .catch(err=>console.error("Error en script:",err))
+  .then(data=>{
+    console.log("Guardado en hoja:",data);
+  })
+  .catch(err=>{
+    console.error("Error:",err);
+    alert("Error al registrar boletos");
+  })
   .finally(()=>{
-
     const total = boletosArray.length * PRECIO_BOLETO;
+
     const mensaje =
-      `🎟️ RIFA LOS COMPAS
-Hola! Reserve los siguientes boletos:
+`🎟️ RIFA LOS COMPAS
+Hola! Reservé los siguientes boletos:
 
 🎫 BOLETOS: ${boletosArray.join(", ")}
 
@@ -294,13 +260,13 @@ Hola! Reserve los siguientes boletos:
 
 ENVIARÉ MI COMPROBANTE EN UN MOMENTO.`;
 
-    const url = `https://wa.me/${527421199270}?text=${encodeURIComponent(mensaje)}`;
+    const url = `https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`;
     window.open(url,"_blank");
 
     seleccionados.clear();
+    actualizarResumen();
     boton.disabled=false;
     boton.textContent="Finalizar Compra";
-
     cargarVendidos();
   });
 }
