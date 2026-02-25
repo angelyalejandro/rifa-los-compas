@@ -1,50 +1,37 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RIFAS LOS COMPAS</title>
     <style>
-        /* BASE Y FUENTES */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #e9f7e9; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #e9f7e9; }
+        .menu { display: flex; justify-content: center; gap: 10px; padding: 15px; background: #0d47a1; position: sticky; top: 0; z-index: 1000; }
+        .menu button { background: white; color: #0d47a1; font-weight: bold; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; }
         
-        /* MENÚ RESPONSIVO */
-        .menu { display: flex; justify-content: center; gap: 10px; padding: 15px; background: #0d47a1; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .menu button { background: white; color: #0d47a1; font-weight: bold; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        /* BANNER CORREGIDO */
+        .banner { background: linear-gradient(135deg, #ffe082, #80deea); padding: 25px 15px; text-align: center; }
+        .banner img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid white; margin-bottom: 10px; }
+        .banner h1 { font-size: 28px; margin: 5px 0; color: #0d47a1; }
+        .banner p { font-size: 15px; color: #01579b; font-weight: bold; margin: 5px 0; line-height: 1.2; }
 
-        /* BANNER CORREGIDO PARA MÓVIL */
-        .banner { background: linear-gradient(135deg, #ffe082, #80deea); padding: 20px 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .banner img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; }
-        .banner h1 { font-size: 28px; margin: 5px 0; color: #0d47a1; text-transform: uppercase; letter-spacing: 1px; }
-        .banner p { font-size: 16px; color: #01579b; font-weight: bold; margin: 5px 0; max-width: 90%; }
-
-        /* CONTENEDOR PRINCIPAL */
-        .container { width: 100%; max-width: 1100px; margin: auto; padding: 15px; box-sizing: border-box; }
+        .container { max-width: 1100px; margin: auto; padding: 15px; }
         .card { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* IMAGEN DEL FLYER RESPONSIVA */
-        .player { width: 100%; height: auto; display: block; margin: 0 auto 20px auto; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        /* FLYER RESTAURADO */
+        .player-container { width: 100%; text-align: center; margin-bottom: 20px; }
+        .player { width: 100%; max-width: 600px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); height: auto; display: inline-block; }
 
-        /* GRILLA DE BOLETOS */
-        .boletos { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; margin-top: 15px; }
-        .boleto { padding: 12px 2px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #eeeeee; text-align: center; font-size: 14px; border: 1px solid #ddd; transition: 0.2s; }
+        /* GRILLA BOLETOS */
+        .boletos { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; }
+        .boleto { padding: 12px 2px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #eeeeee; text-align: center; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s; }
         
-        /* ESTADOS */
-        .boleto.seleccionado { background: #00c853 !important; color: white !important; border-color: #00c853; }
-        .boleto.vendido { background: #666666 !important; color: #ffffff !important; cursor: not-allowed !important; opacity: 0.6; }
+        .boleto.seleccionado { background: #00c853 !important; color: white !important; }
+        .boleto.vendido { background: #666666 !important; color: white !important; cursor: not-allowed !important; opacity: 0.6; }
 
-        /* RESUMEN Y BOTÓN */
-        .resumen { background: #f1f8e9; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #00c853; font-size: 16px; }
-        input[type="text"] { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .resumen { background: #f1f8e9; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #00c853; }
+        input { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
         #btnPagar { width: 100%; margin-top: 15px; padding: 16px; border: none; border-radius: 10px; background: #00c853; color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
-
-        /* AJUSTES PARA CELULARES PEQUEÑOS */
-        @media (max-width: 480px) {
-            .banner h1 { font-size: 22px; }
-            .banner img { width: 100px; height: 100px; }
-            .boletos { grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); }
-            .boleto { padding: 10px 1px; font-size: 12px; }
-        }
     </style>
 </head>
 <body>
@@ -63,7 +50,9 @@
 
     <div class="container">
         <div class="card">
-            <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Flyer">
+            <div class="player-container">
+                <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Flyer Informativo">
+            </div>
             
             <h3 style="text-align: center;">Selecciona tus boletos:</h3>
             <div class="boletos" id="boletos"></div>
@@ -72,7 +61,7 @@
                 <strong>Boletos:</strong> <span id="cantidad">0</span> | <strong>Total:</strong> $<span id="total">0</span>
             </div>
 
-            <input type="text" id="nombreCliente" placeholder="Nombre completo">
+            <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
             <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
         </div>
     </div>
@@ -80,12 +69,12 @@
 
 <div id="pagos" class="seccion" style="display:none;">
     <div class="container">
-        <div class="card" style="text-align:center; background:#0f6c6c; color:white;">
+        <div class="card" style="text-align:center; background:#0f6c6c; color:white; padding: 30px 15px;">
             <h2>VENDEDORES AUTORIZADOS</h2>
             <div style="margin-bottom:20px;">
                 <p><strong>Luis Alejandro Romero Sebastian</strong><br>📱 7421199270</p>
             </div>
-            <hr>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2);">
             <div style="margin-top:20px;">
                 <p><strong>Angel Gabriel Urioste Luciano</strong><br>📱 7421292436</p>
             </div>
@@ -113,7 +102,7 @@ function cargarDatos() {
     fetch(URL_SCRIPT + "?t=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
-        // Normalización de datos para marcar vendidos
+        // Marcado de vendidos según estado en Excel
         vendidos = (data.vendidos || []).map(n => n.toString().trim().padStart(4, "0"));
         gratisPorBoleto = data.gratisPorBoleto || {};
         generarBoletos();
@@ -133,7 +122,6 @@ function generarBoletos() {
         div.className = "boleto";
         div.textContent = num;
 
-        // Verificar estado en la hoja de cálculo
         if(vendidos.includes(num)){
             div.classList.add("vendido");
         } else {
@@ -160,12 +148,12 @@ function actualizarTotales() {
 
 function pagar() {
     const nombre = document.getElementById("nombreCliente").value.trim();
-    if(seleccionados.size === 0 || nombre === "") return alert("Por favor selecciona boletos e ingresa tu nombre");
+    if(seleccionados.size === 0 || nombre === "") return alert("Faltan datos por completar");
 
     const boletosArray = Array.from(seleccionados);
     let todosLosGratis = [];
 
-    // Obtener boletos gratis de las columnas D-L
+    // Jalar boletos gratis de columnas D a L
     boletosArray.forEach(b => {
         if(gratisPorBoleto[b]) todosLosGratis.push(...gratisPorBoleto[b]);
     });
@@ -179,7 +167,7 @@ function pagar() {
         mode: "no-cors",
         body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
     }).finally(() => {
-        alert("¡Pedido enviado!");
+        alert("¡Apartado solicitado correctamente!");
         seleccionados.clear();
         actualizarTotales();
         cargarDatos();
@@ -189,6 +177,5 @@ function pagar() {
 cargarDatos();
 setInterval(cargarDatos, 15000);
 </script>
-
 </body>
 </html>
