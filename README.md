@@ -38,7 +38,7 @@ button:disabled{background:gray;}
   <div class="banner">
     <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" alt="Logo">
     <h1>RIFAS LOS COMPAS</h1>
-  
+   
   </div>
 
   <div class="container">
@@ -130,17 +130,19 @@ function generarBoletos(){
     div.textContent=num;
 
     if(vendidos.includes(num)){
-      div.classList.add("vendido");
+      div.classList.add("vendido"); // bloquea boleto vendido
     } else {
       if(seleccionados.has(num)) div.classList.add("seleccionado");
       div.onclick=()=>toggle(num,div);
     }
+
     contenedor.appendChild(div);
   }
 }
 
 /* TOGGLE */
 function toggle(num,div){
+  if(div.classList.contains("vendido")) return;
   if(seleccionados.has(num)){
     seleccionados.delete(num);
     div.classList.remove("seleccionado");
@@ -166,7 +168,7 @@ function pagar(){
   const boletosArray = Array.from(seleccionados);
   let boletosGratis = [];
 
-  // Jalar los 10 boletos gratis de cada boleto seleccionado
+  // jalar los 10 boletos gratis de cada boleto seleccionado
   boletosArray.forEach(b => {
     if(gratisPorBoleto[b]){
       boletosGratis.push(...gratisPorBoleto[b]);
@@ -183,24 +185,16 @@ function pagar(){
   // Abrir WhatsApp
   window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
 
-  // Registrar boletos en Sheets
-  fetch(URL_SCRIPT, { method:"POST", body:JSON.stringify({ nombre, boletos: boletosArray }) })
-    .finally(()=>{ 
-      seleccionados.clear(); actualizarResumen(); cargarVendidos(); 
-    });
+  // Registrar boletos vendidos
+  fetch(URL_SCRIPT,{
+    method:"POST",
+    body: JSON.stringify({ nombre, boletos: boletosArray })
+  })
   .then(res=>res.text())
   .finally(()=>{
     seleccionados.clear();
     actualizarResumen();
-    boton.disabled = false;
-    boton.textContent = "Finalizar Compra";
-    cargarVendidos();
-  })
-  .catch(err=>{
-    alert("Verifica que el Apps Script esté publicado como Aplicación web con acceso público.");
-    boton.disabled = false;
-    boton.textContent = "Finalizar Compra";
-    console.error(err);
+    cargarVendidos(); // recarga boletos y bloquea vendidos
   });
 }
 </script>
