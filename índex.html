@@ -141,13 +141,21 @@ async function actualizarDesdeGoogle() {
         const respuesta = await fetch(URL_API + "?t=" + Date.now());
         const json = await respuesta.json();
         
-        if (json && json.vendidos) {
-            vendidos = json.vendidos.map(n => String(n).padStart(4, "0"));
-            regalos = json.gratisPorBoleto || {};
-            document.getElementById("status-conexion").innerText = "✓ Disponibilidad actualizada";
-            document.getElementById("status-conexion").style.color = "green";
-            dibujarBoletos();
-        }
+       if (json && json.vendidos) {
+
+    vendidos = json.vendidos
+        .map(n => String(n).trim())
+        .map(n => n.padStart(4,"0"));
+
+    regalos = json.gratisPorBoleto || {};
+
+    console.log("Boletos vendidos desde Sheets:", vendidos);
+
+    document.getElementById("status-conexion").innerText = "✓ Disponibilidad actualizada";
+    document.getElementById("status-conexion").style.color = "green";
+
+    dibujarBoletos();
+}
     } catch (e) {
         document.getElementById("status-conexion").innerText = "⚠ Modo Catálogo (Sin conexión)";
         document.getElementById("status-conexion").style.color = "red";
