@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,38 +6,25 @@
     <title>RIFAS LOS COMPAS</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #e9f7e9; color: #333; }
-        
-        /* MENÚ */
         .menu { display: flex; justify-content: center; gap: 10px; padding: 15px; background: #0d47a1; position: sticky; top: 0; z-index: 1000; }
         .menu button { background: white; color: #0d47a1; font-weight: bold; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; }
-
-        /* BANNER */
         .banner { background: linear-gradient(135deg, #ffe082, #80deea); padding: 25px 15px; text-align: center; }
         .banner img { width: 110px; height: 110px; border-radius: 50%; border: 3px solid white; margin-bottom: 10px; }
         .banner h1 { font-size: 26px; margin: 5px 0; color: #0d47a1; }
         .banner p { font-size: 14px; color: #01579b; font-weight: bold; margin: 5px 0; }
-
         .container { max-width: 1100px; margin: auto; padding: 15px; }
         .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-
-        /* FLYER */
         .player { width: 100%; max-width: 500px; display: block; margin: 0 auto 20px auto; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
-        /* BOLETOS */
         .boletos { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; }
         .boleto { padding: 12px 2px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #eeeeee; text-align: center; font-size: 14px; border: 1px solid #ddd; }
         .boleto.seleccionado { background: #00c853 !important; color: white !important; }
         .boleto.vendido { background: #666666 !important; color: white !important; cursor: not-allowed !important; opacity: 0.6; }
-
-        /* FORMAS DE PAGO (Estilo tipo tarjeta blanca) */
-        .vendedor-card { text-align: left; border-bottom: 1px solid #eee; padding: 20px 0; }
-        .vendedor-card:last-child { border-bottom: none; }
-        .vendedor-nombre { font-size: 18px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-        .vendedor-info { font-size: 15px; line-height: 1.6; color: #555; margin-left: 28px; }
-
         .resumen { background: #f1f8e9; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #00c853; }
         input { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
         #btnPagar { width: 100%; margin-top: 15px; padding: 16px; border: none; border-radius: 10px; background: #00c853; color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .vendedor-card { text-align: left; border-bottom: 1px solid #eee; padding: 20px 0; }
+        .vendedor-nombre { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .vendedor-info { font-size: 15px; line-height: 1.6; color: #555; }
     </style>
 </head>
 <body>
@@ -70,24 +57,14 @@
 <div id="pagos" class="seccion" style="display:none;">
     <div class="container">
         <div class="card">
-            <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px; text-align: right; color: #333;">VENDEDORES</h2>
-            
+            <h2 style="text-align: center; color: #0d47a1;">VENDEDORES</h2>
             <div class="vendedor-card">
                 <div class="vendedor-nombre">✅ Luis Alejandro Romero Sebastian</div>
-                <div class="vendedor-info">
-                    <strong>WhatsApp:</strong> 7421199270<br>
-                    <strong>Tarjeta Débito BBVA:</strong> 4152 3140 2646 1213<br>
-                    <strong>Cuenta Clabe BBVA:</strong> 012180015406075891
-                </div>
+                <div class="vendedor-info"><strong>WhatsApp:</strong> 7421199270 | <strong>BBVA:</strong> 4152 3140 2646 1213</div>
             </div>
-
             <div class="vendedor-card">
                 <div class="vendedor-nombre">✅ Angel Gabriel Urioste Luciano</div>
-                <div class="vendedor-info">
-                    <strong>WhatsApp:</strong> 7421292436<br>
-                    <strong>Tarjeta Débito BBVA:</strong> 4152 3145 7352 6715<br>
-                    <strong>Cuenta Clabe BBVA:</strong> 012180015751433706
-                </div>
+                <div class="vendedor-info"><strong>WhatsApp:</strong> 7421292436 | <strong>BBVA:</strong> 4152 3145 7352 6715</div>
             </div>
         </div>
     </div>
@@ -113,14 +90,13 @@ function cargarDatos() {
     fetch(URL_SCRIPT + "?t=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
-        // Aseguramos que los números tengan 4 dígitos para coincidir con el diseño
         vendidos = (data.vendidos || []).map(n => n.toString().trim().padStart(4, "0"));
         gratisPorBoleto = data.gratisPorBoleto || {};
         generarBoletos();
     })
     .catch(err => {
         console.error("Error cargando datos:", err);
-        generarBoletos(); 
+        generarBoletos();
     });
 }
 
@@ -134,13 +110,10 @@ function generarBoletos() {
         div.className = "boleto";
         div.innerText = num;
 
-        // LÓGICA DE ESTADO DEL BOLETO
         if (vendidos.includes(num)) {
             div.classList.add("vendido");
         } else {
-            if (seleccionados.has(num)) {
-                div.classList.add("seleccionado");
-            }
+            if (seleccionados.has(num)) div.classList.add("seleccionado");
             div.onclick = () => {
                 if (seleccionados.has(num)) {
                     seleccionados.delete(num);
@@ -156,29 +129,18 @@ function generarBoletos() {
 }
 
 function actualizarTotales() {
-    const cantidad = seleccionados.size;
-    document.getElementById("cantidad").textContent = cantidad;
-    document.getElementById("total").textContent = cantidad * PRECIO_BOLETO;
+    document.getElementById("cantidad").textContent = seleccionados.size;
+    document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
 }
 
 function pagar() {
     const nombre = document.getElementById("nombreCliente").value.trim();
-    if (seleccionados.size === 0) return alert("Por favor, selecciona al menos un boleto.");
-    if (nombre === "") return alert("Por favor, ingresa tu nombre.");
+    if (seleccionados.size === 0 || nombre === "") return alert("Selecciona boletos e ingresa tu nombre");
 
     const boletosArray = Array.from(seleccionados);
     let boletosRegalo = [];
-
     boletosArray.forEach(b => {
-        // Buscamos si el número (ej: "0133") tiene regalos asociados en el JSON de Google
-        if (gratisPorBoleto[b]) {
-            // Si el regalo viene como array, lo añadimos, si es string, lo limpiamos
-            if(Array.isArray(gratisPorBoleto[b])){
-                boletosRegalo.push(...gratisPorBoleto[b]);
-            } else {
-                boletosRegalo.push(gratisPorBoleto[b]);
-            }
-        }
+        if (gratisPorBoleto[b]) boletosRegalo.push(...gratisPorBoleto[b]);
     });
 
     const msg = `*RIFA LOS COMPAS*%0A` +
@@ -190,24 +152,20 @@ function pagar() {
 
     window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
 
-    // Enviar a Google Sheets
     fetch(URL_SCRIPT, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
     }).finally(() => {
-        alert("Apartado enviado con éxito.");
+        alert("Apartado enviado con éxito");
         seleccionados.clear();
         actualizarTotales();
         cargarDatos();
     });
 }
 
-// Iniciar la carga
 cargarDatos();
-// Actualizar cada 30 segundos para no saturar
-setInterval(cargarDatos, 30000);
+setInterval(cargarDatos, 20000);
 </script>
 </body>
 </html>
