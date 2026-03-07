@@ -238,25 +238,26 @@ document.getElementById("total").textContent=seleccionados.size*PRECIO;
 
 function cargarVendidos(){
 
-fetch(URL_SHEET+"?t="+Date.now())
+fetch(URL_SHEET + "&t=" + Date.now())
+.then(res => res.text())
+.then(data => {
 
-.then(res=>res.text())
+let filas = data.trim().split("\n");
 
-.then(data=>{
-
-let filas=data.split("\n");
-
-vendidos=[];
+vendidos = [];
 
 for(let i=1;i<filas.length;i++){
 
-let columnas=filas[i].split(",");
+let columnas = filas[i].split(",");
 
-if(columnas[1] && columnas[1].trim().toUpperCase()=="VENDIDO"){
+let boleto = columnas[0];
+let estado = columnas[1];
 
-let num = String(columnas[0]).trim().padStart(4,"0");
+if(estado && estado.trim().toUpperCase() === "VENDIDO"){
 
-vendidos.push(num);
+let numero = String(boleto).trim().padStart(4,"0");
+
+vendidos.push(numero);
 
 }
 
@@ -264,10 +265,12 @@ vendidos.push(num);
 
 generarBoletos();
 
+})
+.catch(err=>{
+console.error("Error leyendo hoja:",err);
 });
 
 }
-
 function pagar(){
 
 if(seleccionados.size===0){
