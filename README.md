@@ -15,7 +15,7 @@
         .container { max-width: 1100px; margin: auto; padding: 15px; }
         .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .player { width: 100%; max-width: 500px; display: block; margin: 0 auto 20px auto; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .boletos { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; min-height: 200px; }
+        .boletos { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; min-height: 50px; }
         .boleto { padding: 12px 2px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #eeeeee; text-align: center; font-size: 14px; border: 1px solid #ddd; }
         .boleto.seleccionado { background: #00c853 !important; color: white !important; }
         .boleto.vendido { background: #666666 !important; color: white !important; cursor: not-allowed !important; opacity: 0.6; pointer-events: none; }
@@ -41,7 +41,7 @@
         <div class="card">
             <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Flyer">
             <h3 style="text-align: center;">Selecciona tus boletos:</h3>
-            <div id="mensaje-carga" style="text-align: center; padding: 20px; font-weight: bold; color: #0d47a1;">Cargando disponibilidad de boletos...</div>
+            <div id="mensaje-status" style="text-align: center; margin-bottom: 10px; font-weight: bold;">Cargando...</div>
             <div class="boletos" id="boletos"></div>
             
             <div class="resumen">
@@ -56,9 +56,9 @@
 <div id="pagos" class="seccion" style="display:none;">
     <div class="container">
         <div class="card">
-            <h2 style="text-align: center; color: #0d47a1;">PAGOS</h2>
-            <p><strong>Luis Alejandro Romero:</strong> 4152 3140 2646 1213 (BBVA)</p>
-            <p><strong>Angel Gabriel Urioste:</strong> 4152 3145 7352 6715 (BBVA)</p>
+            <h2 style="text-align: center;">PAGOS BBVA</h2>
+            <p><strong>Luis Alejandro:</strong> 4152 3140 2646 1213</p>
+            <p><strong>Angel Gabriel:</strong> 4152 3145 7352 6715</p>
         </div>
     </div>
 </div>
@@ -74,34 +74,13 @@ let vendidos = [];
 let gratisPorBoleto = {};
 
 function mostrarSeccion(id) {
-    document.querySelectorAll(".seccion").forEach(s => s.style.display = "none");
-    document.getElementById(id).style.display = "block";
-}
-
-// FUNCIÓN DE CARGA MEJORADA
-async function cargarDatos() {
-    try {
-        const response = await fetch(URL_SCRIPT + "?t=" + new Date().getTime());
-        if (!response.ok) throw new Error('Error en la red');
-        
-        const data = await response.json();
-        
-        if(data) {
-            vendidos = (data.vendidos || []).map(n => String(n).padStart(4, "0"));
-            gratisPorBoleto = data.gratisPorBoleto || {};
-            document.getElementById("mensaje-carga").style.display = "none";
-        }
-    } catch (error) {
-        console.error("Error cargando datos de Google:", error);
-        // Si falla, avisamos pero permitimos que los boletos se dibujen
-        document.getElementById("mensaje-carga").innerText = "Mostrando boletos (Modo catálogo - No se pudo verificar disponibilidad)";
-        document.getElementById("mensaje-carga").style.color = "red";
-    }
-    generarBoletos();
+    document.getElementById('rifa').style.display = (id === 'rifa') ? 'block' : 'none';
+    document.getElementById('pagos').style.display = (id === 'pagos') ? 'block' : 'none';
 }
 
 function generarBoletos() {
     const contenedor = document.getElementById("boletos");
+    if(!contenedor) return;
     contenedor.innerHTML = "";
 
     for (let i = 1; i <= TOTAL_BOLETOS; i++) {
@@ -114,12 +93,9 @@ function generarBoletos() {
             div.classList.add("vendido");
         } else {
             if (seleccionados.has(num)) div.classList.add("seleccionado");
-            div.onclick = () => {
-                if (seleccionados.has(num)) {
-                    seleccionados.delete(num);
-                } else {
-                    seleccionados.add(num);
-                }
+            div.onclick = function() {
+                if (seleccionados.has(num)) seleccionados.delete(num);
+                else seleccionados.add(num);
                 generarBoletos();
                 actualizarTotales();
             };
@@ -129,29 +105,40 @@ function generarBoletos() {
 }
 
 function actualizarTotales() {
-    document.getElementById("cantidad").textContent = seleccionados.size;
-    document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
+    document.getElementById("cantidad").innerText = seleccionados.size;
+    document.getElementById("total").innerText = seleccionados.size * PRECIO_BOLETO;
+}
+
+async function cargarDatos() {
+    try {
+        const resp = await fetch(URL_SCRIPT + "?t=" + new Date().getTime());
+        const data = await resp.json();
+        if (data) {
+            vendidos = (data.vendidos || []).map(n => String(n).padStart(4, "0"));
+            gratisPorBoleto = data.gratisPorBoleto || {};
+            document.getElementById("mensaje-status").style.display = "none";
+        }
+    } catch (e) {
+        console.error(e);
+        document.getElementById("mensaje-status").innerText = "Modo Catálogo (Sin conexión)";
+    }
+    generarBoletos();
 }
 
 function pagar() {
     const nombre = document.getElementById("nombreCliente").value.trim();
-    if (seleccionados.size === 0 || nombre === "") return alert("Selecciona tus boletos e ingresa tu nombre");
+    if (seleccionados.size === 0 || nombre === "") return alert("Selecciona boletos y escribe tu nombre");
 
     const boletosArray = Array.from(seleccionados);
-    let boletosRegalo = [];
-    boletosArray.forEach(b => {
-        if (gratisPorBoleto[b]) boletosRegalo.push(...gratisPorBoleto[b]);
-    });
+    let regalos = [];
+    boletosArray.forEach(b => { if(gratisPorBoleto[b]) regalos.push(...gratisPorBoleto[b]); });
 
-    const msg = `*RIFA LOS COMPAS*%0A👤 *Nombre:* ${nombre}%0A🎫 *Boletos:* ${boletosArray.join(", ")}%0A🎁 *Gratis:* ${boletosRegalo.length > 0 ? boletosRegalo.join(", ") : "Ninguno"}%0A💰 *Total:* $${boletosArray.length * PRECIO_BOLETO}`;
-
+    const msg = `*RIFA LOS COMPAS*%0A👤 *Cliente:* ${nombre}%0A🎫 *Boletos:* ${boletosArray.join(", ")}%0A🎁 *Gratis:* ${regalos.join(", ") || "Ninguno"}%0A💰 *Total:* $${boletosArray.length * PRECIO_BOLETO}`;
+    
     window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
 
-    fetch(URL_SCRIPT, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
-    }).finally(() => {
+    fetch(URL_SCRIPT, { method: "POST", mode: "no-cors", body: JSON.stringify({ nombre: nombre, boletos: boletosArray }) })
+    .finally(() => {
         alert("Apartado enviado");
         seleccionados.clear();
         actualizarTotales();
@@ -159,8 +146,8 @@ function pagar() {
     });
 }
 
-// INICIO
-cargarDatos();
+// INICIO AUTOMÁTICO
+window.onload = cargarDatos;
 </script>
 </body>
 </html>
