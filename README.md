@@ -254,7 +254,7 @@ let columnas=filas[i].split(",");
 
 if(columnas[1] && columnas[1].trim().toUpperCase()=="VENDIDO"){
 
-let num=columnas[0].padStart(4,"0");
+let num = String(columnas[0]).trim().padStart(4,"0");
 
 vendidos.push(num);
 
