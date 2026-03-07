@@ -113,12 +113,14 @@ function cargarDatos() {
     fetch(URL_SCRIPT + "?t=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
-        // Bloqueo de boletos VENDIDOS desde Excel
         vendidos = (data.vendidos || []).map(n => n.toString().trim().padStart(4, "0"));
         gratisPorBoleto = data.gratisPorBoleto || {};
         generarBoletos();
     })
-    .catch(err => console.error("Error:", err));
+    .catch(err => {
+        console.error("Error cargando datos:", err);
+        generarBoletos(); // genera boletos aunque falle el script
+    });
 }
 
 function generarBoletos() {
