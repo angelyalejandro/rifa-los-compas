@@ -1,318 +1,194 @@
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RIFAS LOS COMPAS</title>
-
-<style>
-
-body{
-font-family:'Segoe UI',sans-serif;
-margin:0;
-background:#e9f7e9;
-}
-
-.menu{
-display:flex;
-justify-content:center;
-gap:10px;
-padding:15px;
-background:#0d47a1;
-}
-
-.menu button{
-background:white;
-color:#0d47a1;
-font-weight:bold;
-border:none;
-padding:10px 20px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.banner{
-background:linear-gradient(135deg,#ffe082,#80deea);
-padding:25px;
-text-align:center;
-}
-
-.banner h1{
-font-size:34px;
-margin:10px 0;
-color:#0d47a1;
-}
-
-.banner img{
-max-width:200px;
-display:block;
-margin:auto;
-}
-
-.container{
-max-width:1100px;
-margin:auto;
-padding:20px;
-}
-
-.card{
-background:white;
-border-radius:15px;
-padding:20px;
-}
-
-.player{
-width:100%;
-border-radius:15px;
-margin-bottom:20px;
-box-shadow:0 4px 10px rgba(0,0,0,.2);
-}
-
-.boletos{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
-gap:10px;
-}
-
-.boleto{
-padding:14px 6px;
-border-radius:12px;
-font-weight:bold;
-cursor:pointer;
-background:#eeeeee;
-text-align:center;
-font-size:15px;
-}
-
-.boleto.seleccionado{
-background:#00c853;
-color:white;
-}
-
-.boleto.vendido{
-background:#ccc;
-color:#666;
-cursor:not-allowed;
-}
-
-button{
-margin-top:15px;
-padding:14px 25px;
-border:none;
-border-radius:10px;
-background:#00c853;
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-button:disabled{
-background:gray;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIFAS LOS COMPAS</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #e9f7e9; }
+        .menu { display: flex; justify-content: center; gap: 10px; padding: 15px; background: #0d47a1; }
+        .menu button { background: white; color: #0d47a1; font-weight: bold; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+        .banner { background: linear-gradient(135deg, #ffe082, #80deea); padding: 25px; text-align: center; }
+        .banner h1 { font-size: 34px; margin: 10px 0; color: #0d47a1; }
+        .banner img { max-width: 200px; display: block; margin: auto; }
+        .container { max-width: 1100px; margin: auto; padding: 20px; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .player { width: 100%; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+        .boletos { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; margin-top: 20px; }
+        .boleto { padding: 14px 6px; border-radius: 12px; font-weight: bold; cursor: pointer; background: #eeeeee; text-align: center; font-size: 15px; transition: 0.3s; }
+        .boleto.seleccionado { background: #00c853; color: white; }
+        .boleto.vendido { background: #ccc; color: #666; cursor: not-allowed; text-decoration: line-through; }
+        .resumen { margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #00c853; }
+        #btnPagar { width: 100%; padding: 16px; border: none; border-radius: 10px; background: #00c853; color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
+        #btnPagar:disabled { background: #aaa; cursor: not-allowed; }
+    </style>
 </head>
-
 <body>
 
 <nav class="menu">
-<button onclick="mostrarSeccion('rifa')">Inicio</button>
-<button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
+    <button onclick="mostrarSeccion('rifa')">Inicio</button>
+    <button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
 </nav>
 
 <div id="rifa" class="seccion">
+    <div class="banner">
+        <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG">
+        <h1>RIFAS LOS COMPAS</h1>
+    </div>
 
-<div class="banner">
-<img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG">
-<h1>RIFAS LOS COMPAS</h1>
-</div>
+    <div class="container">
+        <div class="card">
+            <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
+            
+            <div id="boletos" class="boletos"></div>
 
-<div class="container">
-<div class="card">
+            <div class="resumen">
+                <strong>Boletos seleccionados:</strong> <span id="cantidad">0</span><br>
+                <strong>Total a pagar:</strong> $<span id="total">0</span>
+            </div>
 
-<img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
+            <input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px; box-sizing: border-box;">
 
-<div class="boletos" id="boletos"></div>
-
-<div>
-Boletos: <span id="cantidad">0</span><br>
-Total: $<span id="total">0</span>
-</div>
-
-<input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%;padding:10px;margin-top:10px;">
-
-<button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
-
-</div>
-</div>
+            <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
+        </div>
+    </div>
 </div>
 
 <div id="pagos" class="seccion" style="display:none;">
-<div class="container">
-
-<div class="card" style="text-align:center;background:#0f6c6c;color:white;">
-
-<h1>FORMAS DE PAGO</h1>
-
-<h2>Transferencia / Depósito</h2>
-
-<p><b>Banco:</b> BBVA</p>
-<p><b>Nombre:</b> Luis Alejandro Romero Sebastian</p>
-<p><b>Cuenta:</b> 1234567890</p>
-<p><b>CLABE:</b> 012345678901234567</p>
-<p><b>Número de tarjeta:</b> 4152 3100 1234 5678</p>
-
-<hr>
-
-<h2>Contacto para pago</h2>
-
-<p>📱 Luis Alejandro Romero Sebastian</p>
-<p>7421199270</p>
-
-<br>
-
-<p>📱 Angel Gabriel Urioste Luciano</p>
-<p>7421292436</p>
-
-</div>
-
-</div>
+    <div class="container">
+        <div class="card" style="text-align:center; background:#0f6c6c; color:white;">
+            <h1>FORMAS DE PAGO</h1>
+            <h2>Transferencia / Depósito</h2>
+            <p><b>Banco:</b> BBVA</p>
+            <p><b>Nombre:</b> Luis Alejandro Romero Sebastian</p>
+            <p><b>Cuenta:</b> 1234567890</p>
+            <p><b>CLABE:</b> 012345678901234567</p>
+            <p><b>Número de tarjeta:</b> 4152 3100 1234 5678</p>
+            <hr>
+            <h2>Contacto para pago</h2>
+            <p>📱 Luis Alejandro Romero Sebastian: 7421199270</p>
+            <p>📱 Angel Gabriel Urioste Luciano: 7421292436</p>
+        </div>
+    </div>
 </div>
 
 <script>
+    const PRECIO = 50;
+    const TOTAL_BOLETOS = 400;
+    const TELEFONO = "527421199270";
+    
+    // URL para LEER (CSV público)
+    const URL_SHEET_LECTURA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
+    
+    // URL para ESCRIBIR y JALAR REGALOS (Apps Script)
+    const URL_APP_SCRIPT = "https://script.google.com/macros/s/AKfycbwvQD1IIv6gi7soAxjiaoFjY34p1AIWzyqqxDG6tjd7JMxfnaRPOlZMNYmce61I_ouD8w/exec";
 
-const PRECIO = 50;
-const TOTAL_BOLETOS = 400;
+    const contenedor = document.getElementById("boletos");
+    let seleccionados = new Set();
+    let vendidos = [];
 
-const TELEFONO = "527421199270";
+    function mostrarSeccion(id) {
+        document.querySelectorAll(".seccion").forEach(s => s.style.display = "none");
+        document.getElementById(id).style.display = "block";
+    }
 
-const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
+    function generarBoletos() {
+        contenedor.innerHTML = "";
+        for (let i = 1; i <= TOTAL_BOLETOS; i++) {
+            const num = i.toString().padStart(4, "0");
+            const div = document.createElement("div");
+            div.textContent = num;
+            div.className = "boleto";
 
-const contenedor = document.getElementById("boletos");
+            if (vendidos.includes(num)) {
+                div.classList.add("vendido");
+            } else {
+                if (seleccionados.has(num)) div.classList.add("seleccionado");
+                div.onclick = () => toggleBoleto(num);
+            }
+            contenedor.appendChild(div);
+        }
+    }
 
-let seleccionados = new Set();
-let vendidos = [];
+    function toggleBoleto(num) {
+        if (seleccionados.has(num)) {
+            seleccionados.delete(num);
+        } else {
+            seleccionados.add(num);
+        }
+        actualizarResumen();
+        generarBoletos();
+    }
 
-function mostrarSeccion(id){
-document.querySelectorAll(".seccion").forEach(s=>s.style.display="none");
-document.getElementById(id).style.display="block";
-}
+    function actualizarResumen() {
+        document.getElementById("cantidad").textContent = seleccionados.size;
+        document.getElementById("total").textContent = seleccionados.size * PRECIO;
+    }
 
-function generarBoletos(){
+    function cargarVendidos() {
+        fetch(URL_SHEET_LECTURA + "&t=" + Date.now())
+            .then(res => res.text())
+            .then(data => {
+                let filas = data.trim().split("\n");
+                vendidos = [];
+                for (let i = 1; i < filas.length; i++) {
+                    let columnas = filas[i].split(",");
+                    let boleto = columnas[0];
+                    let estado = columnas[1];
+                    if (estado && estado.trim().toUpperCase() === "VENDIDO") {
+                        vendidos.push(String(boleto).trim().padStart(4, "0"));
+                    }
+                }
+                generarBoletos();
+            })
+            .catch(err => console.error("Error leyendo hoja:", err));
+    }
 
-contenedor.innerHTML="";
+    async function pagar() {
+        if (seleccionados.size === 0) return alert("Selecciona boletos");
+        const nombre = document.getElementById("nombreCliente").value.trim();
+        if (nombre === "") return alert("Escribe tu nombre");
 
-for(let i=1;i<=TOTAL_BOLETOS;i++){
+        const btn = document.getElementById("btnPagar");
+        btn.disabled = true;
+        btn.textContent = "Registrando...";
 
-const num=i.toString().padStart(4,"0");
+        const boletosArray = Array.from(seleccionados);
 
-const div=document.createElement("div");
+        try {
+            // ENVIAR A GOOGLE SHEETS Y RECIBIR REGALOS
+            const response = await fetch(URL_APP_SCRIPT, {
+                method: "POST",
+                mode: "no-cors", // Para evitar bloqueos de Google
+                body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
+            });
 
-div.textContent=num;
+            // Como usamos "no-cors", no podemos leer el JSON de respuesta directamente por seguridad del navegador.
+            // Pero los datos ya se enviaron. Generamos el mensaje.
+            
+            const mensajeRegalos = "*(Favor de verificar mis boletos de regalo asignados en la lista)*";
+            const mensaje = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${boletosArray.join(", ")}%0A${mensajeRegalos}%0A*Total:* $${boletosArray.length * PRECIO}`;
 
-div.className="boleto";
+            window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`);
 
-if(vendidos.includes(num)){
-div.classList.add("vendido");
-}else{
+            // Limpiar todo
+            seleccionados.clear();
+            document.getElementById("nombreCliente").value = "";
+            actualizarResumen();
+            setTimeout(cargarVendidos, 2000); // Recargar después de 2 seg para dar tiempo a la hoja
 
-if(seleccionados.has(num)) div.classList.add("seleccionado");
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Hubo un error. Si el mensaje de WhatsApp no se abre, contacta al administrador.");
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Finalizar Compra";
+        }
+    }
 
-div.onclick=()=>toggleBoleto(num);
-
-}
-
-contenedor.appendChild(div);
-
-}
-
-}
-
-function toggleBoleto(num){
-
-if(vendidos.includes(num)) return;
-
-if(seleccionados.has(num)){
-seleccionados.delete(num);
-}else{
-seleccionados.add(num);
-}
-
-actualizarResumen();
-generarBoletos();
-
-}
-
-function actualizarResumen(){
-
-document.getElementById("cantidad").textContent=seleccionados.size;
-
-document.getElementById("total").textContent=seleccionados.size*PRECIO;
-
-}
-
-function cargarVendidos(){
-
-fetch(URL_SHEET + "&t=" + Date.now())
-.then(res => res.text())
-.then(data => {
-
-let filas = data.trim().split("\n");
-
-vendidos = [];
-
-for(let i=1;i<filas.length;i++){
-
-let columnas = filas[i].split(",");
-
-let boleto = columnas[0];
-let estado = columnas[1];
-
-if(estado && estado.trim().toUpperCase() === "VENDIDO"){
-
-let numero = String(boleto).trim().padStart(4,"0");
-
-vendidos.push(numero);
-
-}
-
-}
-
-generarBoletos();
-
-})
-.catch(err=>{
-console.error("Error leyendo hoja:",err);
-});
-
-}
-function pagar(){
-
-if(seleccionados.size===0){
-alert("Selecciona boletos");
-return;
-}
-
-const nombre=document.getElementById("nombreCliente").value.trim();
-
-if(nombre===""){
-alert("Escribe tu nombre");
-return;
-}
-
-const boletos=Array.from(seleccionados);
-
-const mensaje=`Hola quiero apartar boletos%0A%0ANombre: ${nombre}%0ABoletos: ${boletos.join(", ")}%0ATotal: $${boletos.length*PRECIO}`;
-
-window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`);
-
-}
-
-generarBoletos();
-
-cargarVendidos();
-
-setInterval(cargarVendidos,10000);
-
+    // Inicio
+    generarBoletos();
+    cargarVendidos();
+    setInterval(cargarVendidos, 15000); // Actualiza cada 15 seg
 </script>
 
 </body>
