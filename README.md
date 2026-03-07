@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -172,12 +171,13 @@ const TOTAL_BOLETOS = 400;
 
 const TELEFONO = "527421199270";
 
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwWtSHDck7DhkXeE4afOPilmsbUfCIfT_kR2CN9uMZttIrvLi-6k5MWvW5b4qYVUns5/exec";
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz05Mzq6MB2rBStTV9YAvRS2mfG7FHqhPm-M2DQhWxDBbs1Y9-Wfgd33X1WqrMYjL5h_g/exec";
 
 const contenedor = document.getElementById("boletos");
 
 let seleccionados = new Set();
 let vendidos = [];
+let procesando=false;
 
 function mostrarSeccion(id){
 document.querySelectorAll(".seccion").forEach(s=>s.style.display="none");
@@ -261,6 +261,8 @@ generarBoletos();
 
 function pagar(){
 
+if(procesando) return;
+
 if(seleccionados.size===0){
 alert("Selecciona boletos");
 return;
@@ -272,6 +274,8 @@ if(nombre===""){
 alert("Escribe tu nombre");
 return;
 }
+
+procesando=true;
 
 const boletos=Array.from(seleccionados);
 
@@ -288,7 +292,10 @@ seleccionados.clear();
 
 actualizarResumen();
 
-setTimeout(cargarVendidos,2000);
+setTimeout(()=>{
+procesando=false;
+cargarVendidos();
+},2000);
 
 }
 
