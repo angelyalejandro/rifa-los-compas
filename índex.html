@@ -148,19 +148,33 @@ Total: $<span id="total">0</span>
 
 <div id="pagos" class="seccion" style="display:none;">
 <div class="container">
+
 <div class="card" style="text-align:center;background:#0f6c6c;color:white;">
 
-<h1>VENDEDORES AUTORIZADOS</h1>
+<h1>FORMAS DE PAGO</h1>
 
-<h2>Luis Alejandro Romero Sebastian</h2>
-<p>📱 7421199270</p>
+<h2>Transferencia / Depósito</h2>
+
+<p><b>Banco:</b> BBVA</p>
+<p><b>Nombre:</b> Luis Alejandro Romero Sebastian</p>
+<p><b>Cuenta:</b> 1234567890</p>
+<p><b>CLABE:</b> 012345678901234567</p>
+<p><b>Número de tarjeta:</b> 4152 3100 1234 5678</p>
 
 <hr>
 
-<h2>Angel Gabriel Urioste Luciano</h2>
-<p>📱 7421292436</p>
+<h2>Contacto para pago</h2>
+
+<p>📱 Luis Alejandro Romero Sebastian</p>
+<p>7421199270</p>
+
+<br>
+
+<p>📱 Angel Gabriel Urioste Luciano</p>
+<p>7421292436</p>
 
 </div>
+
 </div>
 </div>
 
