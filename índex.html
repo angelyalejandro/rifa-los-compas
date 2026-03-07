@@ -1,210 +1,304 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RIFAS LOS COMPAS</title>
+
 <style>
-body{font-family:'Segoe UI',sans-serif;margin:0;background:#e9f7e9;}
-.menu{display:flex;justify-content:center;gap:10px;padding:15px;background:#0d47a1;}
-.menu button{background:white;color:#0d47a1;font-weight:bold;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
-.menu button:hover{background:#ffe082;}
-.banner{background:linear-gradient(135deg,#ffe082,#80deea);padding:25px;text-align:center;}
-.banner h1{font-size:34px;margin:10px 0;color:#0d47a1;}
-.banner img{max-width:200px;display:block;margin:auto;}
-.precio{font-size:26px;color:#d50000;font-weight:bold;}
-.container{max-width:1100px;margin:auto;padding:20px;}
-.card{background:white;border-radius:15px;padding:20px;}
-.player{width:100%;border-radius:15px;margin-bottom:20px;box-shadow:0 4px 10px rgba(0,0,0,.2);}
-.boletos{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:10px;}
-.boleto{padding:14px 6px;border-radius:12px;font-weight:bold;cursor:pointer;background:#eeeeee;text-align:center;font-size:15px;box-shadow:0 3px 6px rgba(0,0,0,.15);transition:.2s;}
-.boleto:hover{transform:scale(1.05);}
-.boleto.seleccionado{background:#00c853;color:white;}
-.boleto.vendido{background:#ccc;color:#666;cursor:not-allowed;}
-button{margin-top:15px;padding:14px 25px;border:none;border-radius:10px;background:#00c853;color:white;font-size:16px;cursor:pointer;}
-button:disabled{background:gray;}
+
+body{
+font-family:'Segoe UI',sans-serif;
+margin:0;
+background:#e9f7e9;
+}
+
+.menu{
+display:flex;
+justify-content:center;
+gap:10px;
+padding:15px;
+background:#0d47a1;
+}
+
+.menu button{
+background:white;
+color:#0d47a1;
+font-weight:bold;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.banner{
+background:linear-gradient(135deg,#ffe082,#80deea);
+padding:25px;
+text-align:center;
+}
+
+.banner h1{
+font-size:34px;
+margin:10px 0;
+color:#0d47a1;
+}
+
+.banner img{
+max-width:200px;
+display:block;
+margin:auto;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:15px;
+padding:20px;
+}
+
+.player{
+width:100%;
+border-radius:15px;
+margin-bottom:20px;
+box-shadow:0 4px 10px rgba(0,0,0,.2);
+}
+
+.boletos{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(70px,1fr));
+gap:10px;
+}
+
+.boleto{
+padding:14px 6px;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+background:#eeeeee;
+text-align:center;
+font-size:15px;
+}
+
+.boleto.seleccionado{
+background:#00c853;
+color:white;
+}
+
+.boleto.vendido{
+background:#ccc;
+color:#666;
+cursor:not-allowed;
+}
+
+button{
+margin-top:15px;
+padding:14px 25px;
+border:none;
+border-radius:10px;
+background:#00c853;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:disabled{
+background:gray;
+}
+
 </style>
 </head>
+
 <body>
 
-<!-- MENU -->
 <nav class="menu">
-  <button onclick="mostrarSeccion('rifa')">Inicio</button>
-  <button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
+<button onclick="mostrarSeccion('rifa')">Inicio</button>
+<button onclick="mostrarSeccion('pagos')">Formas de Pago</button>
 </nav>
 
-<!-- SECCIÓN RIFA -->
 <div id="rifa" class="seccion">
-  <div class="banner">
-    <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG" alt="Logo">
-    <h1>RIFAS LOS COMPAS</h1>
-   
-  </div>
 
-  <div class="container">
-    <div class="card">
-      <!-- FLYER -->
-      <img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg" alt="Flyer">
-
-      <!-- BOLETOS -->
-      <div class="boletos" id="boletos"></div>
-
-      <div>
-        Boletos: <span id="cantidad">0</span><br>
-        Total: $<span id="total">0</span>
-      </div>
-
-      <input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%; padding:10px; margin-top:10px;">
-      <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
-    </div>
-  </div>
+<div class="banner">
+<img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG">
+<h1>RIFAS LOS COMPAS</h1>
 </div>
 
-<!-- SECCIÓN PAGOS -->
+<div class="container">
+<div class="card">
+
+<img class="player" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
+
+<div class="boletos" id="boletos"></div>
+
+<div>
+Boletos: <span id="cantidad">0</span><br>
+Total: $<span id="total">0</span>
+</div>
+
+<input type="text" id="nombreCliente" placeholder="Tu nombre completo" style="width:100%;padding:10px;margin-top:10px;">
+
+<button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
+
+</div>
+</div>
+</div>
+
 <div id="pagos" class="seccion" style="display:none;">
-  <div class="container">
-    <div class="card" style="text-align:center; background:#0f6c6c; color:white;">
-      <h1 style="font-size:40px;">VENDEDORES AUTORIZADOS</h1>
+<div class="container">
+<div class="card" style="text-align:center;background:#0f6c6c;color:white;">
 
-      <div style="margin-bottom:40px;">
-        <h2>Luis Alejandro Romero Sebastian ✅</h2>
-        <div style="background:red; padding:15px; border-radius:12px; font-size:26px; font-weight:bold;">
-          📱 7421199270
-        </div>
-        <p><strong>Tarjeta Débito BBVA:</strong><br>4152 3140 2646 1213</p>
-        <p><strong>Cuenta Clabe BBVA:</strong><br>012180015406075891</p>
-      </div>
+<h1>VENDEDORES AUTORIZADOS</h1>
 
-      <hr style="margin:40px 0;">
+<h2>Luis Alejandro Romero Sebastian</h2>
+<p>📱 7421199270</p>
 
-      <div>
-        <h2>Angel Gabriel Urioste Luciano ✅</h2>
-        <div style="background:red; padding:15px; border-radius:12px; font-size:26px; font-weight:bold;">
-          📱 7421292436
-        </div>
-        <p><strong>Tarjeta Débito BBVA:</strong><br>4152 3145 7352 6715</p>
-        <p><strong>Cuenta Clabe BBVA:</strong><br>012180015751433706</p>
-      </div>
-    </div>
-  </div>
+<hr>
+
+<h2>Angel Gabriel Urioste Luciano</h2>
+<p>📱 7421292436</p>
+
+</div>
+</div>
 </div>
 
 <script>
-const PRECIO_BOLETO = 50;
+
+const PRECIO = 50;
 const TOTAL_BOLETOS = 400;
+
 const TELEFONO = "527421199270";
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyxSwV7JliEFpRq5nuGHBP2OAQqAV3JsbqElFc6t51Bl5oH4So0gmWJ7eYlPIVXKjHw/exec";
+
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwWtSHDck7DhkXeE4afOPilmsbUfCIfT_kR2CN9uMZttIrvLi-6k5MWvW5b4qYVUns5/exec";
 
 const contenedor = document.getElementById("boletos");
-const seleccionados = new Set();
+
+let seleccionados = new Set();
 let vendidos = [];
-let boletosGratis = [];
 
-/* SECCIONES */
 function mostrarSeccion(id){
-  document.querySelectorAll(".seccion").forEach(sec=>sec.style.display="none");
-  document.getElementById(id).style.display="block";
+document.querySelectorAll(".seccion").forEach(s=>s.style.display="none");
+document.getElementById(id).style.display="block";
 }
 
-/* CARGAR VENDIDOS + BOLETOS GRATIS */
-function cargarVendidos(){
-  fetch(URL_SCRIPT)
-    .then(res => res.json())
-    .then(data => {
-      vendidos = data.vendidos || [];
-      boletosGratis = data.boletosGratis || [];
-      generarBoletos();
-    })
-    .catch(err => console.error("Error GET:", err));
+function generarBoletos(){
+
+contenedor.innerHTML="";
+
+for(let i=1;i<=TOTAL_BOLETOS;i++){
+
+const num=i.toString().padStart(4,"0");
+
+const div=document.createElement("div");
+
+div.textContent=num;
+
+div.className="boleto";
+
+if(vendidos.includes(num)){
+div.classList.add("vendido");
+}else{
+
+if(seleccionados.has(num)) div.classList.add("seleccionado");
+
+div.onclick=()=>toggleBoleto(num);
+
 }
+
+contenedor.appendChild(div);
+
+}
+
+}
+
+function toggleBoleto(num){
+
+if(vendidos.includes(num)) return;
+
+if(seleccionados.has(num)){
+seleccionados.delete(num);
+}else{
+seleccionados.add(num);
+}
+
+actualizarResumen();
+generarBoletos();
+
+}
+
+function actualizarResumen(){
+
+document.getElementById("cantidad").textContent=seleccionados.size;
+
+document.getElementById("total").textContent=seleccionados.size*PRECIO;
+
+}
+
+function cargarVendidos(){
+
+fetch(URL_SCRIPT+"?t="+Date.now())
+
+.then(r=>r.json())
+
+.then(data=>{
+
+vendidos=data.vendidos || [];
+
+generarBoletos();
+
+})
+
+.catch(()=>{
+
+generarBoletos();
+
+});
+
+}
+
+function pagar(){
+
+if(seleccionados.size===0){
+alert("Selecciona boletos");
+return;
+}
+
+const nombre=document.getElementById("nombreCliente").value.trim();
+
+if(nombre===""){
+alert("Escribe tu nombre");
+return;
+}
+
+const boletos=Array.from(seleccionados);
+
+const mensaje=`Hola quiero apartar boletos%0A%0ANombre: ${nombre}%0ABoletos: ${boletos.join(", ")}%0ATotal: $${boletos.length*PRECIO}`;
+
+window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`);
+
+fetch(URL_SCRIPT,{
+method:"POST",
+body:JSON.stringify({nombre,boletos})
+});
+
+seleccionados.clear();
+
+actualizarResumen();
+
+setTimeout(cargarVendidos,2000);
+
+}
+
+generarBoletos();
+
 cargarVendidos();
+
 setInterval(cargarVendidos,10000);
 
-/* GENERAR BOLETOS */
-function generarBoletos(){
-  contenedor.innerHTML="";
-  for(let i=1;i<=TOTAL_BOLETOS;i++){
-    const num=i.toString().padStart(4,"0");
-    const div=document.createElement("div");
-    div.className="boleto";
-    div.textContent=num;
-
-    if(vendidos.includes(num)){
-      div.classList.add("vendido");
-    } else {
-      if(seleccionados.has(num)) div.classList.add("seleccionado");
-      div.onclick=()=>toggle(num,div);
-    }
-    contenedor.appendChild(div);
-  }
-}
-
-/* TOGGLE */
-function toggle(num,div){
-  if(seleccionados.has(num)){
-    seleccionados.delete(num);
-    div.classList.remove("seleccionado");
-  } else {
-    seleccionados.add(num);
-    div.classList.add("seleccionado");
-  }
-  actualizarResumen();
-}
-
-/* RESUMEN */
-function actualizarResumen(){
-  document.getElementById("cantidad").textContent = seleccionados.size;
-  document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
-}
-
-/* PAGAR */
-function pagar(){
-  if(seleccionados.size===0){
-    alert("Selecciona boletos");
-    return;
-  }
-
-  const nombre = document.getElementById("nombreCliente").value.trim();
-  if(nombre===""){
-    alert("Escribe tu nombre");
-    return;
-  }
-
-  const boletosArray = Array.from(seleccionados);
-  const boton = document.getElementById("btnPagar");
-  boton.disabled = true;
-  boton.textContent = "Procesando...";
-
-  // Mensaje WhatsApp con boletos gratis de la hoja
-  const mensaje = 
-`Hola, reserve los siguientes boletos:
-👤 Nombre: ${nombre}
-🎫 Boletos seleccionados: ${boletosArray.join(", ")}
-🎁 Boletos gratis: ${boletosGratis.join(", ")}
-💰 Total a pagar: $${boletosArray.length * PRECIO_BOLETO}`;
-
-  // Abrir WhatsApp al número del vendedor
-  window.open(`https://wa.me/${TELEFONO}?text=${encodeURIComponent(mensaje)}`, "_blank");
-
-  // Registrar en Google Sheets
-  fetch(URL_SCRIPT,{
-    method: "POST",
-    body: JSON.stringify({ nombre, boletos: boletosArray })
-  })
-  .then(res=>res.text())
-  .finally(()=>{
-    seleccionados.clear();
-    actualizarResumen();
-    boton.disabled = false;
-    boton.textContent = "Finalizar Compra";
-    cargarVendidos();
-  })
-  .catch(err=>{
-    alert("Verifica que el Apps Script esté publicado como Aplicación web con acceso público.");
-    boton.disabled = false;
-    boton.textContent = "Finalizar Compra";
-    console.error(err);
-  });
-}
 </script>
+
 </body>
 </html>
