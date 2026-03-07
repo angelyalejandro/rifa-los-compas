@@ -231,7 +231,7 @@ const TOTAL_BOLETOS=400;
 const PRECIO=50;
 const WHATSAPP="527421199270";
 
-const URL_API="https://script.google.com/macros/s/AKfycbzmBJN-TgKWBSYX5lhakHPSBK2M6-VS4a56AURvaPx2X7mcJ2H4N-OCSETfoEtC74BG/exec";
+const URL_API="https://script.google.com/macros/s/AKfycbxSjOt7M7akoH9LKMGXmjQ5lWBBuYaRjejut9ozWQL9lcYRHBB5ZVdj83-WOnMHA5nI/exec";
 
 let seleccionados=new Set();
 let vendidos=[];
