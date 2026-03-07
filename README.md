@@ -113,13 +113,14 @@ function cargarDatos() {
     fetch(URL_SCRIPT + "?t=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
+        // Aseguramos que los números tengan 4 dígitos para coincidir con el diseño
         vendidos = (data.vendidos || []).map(n => n.toString().trim().padStart(4, "0"));
         gratisPorBoleto = data.gratisPorBoleto || {};
         generarBoletos();
     })
     .catch(err => {
         console.error("Error cargando datos:", err);
-        generarBoletos(); // genera boletos aunque falle el script
+        generarBoletos(); 
     });
 }
 
@@ -129,22 +130,23 @@ function generarBoletos() {
 
     for (let i = 1; i <= TOTAL_BOLETOS; i++) {
         const num = String(i).padStart(4, "0");
-
         const div = document.createElement("div");
         div.className = "boleto";
         div.innerText = num;
 
-        contenedor.appendChild(div);
-    }
-}
-
-        if(vendidos.includes(num)){
+        // LÓGICA DE ESTADO DEL BOLETO
+        if (vendidos.includes(num)) {
             div.classList.add("vendido");
         } else {
-            if(seleccionados.has(num)) div.classList.add("seleccionado");
+            if (seleccionados.has(num)) {
+                div.classList.add("seleccionado");
+            }
             div.onclick = () => {
-                if(seleccionados.has(num)) seleccionados.delete(num);
-                else seleccionados.add(num);
+                if (seleccionados.has(num)) {
+                    seleccionados.delete(num);
+                } else {
+                    seleccionados.add(num);
+                }
                 generarBoletos();
                 actualizarTotales();
             };
@@ -154,23 +156,31 @@ function generarBoletos() {
 }
 
 function actualizarTotales() {
-    document.getElementById("cantidad").textContent = seleccionados.size;
-    document.getElementById("total").textContent = seleccionados.size * PRECIO_BOLETO;
+    const cantidad = seleccionados.size;
+    document.getElementById("cantidad").textContent = cantidad;
+    document.getElementById("total").textContent = cantidad * PRECIO_BOLETO;
 }
 
 function pagar() {
     const nombre = document.getElementById("nombreCliente").value.trim();
-    if(seleccionados.size === 0 || nombre === "") return alert("Faltan datos");
+    if (seleccionados.size === 0) return alert("Por favor, selecciona al menos un boleto.");
+    if (nombre === "") return alert("Por favor, ingresa tu nombre.");
 
     const boletosArray = Array.from(seleccionados);
     let boletosRegalo = [];
 
-    // Extraer boletos gratis de la memoria (Columnas D a L)
     boletosArray.forEach(b => {
-        if(gratisPorBoleto[b]) boletosRegalo.push(...gratisPorBoleto[b]);
+        // Buscamos si el número (ej: "0133") tiene regalos asociados en el JSON de Google
+        if (gratisPorBoleto[b]) {
+            // Si el regalo viene como array, lo añadimos, si es string, lo limpiamos
+            if(Array.isArray(gratisPorBoleto[b])){
+                boletosRegalo.push(...gratisPorBoleto[b]);
+            } else {
+                boletosRegalo.push(gratisPorBoleto[b]);
+            }
+        }
     });
 
-    // MENSAJE DE WHATSAPP ACTUALIZADO
     const msg = `*RIFA LOS COMPAS*%0A` +
                 `Hola, reserve los siguientes boletos:%0A%0A` +
                 `👤 *Nombre:* ${nombre}%0A` +
@@ -180,20 +190,24 @@ function pagar() {
 
     window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
 
+    // Enviar a Google Sheets
     fetch(URL_SCRIPT, {
         method: "POST",
         mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
     }).finally(() => {
-        alert("Apartado enviado");
+        alert("Apartado enviado con éxito.");
         seleccionados.clear();
         actualizarTotales();
         cargarDatos();
     });
 }
 
+// Iniciar la carga
 cargarDatos();
-setInterval(cargarDatos, 15000);
+// Actualizar cada 30 segundos para no saturar
+setInterval(cargarDatos, 30000);
 </script>
 </body>
 </html>
