@@ -244,17 +244,17 @@ fetch(URL_SHEET+"?t="+Date.now())
 
 .then(data=>{
 
-let filas = data.split("\n");
+let filas=data.split("\n");
 
 vendidos=[];
 
 for(let i=1;i<filas.length;i++){
 
-let columnas = filas[i].split(",");
+let columnas=filas[i].split(",");
 
 if(columnas[1] && columnas[1].trim().toUpperCase()=="VENDIDO"){
 
-let num = columnas[0].padStart(4,"0");
+let num=columnas[0].padStart(4,"0");
 
 vendidos.push(num);
 
