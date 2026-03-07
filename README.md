@@ -171,13 +171,12 @@ const TOTAL_BOLETOS = 400;
 
 const TELEFONO = "527421199270";
 
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbz05Mzq6MB2rBStTV9YAvRS2mfG7FHqhPm-M2DQhWxDBbs1Y9-Wfgd33X1WqrMYjL5h_g/exec";
+const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
 
 const contenedor = document.getElementById("boletos");
 
 let seleccionados = new Set();
 let vendidos = [];
-let procesando=false;
 
 function mostrarSeccion(id){
 document.querySelectorAll(".seccion").forEach(s=>s.style.display="none");
@@ -239,19 +238,29 @@ document.getElementById("total").textContent=seleccionados.size*PRECIO;
 
 function cargarVendidos(){
 
-fetch(URL_SCRIPT+"?t="+Date.now())
+fetch(URL_SHEET+"?t="+Date.now())
 
-.then(r=>r.json())
+.then(res=>res.text())
 
 .then(data=>{
 
-vendidos=data.vendidos || [];
+let filas = data.split("\n");
 
-generarBoletos();
+vendidos=[];
 
-})
+for(let i=1;i<filas.length;i++){
 
-.catch(()=>{
+let columnas = filas[i].split(",");
+
+if(columnas[1] && columnas[1].trim().toUpperCase()=="VENDIDO"){
+
+let num = columnas[0].padStart(4,"0");
+
+vendidos.push(num);
+
+}
+
+}
 
 generarBoletos();
 
@@ -260,8 +269,6 @@ generarBoletos();
 }
 
 function pagar(){
-
-if(procesando) return;
 
 if(seleccionados.size===0){
 alert("Selecciona boletos");
@@ -275,27 +282,11 @@ alert("Escribe tu nombre");
 return;
 }
 
-procesando=true;
-
 const boletos=Array.from(seleccionados);
 
 const mensaje=`Hola quiero apartar boletos%0A%0ANombre: ${nombre}%0ABoletos: ${boletos.join(", ")}%0ATotal: $${boletos.length*PRECIO}`;
 
 window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`);
-
-fetch(URL_SCRIPT,{
-method:"POST",
-body:JSON.stringify({nombre,boletos})
-});
-
-seleccionados.clear();
-
-actualizarResumen();
-
-setTimeout(()=>{
-procesando=false;
-cargarVendidos();
-},2000);
 
 }
 
