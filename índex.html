@@ -338,12 +338,8 @@ btn.textContent="Procesando...";
 
 const arrayBol=Array.from(seleccionados);
 
-// abrir whatsapp inmediatamente
-let msgBase=`Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}`;
-
-let ventana=window.open(`https://wa.me/${TELEFONO}?text=${msgBase}`,"_blank");
-
 let textoRegalos="";
+let total=arrayBol.length*PRECIO;
 
 try{
 
@@ -361,16 +357,13 @@ textoRegalos=`%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
 
 }catch(e){
 
-console.log("Error registrando boletos");
+console.log("No se pudieron obtener boletos gratis");
 
 }
 
-// mensaje final
-const msgFinal=`Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length*PRECIO}`;
+const mensaje=`Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${total}`;
 
-if(ventana){
-ventana.location=`https://wa.me/${TELEFONO}?text=${msgFinal}`;
-}
+window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`,"_blank");
 
 seleccionados.clear();
 
