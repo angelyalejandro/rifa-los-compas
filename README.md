@@ -30,6 +30,21 @@
 <div class="banner">
     <img src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/logo.JPG">
     <h1>RIFAS LOS COMPAS</h1>
+
+    <!-- Botón para mostrar formas de pago -->
+    <button id="btnFormasPago" style="
+        margin-top:10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #0d47a1;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    ">Ver Formas de Pago</button>
+
+    <!-- Contenedor de formas de pago -->
+    <div id="formasPagoTop" style="margin-top:10px; font-size:16px; color:#0d47a1; display:none;"></div>
 </div>
 
 <div class="container">
@@ -105,38 +120,68 @@
         document.getElementById("total").textContent = seleccionados.size * PRECIO;
     }
 
-async function pagar() {
-    const nombre = document.getElementById("nombreCliente").value.trim();
-    if(seleccionados.size === 0) return alert("Selecciona boletos");
-    if(!nombre) return alert("Escribe tu nombre");
+    // Mostrar/ocultar formas de pago al dar clic en el botón
+    document.getElementById("btnFormasPago").addEventListener("click", async function() {
+        const divTop = document.getElementById("formasPagoTop");
+        if(divTop.style.display === "none") {
+            try {
+                const res = await fetch(URL_SCRIPT + "?nombre=&boletos="); // obtener formas de pago
+                const resultado = await res.json();
+                if(resultado.pagos && resultado.pagos.length > 0){
+                    divTop.innerHTML = `💳 <b>Formas de Pago:</b> ${resultado.pagos.join(", ")}`;
+                } else {
+                    divTop.innerHTML = "No hay formas de pago disponibles";
+                }
+                divTop.style.display = "block";
+            } catch(err){
+                console.error("Error cargando formas de pago:", err);
+                divTop.innerHTML = "Error al cargar formas de pago";
+                divTop.style.display = "block";
+            }
+        } else {
+            divTop.style.display = "none";
+        }
+    });
 
-    const btn = document.getElementById("btnPagar");
-    btn.disabled = true;
-    btn.textContent = "Registrando...";
+    async function pagar() {
+        const nombre = document.getElementById("nombreCliente").value.trim();
+        if(seleccionados.size === 0) return alert("Selecciona boletos");
+        if(!nombre) return alert("Escribe tu nombre");
 
-    const arrayBol = Array.from(seleccionados);
+        const btn = document.getElementById("btnPagar");
+        btn.disabled = true;
+        btn.textContent = "Registrando...";
 
-    // Abrimos WhatsApp inmediatamente
-    const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length*PRECIO}`;
-    window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
+        const arrayBol = Array.from(seleccionados);
+        const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
 
-    // Ahora registramos los boletos en la hoja
-    const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
+        try {
+            const res = await fetch(urlRegistro);
+            const resultado = await res.json();
 
-    try {
-        await fetch(urlRegistro); // esto enviará GET con los parámetros
-        seleccionados.clear();
-        document.getElementById("nombreCliente").value = "";
-        actualizarCifras();
-        cargarVendidos();
-    } catch(err) {
-        console.error("Error registrando boletos:", err);
-        alert("Ocurrió un error registrando los boletos, pero el mensaje de WhatsApp ya se abrió.");
-    } finally {
-        btn.disabled = false;
-        btn.textContent = "Finalizar Compra";
+            // Boletos gratis
+            let textoRegalos = "";
+            if(resultado.regalos && resultado.regalos.length>0){
+                textoRegalos = `%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
+            }
+
+            // WhatsApp con boletos, gratis y total
+            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length*PRECIO}`;
+            window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
+
+            seleccionados.clear();
+            document.getElementById("nombreCliente").value = "";
+            actualizarCifras();
+            cargarVendidos();
+        } catch(err) {
+            console.error("Error registrando boletos:", err);
+            alert("Ocurrió un error registrando los boletos, pero el mensaje de WhatsApp ya se abrió.");
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Finalizar Compra";
+        }
     }
-}
+
     cargarVendidos();
     setInterval(cargarVendidos,30000);
 </script>
