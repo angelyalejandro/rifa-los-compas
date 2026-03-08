@@ -120,28 +120,43 @@
         document.getElementById("total").textContent = seleccionados.size * PRECIO;
     }
 
-    // Mostrar/ocultar formas de pago al dar clic en el botón
-    document.getElementById("btnFormasPago").addEventListener("click", async function() {
-        const divTop = document.getElementById("formasPagoTop");
-        if(divTop.style.display === "none") {
-            try {
-                const res = await fetch(URL_SCRIPT + "?nombre=&boletos="); // obtener formas de pago
-                const resultado = await res.json();
-                if(resultado.pagos && resultado.pagos.length > 0){
-                    divTop.innerHTML = `💳 <b>Formas de Pago:</b> ${resultado.pagos.join(", ")}`;
-                } else {
-                    divTop.innerHTML = "No hay formas de pago disponibles";
-                }
-                divTop.style.display = "block";
-            } catch(err){
-                console.error("Error cargando formas de pago:", err);
-                divTop.innerHTML = "Error al cargar formas de pago";
-                divTop.style.display = "block";
-            }
-        } else {
-            divTop.style.display = "none";
-        }
-    });
+document.getElementById("btnFormasPago").addEventListener("click", function() {
+    const divTop = document.getElementById("formasPagoTop");
+
+    if(divTop.style.display === "none"){
+
+        divTop.innerHTML = `
+        <div style="background:white;padding:15px;border-radius:10px;color:#333;text-align:left">
+
+        <h3 style="text-align:center;">💳 VENDEDORES</h3>
+
+        <p>✅ <b>Luis Alejandro Romero Sebastian</b><br>
+        WhatsApp: 7421199270<br>
+        Tarjeta Débito BBVA:<br>
+        <b>4152 3140 2646 1213</b><br>
+        Cuenta Clabe BBVA:<br>
+        <b>012180015406075891</b>
+        </p>
+
+        <hr>
+
+        <p>✅ <b>Angel Gabriel Urioste Luciano</b><br>
+        WhatsApp: 7421292436<br>
+        Tarjeta Débito BBVA:<br>
+        <b>4152 3145 7352 6715</b><br>
+        Cuenta Clabe BBVA:<br>
+        <b>012180015751433706</b>
+        </p>
+
+        </div>
+        `;
+
+        divTop.style.display="block";
+
+    }else{
+        divTop.style.display="none";
+    }
+});
 
     async function pagar() {
         const nombre = document.getElementById("nombreCliente").value.trim();
