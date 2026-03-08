@@ -198,9 +198,8 @@ async function pagar() {
 
     seleccionados.clear();
     document.getElementById("nombreCliente").value = "";
-
-    actualizarCifras();
-    cargarVendidos();
+cargarVendidos();
+    setInterval(cargarVendidos,30000);
 
     btn.disabled = false;
     btn.textContent = "Finalizar y Enviar WhatsApp";
