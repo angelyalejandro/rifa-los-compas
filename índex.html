@@ -14,18 +14,20 @@
         .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .boletos { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; margin-top: 20px; }
         .boleto { padding: 12px 2px; border-radius: 8px; font-weight: bold; background: #eeeeee; cursor: pointer; font-size: 14px; transition: 0.2s; border: 1px solid #ddd; color: #333; }
+        
+        /* Estilo para los boletos VENDIDOS (Rojo como en tu imagen) */
+        .boleto.vendido { background: #ff0000 !important; color: white !important; cursor: not-allowed; text-decoration: line-through; border-color: #b30000; }
+        
         .boleto.seleccionado { background: #00c853 !important; color: white !important; border-color: #00a042; }
-        .boleto.vendido { background: #d32f2f !important; color: white !important; cursor: not-allowed; opacity: 0.5; text-decoration: line-through; }
         .resumen { background: #f1f8e9; padding: 15px; margin: 20px 0; border-radius: 10px; border: 1px solid #c8e6c9; }
-        #btnPagar { width: 100%; padding: 15px; background: #00c853; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        #btnPagar:disabled { background: #aaa; cursor: not-allowed; }
+        #btnPagar { width: 100%; padding: 15px; background: #00c853; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; }
         input[type="text"] { width: 90%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <nav class="menu">
-    <button onclick="location.reload()">Actualizar Boletos</button>
+    <button onclick="cargarVendidos()">🔄 Actualizar Lista</button>
 </nav>
 
 <div class="banner">
@@ -37,14 +39,14 @@
     <div class="card">
         <img style="width:100%; border-radius:10px; margin-bottom:15px;" src="https://raw.githubusercontent.com/angelyalejandro/rifa-los-compas/main/flayer.jpeg">
         
-        <div id="boletos" class="boletos">Cargando lista de boletos...</div>
+        <div id="boletos" class="boletos">Cargando boletos...</div>
 
         <div class="resumen">
-            <p style="font-size: 18px;">Boletos: <b id="cantidad">0</b> | Total: $<b id="total">0</b></p>
-            <input type="text" id="nombreCliente" placeholder="Escribe tu nombre completo">
+            <p style="font-size: 18px;">Seleccionados: <b id="cantidad">0</b> | Total: $<b id="total">0</b></p>
+            <input type="text" id="nombreCliente" placeholder="Tu nombre completo">
         </div>
 
-        <button id="btnPagar" onclick="pagar()">Finalizar y Apartar</button>
+        <button id="btnPagar" onclick="pagar()">Finalizar Compra</button>
     </div>
 </div>
 
@@ -53,10 +55,10 @@
     const TOTAL_BOLETOS = 400;
     const TELEFONO = "527421199270";
     
-    // URL de lectura CSV (Publicada)
+    // URL de lectura corregida
     const URL_LECTURA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
     
-    // TU NUEVA URL DE APPS SCRIPT
+    // Tu URL de Apps Script
     const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxApWBqhsLG-aT3e7gf2xwbi26h2-3a5ZelAcbwcV2m0afndEFlRVHJWYrymDWI1IN7Xw/exec";
 
     let seleccionados = new Set();
@@ -64,20 +66,28 @@
 
     async function cargarVendidos() {
         try {
-            const res = await fetch(URL_LECTURA + "?t=" + Date.now());
+            // Agregamos un timestamp para evitar el caché del navegador
+            const res = await fetch(URL_LECTURA + "&cache=" + Date.now());
             const csv = await res.text();
-            const filas = csv.split("\n").slice(1);
             
-            vendidos = filas
-                .filter(f => {
-                    const cols = f.split(",");
-                    return cols[1] && cols[1].trim().toUpperCase() === "VENDIDO";
-                })
-                .map(f => f.split(",")[0].trim().padStart(4, "0"));
-            
+            // Dividimos por filas
+            const filas = csv.split(/\r?\n/);
+            vendidos = [];
+
+            // Empezamos desde la fila 1 (saltando el encabezado "BOLETOS, ESTADO...")
+            for(let i = 1; i < filas.length; i++) {
+                const columnas = filas[i].split(",");
+                const numeroBoleto = columnas[0] ? columnas[0].trim() : "";
+                const estado = columnas[1] ? columnas[1].trim().toUpperCase() : "";
+
+                if (estado === "VENDIDO") {
+                    // Formateamos a 4 dígitos (ej: 1 -> 0001) para que coincida con la web
+                    vendidos.push(numeroBoleto.padStart(4, "0"));
+                }
+            }
             generarVisual();
         } catch (e) {
-            console.error("Error al cargar datos:", e);
+            console.error("Error al leer Excel:", e);
             generarVisual(); 
         }
     }
@@ -113,61 +123,44 @@
 
     async function pagar() {
         const nombre = document.getElementById("nombreCliente").value.trim();
-        if (seleccionados.size === 0) return alert("Por favor, selecciona al menos un boleto.");
-        if (!nombre) return alert("Por favor, ingresa tu nombre completo.");
+        if (seleccionados.size === 0) return alert("Selecciona boletos");
+        if (!nombre) return alert("Escribe tu nombre");
 
         const btn = document.getElementById("btnPagar");
         btn.disabled = true;
-        btn.textContent = "Procesando...";
+        btn.textContent = "Registrando...";
 
-        const seleccionadosArray = Array.from(seleccionados);
-        let listaRegalos = [];
+        const arrayBol = Array.from(seleccionados);
 
         try {
-            // 1. Obtener regalos desde el Script (vía GET)
-            for (let bol of seleccionadosArray) {
-                try {
-                    const r = await fetch(`${URL_SCRIPT}?boleto=${bol}`);
-                    const resJson = await r.json();
-                    if (resJson.regalos && resJson.regalos.length > 0) {
-                        listaRegalos.push(...resJson.regalos);
-                    }
-                } catch(e) { console.log("Sin regalos para " + bol); }
-            }
-
-            // 2. Registrar venta en la hoja (vía POST)
+            // 1. Enviar datos al script
             await fetch(URL_SCRIPT, {
                 method: "POST",
                 mode: "no-cors",
-                body: JSON.stringify({ nombre: nombre, boletos: seleccionadosArray })
+                body: JSON.stringify({ nombre: nombre, boletos: arrayBol })
             });
 
-            // 3. Preparar mensaje y enviar a WhatsApp
-            let textoRegalos = listaRegalos.length > 0 ? `%0A🎁 *REGALOS:* ${listaRegalos.join(", ")}` : "";
-            const msg = `Hola RIFAS LOS COMPAS, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${seleccionadosArray.join(", ")}${textoRegalos}%0A*Total:* $${seleccionadosArray.length * PRECIO}`;
-            
+            // 2. WhatsApp
+            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
             window.open(`https://wa.me/${TELEFONO}?text=${msg}`);
             
-            // Limpiar estado
             seleccionados.clear();
             document.getElementById("nombreCliente").value = "";
             actualizarResumen();
-            
-            // Esperar un momento y recargar la lista
-            setTimeout(cargarVendidos, 2500);
+            setTimeout(cargarVendidos, 2000);
 
         } catch (err) {
-            alert("Hubo un error de conexión, pero tus boletos podrían haberse registrado. Verifica en WhatsApp.");
+            alert("Error al conectar. Intenta de nuevo.");
         } finally {
             btn.disabled = false;
-            btn.textContent = "Finalizar y Apartar";
+            btn.textContent = "Finalizar Compra";
         }
     }
 
-    // Iniciar carga
+    // Carga inicial
     cargarVendidos();
-    // Auto-actualizar cada 30 segundos para ver boletos vendidos por otros
-    setInterval(cargarVendidos, 30000);
+    // Auto-actualizar cada 20 segundos
+    setInterval(cargarVendidos, 20000);
 </script>
 
 </body>
