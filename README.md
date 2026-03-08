@@ -1,4 +1,3 @@
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -184,7 +183,7 @@ Total: $<b id="total">0</b>
 
 const PRECIO = 50;
 const TOTAL_BOLETOS = 400;
-const TELEFONO = "527421199270";
+const TELEFONO = "5217421199270";
 
 const URL_LECTURA="https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
 
@@ -275,54 +274,9 @@ contenedor.appendChild(div);
 function actualizarCifras(){
 
 document.getElementById("cantidad").textContent=seleccionados.size;
-
 document.getElementById("total").textContent=seleccionados.size*PRECIO;
 
 }
-
-document.getElementById("btnFormasPago").addEventListener("click",function(){
-
-const divTop=document.getElementById("formasPagoTop");
-
-if(divTop.style.display==="none"){
-
-divTop.innerHTML=`
-<div style="background:white;padding:15px;border-radius:10px;color:#333;text-align:left">
-
-<h3 style="text-align:center;">💳 VENDEDORES</h3>
-
-<p>
-✅ <b>Luis Alejandro Romero Sebastian</b><br>
-WhatsApp: 7421199270<br>
-Tarjeta Débito BBVA:<br>
-<b>4152 3140 2646 1213</b><br>
-Cuenta Clabe BBVA:<br>
-<b>012180015406075891</b>
-</p>
-
-<hr>
-
-<p>
-✅ <b>Angel Gabriel Urioste Luciano</b><br>
-WhatsApp: 7421292436<br>
-Tarjeta Débito BBVA:<br>
-<b>4152 3145 7352 6715</b><br>
-Cuenta Clabe BBVA:<br>
-<b>012180015751433706</b>
-</p>
-
-</div>
-`;
-
-divTop.style.display="block";
-
-}else{
-
-divTop.style.display="none";
-
-}
-
-});
 
 async function pagar(){
 
@@ -338,7 +292,7 @@ btn.textContent="Procesando...";
 
 const arrayBol=Array.from(seleccionados);
 
-let textoRegalos="";
+let regalos=[];
 let total=arrayBol.length*PRECIO;
 
 try{
@@ -351,7 +305,7 @@ const resultado=await res.json();
 
 if(resultado.regalos && resultado.regalos.length>0){
 
-textoRegalos=`%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
+regalos=resultado.regalos;
 
 }
 
@@ -361,9 +315,29 @@ console.log("No se pudieron obtener boletos gratis");
 
 }
 
-const mensaje=`Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${total}`;
+let mensaje=`🎟️ RIFA LOS COMPAS
 
-window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`,"_blank");
+👤 Nombre: ${nombre}
+
+🎫 Boletos comprados:
+${arrayBol.join(", ")}`;
+
+if(regalos.length>0){
+
+mensaje+=`
+
+🎁 Boletos GRATIS:
+${regalos.join(", ")}`;
+
+}
+
+mensaje+=`
+
+💰 Total a pagar: $${total}`;
+
+const urlWhats="https://wa.me/"+TELEFONO+"?text="+encodeURIComponent(mensaje);
+
+window.open(urlWhats,"_blank");
 
 seleccionados.clear();
 
