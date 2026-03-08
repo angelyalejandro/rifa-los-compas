@@ -285,35 +285,52 @@ console.error("Error leyendo hoja:",err);
 });
 
 }
-function pagar(){
+async function pagar() {
+    if (seleccionados.size === 0) return alert("Selecciona boletos");
+    const nombre = document.getElementById("nombreCliente").value.trim();
+    if (nombre === "") return alert("Escribe tu nombre");
 
-if(seleccionados.size===0){
-alert("Selecciona boletos");
-return;
+    const btn = document.getElementById("btnPagar");
+    btn.disabled = true;
+    btn.textContent = "Procesando...";
+
+    const boletosArray = Array.from(seleccionados);
+    let todosLosRegalos = [];
+
+    try {
+        // 1. OBTENER REGALOS (Vía GET para evitar bloqueos)
+        for (let b of boletosArray) {
+            const resp = await fetch(`${URL_APP_SCRIPT}?boleto=${b}`);
+            const data = await resp.json();
+            if (data.regalos) todosLosRegalos.push(...data.regalos);
+        }
+
+        // 2. REGISTRAR VENTA (Vía POST)
+        await fetch(URL_APP_SCRIPT, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify({ nombre: nombre, boletos: boletosArray })
+        });
+
+        // 3. ENVIAR WHATSAPP
+        let txtRegalos = todosLosRegalos.length > 0 ? `%0A🎁 *REGALOS:* ${todosLosRegalos.join(", ")}` : "";
+        const mensaje = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${boletosArray.join(", ")}${txtRegalos}%0A*Total:* $${boletosArray.length * PRECIO}`;
+
+        window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`);
+
+        // Limpiar
+        seleccionados.clear();
+        document.getElementById("nombreCliente").value = "";
+        actualizarResumen();
+        
+        // Forzar actualización de colores
+        setTimeout(cargarVendidos, 3000);
+
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Se registró pero hubo un detalle con los regalos. Verifica con el administrador.");
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Finalizar Compra";
+    }
 }
-
-const nombre=document.getElementById("nombreCliente").value.trim();
-
-if(nombre===""){
-alert("Escribe tu nombre");
-return;
-}
-
-const boletos=Array.from(seleccionados);
-
-const mensaje=`Hola quiero apartar boletos%0A%0ANombre: ${nombre}%0ABoletos: ${boletos.join(", ")}%0ATotal: $${boletos.length*PRECIO}`;
-
-window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`);
-
-}
-
-generarBoletos();
-
-cargarVendidos();
-
-setInterval(cargarVendidos,10000);
-
-</script>
-
-</body>
-</html>
