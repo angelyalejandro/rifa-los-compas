@@ -334,7 +334,7 @@ mensaje+="\n🎁 Boletos GRATIS:\n"+regalos.join(", ")+"\n";
 
 mensaje+="\n💰 Total a pagar: $"+total;
 
-const urlWhats="https://wa.me/"+TELEFONO+"?text="+encodeURIComponent(mensaje);
+const urlWhats = "https://api.whatsapp.com/send?phone=5217421199270&text=" + encodeURIComponent(mensaje);
 
 window.location.href=urlWhats;
 
