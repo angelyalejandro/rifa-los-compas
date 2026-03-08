@@ -50,13 +50,9 @@
 <script>
     const PRECIO = 50;
     const TOTAL_BOLETOS = 400;
-    const TELEFONO = "527491199270"; // Tu número con código de país
-    
-    // Google Sheet CSV pública
+    const TELEFONO = "527421199270"; // Tu número de WhatsApp con código de país
     const URL_LECTURA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
-    
-    // Script de Google Apps Script para guardar boletos
-    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxVQhEvMffmnsqY7T14mixQ1f7N6YOno09MVvlaVqvx_U727rkDACT8pHDbjN188WzP6g/exec";
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwhCERlRzgSf780cJqVvYN6kMraG-_mCDy8YaRWqwHjXQkgtpM6opJrJqRfmWuX_Vya5g/exec";
 
     let seleccionados = new Set();
     let vendidos = [];
@@ -127,18 +123,22 @@
         const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
 
         try {
-            // Registrar boletos en la hoja (no necesitamos respuesta)
-            await fetch(urlRegistro, { mode: 'no-cors' });
+            const res = await fetch(urlRegistro);
+            const resultado = await res.json();
 
-            // Abrir WhatsApp con mensaje
-            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
-            window.open(`https://wa.me/${527421199270}?text=${msg}`, "_blank");
+            let textoRegalos = "";
+            if (resultado.regalos && resultado.regalos.length > 0) {
+                textoRegalos = `%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
+            }
 
-            // Limpiar selección
+            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length * PRECIO}`;
+            window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
+
             seleccionados.clear();
             document.getElementById("nombreCliente").value = "";
             actualizarCifras();
             cargarVendidos();
+
         } catch (err) {
             console.error("Error registrando boletos:", err);
             alert("Ocurrió un error, intenta de nuevo");
@@ -148,9 +148,8 @@
         }
     }
 
-    // Inicio
     cargarVendidos();
-    setInterval(cargarVendidos, 30000); // Actualiza cada 30 segundos
+    setInterval(cargarVendidos, 30000);
 </script>
 
 </body>
