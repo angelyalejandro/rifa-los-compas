@@ -112,43 +112,47 @@
         document.getElementById("total").textContent = seleccionados.size * PRECIO;
     }
 
-    async function pagar() {
-        const nombre = document.getElementById("nombreCliente").value.trim();
-        if (seleccionados.size === 0) return alert("Selecciona tus boletos.");
-        if (!nombre) return alert("Escribe tu nombre.");
+async function pagar() {
+    const nombre = document.getElementById("nombreCliente").value.trim();
+    if (seleccionados.size === 0) return alert("Selecciona boletos");
+    if (!nombre) return alert("Escribe tu nombre");
 
-        const btn = document.getElementById("btnPagar");
-        btn.disabled = true;
-        btn.textContent = "Procesando...";
+    const btn = document.getElementById("btnPagar");
+    btn.disabled = true;
+    btn.textContent = "Registrando en sistema...";
 
-        const arrayBol = Array.from(seleccionados);
+    const arrayBol = Array.from(seleccionados);
+    const urlConDatos = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
 
-        try {
-            // 1. Enviamos los datos a la hoja (sin esperar respuesta para no bloquear WhatsApp)
-            fetch(URL_SCRIPT, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify({ nombre: nombre, boletos: arrayBol })
-            });
+    try {
+        // Usamos una petición que permite recibir respuesta (JSONP o fetch directo)
+        const response = await fetch(urlConDatos);
+        const resultado = await response.json();
 
-            // 2. Abrimos WhatsApp inmediatamente
-            const mensaje = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}%0A%0A_(Favor de confirmarme mis boletos de regalo)_`;
-            window.open(`https://wa.me/${TELEFONO}?text=${mensaje}`, '_blank');
-            
-            // 3. Limpiamos y recargamos
-            seleccionados.clear();
-            document.getElementById("nombreCliente").value = "";
-            actualizarCifras();
-            setTimeout(cargarVendidos, 3000);
-
-        } catch (err) {
-            console.error(err);
-            alert("Hubo un error, pero intenta enviar el mensaje de WhatsApp.");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "Finalizar y Enviar WhatsApp";
+        let textoRegalos = "";
+        if (resultado.regalos && resultado.regalos.length > 0) {
+            textoRegalos = `%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
         }
+
+        // WhatsApp
+        const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length * PRECIO}`;
+        window.open(`https://wa.me/${TELEFONO}?text=${msg}`);
+        
+        seleccionados.clear();
+        document.getElementById("nombreCliente").value = "";
+        actualizarCifras();
+        cargarVendidos();
+
+    } catch (err) {
+        // Si falla el JSON por CORS, igual intentamos abrir WhatsApp
+        console.error("Error:", err);
+        const msgAlterno = `Hola, aparto boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
+        window.open(`https://wa.me/${TELEFONO}?text=${msgAlterno}`);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Finalizar Compra";
     }
+}
 
     // Inicio
     cargarVendidos();
