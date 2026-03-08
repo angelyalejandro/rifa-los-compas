@@ -50,7 +50,7 @@
 <script>
     const PRECIO = 50;
     const TOTAL_BOLETOS = 400;
-    const TELEFONO = "527421199270"; // Tu número de WhatsApp con código de país
+    const TELEFONO = "527421199270";
     const URL_LECTURA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
     const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwhCERlRzgSf780cJqVvYN6kMraG-_mCDy8YaRWqwHjXQkgtpM6opJrJqRfmWuX_Vya5g/exec";
 
@@ -62,40 +62,35 @@
             const res = await fetch(URL_LECTURA + "&t=" + Date.now());
             const csv = await res.text();
             const filas = csv.split(/\r?\n/);
-            
             vendidos = [];
-            for(let i = 1; i < filas.length; i++) {
+            for(let i=1;i<filas.length;i++){
                 const columnas = filas[i].split(",");
-                if (columnas.length >= 2) {
-                    const numero = columnas[0].trim().padStart(4, "0");
+                if(columnas.length>=2){
+                    const numero = columnas[0].trim().padStart(4,"0");
                     const estado = columnas[1].trim().toUpperCase();
-                    if (estado === "VENDIDO") {
-                        vendidos.push(numero);
-                    }
+                    if(estado==="VENDIDO") vendidos.push(numero);
                 }
             }
             generarVisual();
-        } catch (e) {
-            console.error("Error cargando CSV:", e);
+        } catch(e){
+            console.error("Error cargando CSV:",e);
             generarVisual();
         }
     }
 
-    function generarVisual() {
+    function generarVisual(){
         const contenedor = document.getElementById("boletos");
-        contenedor.innerHTML = "";
-        for (let i = 1; i <= TOTAL_BOLETOS; i++) {
-            const num = i.toString().padStart(4, "0");
+        contenedor.innerHTML="";
+        for(let i=1;i<=TOTAL_BOLETOS;i++){
+            const num = i.toString().padStart(4,"0");
             const div = document.createElement("div");
-            div.textContent = num;
-            div.className = "boleto";
-            
-            if (vendidos.includes(num)) {
-                div.classList.add("vendido");
-            } else {
-                if (seleccionados.has(num)) div.classList.add("seleccionado");
-                div.onclick = () => {
-                    if (seleccionados.has(num)) seleccionados.delete(num);
+            div.textContent=num;
+            div.className="boleto";
+            if(vendidos.includes(num)) div.classList.add("vendido");
+            else{
+                if(seleccionados.has(num)) div.classList.add("seleccionado");
+                div.onclick=()=>{
+                    if(seleccionados.has(num)) seleccionados.delete(num);
                     else seleccionados.add(num);
                     actualizarCifras();
                     generarVisual();
@@ -105,51 +100,42 @@
         }
     }
 
-    function actualizarCifras() {
+    function actualizarCifras(){
         document.getElementById("cantidad").textContent = seleccionados.size;
         document.getElementById("total").textContent = seleccionados.size * PRECIO;
     }
 
-    async function pagar() {
+    async function pagar(){
         const nombre = document.getElementById("nombreCliente").value.trim();
-        if (seleccionados.size === 0) return alert("Selecciona boletos");
-        if (!nombre) return alert("Escribe tu nombre");
+        if(seleccionados.size===0) return alert("Selecciona boletos");
+        if(!nombre) return alert("Escribe tu nombre");
 
         const btn = document.getElementById("btnPagar");
-        btn.disabled = true;
-        btn.textContent = "Registrando en sistema...";
+        btn.disabled=true;
+        btn.textContent="Registrando en sistema...";
 
         const arrayBol = Array.from(seleccionados);
         const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
 
-        try {
-            const res = await fetch(urlRegistro);
-            const resultado = await res.json();
-
-            let textoRegalos = "";
-            if (resultado.regalos && resultado.regalos.length > 0) {
-                textoRegalos = `%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
-            }
-
-            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length * PRECIO}`;
+        try{
+            await fetch(urlRegistro); // registra los boletos
+            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length*PRECIO}`;
             window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
-
             seleccionados.clear();
-            document.getElementById("nombreCliente").value = "";
+            document.getElementById("nombreCliente").value="";
             actualizarCifras();
             cargarVendidos();
-
-        } catch (err) {
-            console.error("Error registrando boletos:", err);
+        }catch(err){
+            console.error("Error registrando boletos:",err);
             alert("Ocurrió un error, intenta de nuevo");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "Finalizar Compra";
+        }finally{
+            btn.disabled=false;
+            btn.textContent="Finalizar Compra";
         }
     }
 
     cargarVendidos();
-    setInterval(cargarVendidos, 30000);
+    setInterval(cargarVendidos,30000);
 </script>
 
 </body>
