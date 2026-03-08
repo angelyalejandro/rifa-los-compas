@@ -105,7 +105,7 @@
         document.getElementById("total").textContent = seleccionados.size * PRECIO;
     }
 
- async function pagar() {
+async function pagar() {
     const nombre = document.getElementById("nombreCliente").value.trim();
     if(seleccionados.size === 0) return alert("Selecciona boletos");
     if(!nombre) return alert("Escribe tu nombre");
@@ -116,23 +116,17 @@
 
     const arrayBol = Array.from(seleccionados);
 
-    // Construimos el mensaje para WhatsApp
+    // Abrimos WhatsApp primero
     const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
-    
-    // Abrimos WhatsApp inmediatamente en otra ventana
-    const ventanaWA = window.open(`https://wa.me/${527421199270}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
 
     try {
-        // Registramos los boletos en la hoja
         const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
-        await fetch(urlRegistro);
-
-        // Limpiamos selección y refrescamos
+        await fetch(urlRegistro); // registra los boletos
         seleccionados.clear();
         document.getElementById("nombreCliente").value = "";
         actualizarCifras();
         cargarVendidos();
-
     } catch(err) {
         console.error("Error registrando boletos:", err);
         alert("Ocurrió un error registrando los boletos, pero el mensaje de WhatsApp ya se abrió.");
@@ -141,7 +135,6 @@
         btn.textContent = "Finalizar Compra";
     }
 }
-
     cargarVendidos();
     setInterval(cargarVendidos,30000);
 </script>
