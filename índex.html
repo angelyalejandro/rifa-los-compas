@@ -105,34 +105,42 @@
         document.getElementById("total").textContent = seleccionados.size * PRECIO;
     }
 
-    async function pagar(){
-        const nombre = document.getElementById("nombreCliente").value.trim();
-        if(seleccionados.size===0) return alert("Selecciona boletos");
-        if(!nombre) return alert("Escribe tu nombre");
+ async function pagar() {
+    const nombre = document.getElementById("nombreCliente").value.trim();
+    if(seleccionados.size === 0) return alert("Selecciona boletos");
+    if(!nombre) return alert("Escribe tu nombre");
 
-        const btn = document.getElementById("btnPagar");
-        btn.disabled=true;
-        btn.textContent="Registrando en sistema...";
+    const btn = document.getElementById("btnPagar");
+    btn.disabled = true;
+    btn.textContent = "Registrando en sistema...";
 
-        const arrayBol = Array.from(seleccionados);
+    const arrayBol = Array.from(seleccionados);
+
+    // Construimos el mensaje para WhatsApp
+    const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
+    
+    // Abrimos WhatsApp inmediatamente en otra ventana
+    const ventanaWA = window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
+
+    try {
+        // Registramos los boletos en la hoja
         const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
+        await fetch(urlRegistro);
 
-        try{
-            await fetch(urlRegistro); // registra los boletos
-            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length*PRECIO}`;
-            window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
-            seleccionados.clear();
-            document.getElementById("nombreCliente").value="";
-            actualizarCifras();
-            cargarVendidos();
-        }catch(err){
-            console.error("Error registrando boletos:",err);
-            alert("Ocurrió un error, intenta de nuevo");
-        }finally{
-            btn.disabled=false;
-            btn.textContent="Finalizar Compra";
-        }
+        // Limpiamos selección y refrescamos
+        seleccionados.clear();
+        document.getElementById("nombreCliente").value = "";
+        actualizarCifras();
+        cargarVendidos();
+
+    } catch(err) {
+        console.error("Error registrando boletos:", err);
+        alert("Ocurrió un error registrando los boletos, pero el mensaje de WhatsApp ya se abrió.");
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Finalizar Compra";
     }
+}
 
     cargarVendidos();
     setInterval(cargarVendidos,30000);
