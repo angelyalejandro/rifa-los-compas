@@ -50,9 +50,12 @@
 <script>
     const PRECIO = 50;
     const TOTAL_BOLETOS = 400;
-    const TELEFONO = "527421199270";
+    const TELEFONO = "527491199270"; // Tu número con código de país
     
+    // Google Sheet CSV pública
     const URL_LECTURA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
+    
+    // Script de Google Apps Script para guardar boletos
     const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxVQhEvMffmnsqY7T14mixQ1f7N6YOno09MVvlaVqvx_U727rkDACT8pHDbjN188WzP6g/exec";
 
     let seleccionados = new Set();
@@ -65,7 +68,6 @@
             const filas = csv.split(/\r?\n/);
             
             vendidos = [];
-            // Empezamos en 1 para saltar el encabezado
             for(let i = 1; i < filas.length; i++) {
                 const columnas = filas[i].split(",");
                 if (columnas.length >= 2) {
@@ -112,47 +114,39 @@
         document.getElementById("total").textContent = seleccionados.size * PRECIO;
     }
 
-async function pagar() {
-    const nombre = document.getElementById("nombreCliente").value.trim();
-    if (seleccionados.size === 0) return alert("Selecciona boletos");
-    if (!nombre) return alert("Escribe tu nombre");
+    async function pagar() {
+        const nombre = document.getElementById("nombreCliente").value.trim();
+        if (seleccionados.size === 0) return alert("Selecciona boletos");
+        if (!nombre) return alert("Escribe tu nombre");
 
-    const btn = document.getElementById("btnPagar");
-    btn.disabled = true;
-    btn.textContent = "Registrando en sistema...";
+        const btn = document.getElementById("btnPagar");
+        btn.disabled = true;
+        btn.textContent = "Registrando en sistema...";
 
-    const arrayBol = Array.from(seleccionados);
-    const urlConDatos = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
+        const arrayBol = Array.from(seleccionados);
+        const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
 
-    try {
-        // Usamos una petición que permite recibir respuesta (JSONP o fetch directo)
-        const response = await fetch(urlConDatos);
-        const resultado = await response.json();
+        try {
+            // Registrar boletos en la hoja (no necesitamos respuesta)
+            await fetch(urlRegistro, { mode: 'no-cors' });
 
-        let textoRegalos = "";
-        if (resultado.regalos && resultado.regalos.length > 0) {
-            textoRegalos = `%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
+            // Abrir WhatsApp con mensaje
+            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
+            window.open(`https://wa.me/${527421199270}?text=${msg}`, "_blank");
+
+            // Limpiar selección
+            seleccionados.clear();
+            document.getElementById("nombreCliente").value = "";
+            actualizarCifras();
+            cargarVendidos();
+        } catch (err) {
+            console.error("Error registrando boletos:", err);
+            alert("Ocurrió un error, intenta de nuevo");
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Finalizar Compra";
         }
-
-        // WhatsApp
-        const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length * PRECIO}`;
-        window.open(`https://wa.me/${TELEFONO}?text=${msg}`);
-        
-        seleccionados.clear();
-        document.getElementById("nombreCliente").value = "";
-        actualizarCifras();
-        cargarVendidos();
-
-    } catch (err) {
-        // Si falla el JSON por CORS, igual intentamos abrir WhatsApp
-        console.error("Error:", err);
-        const msgAlterno = `Hola, aparto boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
-        window.open(`https://wa.me/${TELEFONO}?text=${msgAlterno}`);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = "Finalizar Compra";
     }
-}
 
     // Inicio
     cargarVendidos();
