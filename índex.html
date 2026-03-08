@@ -178,7 +178,6 @@ Total: $<b id="total">0</b>
 </div>
 
 </div>
-
 <script>
 
 const PRECIO = 50;
@@ -282,8 +281,15 @@ async function pagar(){
 
 const nombre=document.getElementById("nombreCliente").value.trim();
 
-if(seleccionados.size===0) return alert("Selecciona boletos");
-if(!nombre) return alert("Escribe tu nombre");
+if(seleccionados.size===0){
+alert("Selecciona boletos");
+return;
+}
+
+if(!nombre){
+alert("Escribe tu nombre");
+return;
+}
 
 const btn=document.getElementById("btnPagar");
 
@@ -303,53 +309,33 @@ const res=await fetch(urlRegistro);
 
 const resultado=await res.json();
 
-if(resultado.regalos && resultado.regalos.length>0){
-
+if(resultado.regalos){
 regalos=resultado.regalos;
-
 }
 
 }catch(e){
 
-console.log("No se pudieron obtener boletos gratis");
+console.log("Error obteniendo regalos");
 
 }
 
-let mensaje=`🎟️ RIFA LOS COMPAS
+let mensaje="🎟️ RIFA LOS COMPAS\n\n";
 
-👤 Nombre: ${nombre}
+mensaje+="👤 Nombre: "+nombre+"\n\n";
 
-🎫 Boletos comprados:
-${arrayBol.join(", ")}`;
+mensaje+="🎫 Boletos:\n"+arrayBol.join(", ")+"\n";
 
 if(regalos.length>0){
 
-mensaje+=`
-
-🎁 Boletos GRATIS:
-${regalos.join(", ")}`;
+mensaje+="\n🎁 Boletos GRATIS:\n"+regalos.join(", ")+"\n";
 
 }
 
-mensaje+=`
+mensaje+="\n💰 Total a pagar: $"+total;
 
-💰 Total a pagar: $${total}`;
+const urlWhats="https://wa.me/"+TELEFONO+"?text="+encodeURIComponent(mensaje);
 
-const urlWhats="https://wa.me/527421199270+encodeURIComponent(mensaje);
-
-window.location.href = urlWhats;
-  
-seleccionados.clear();
-
-document.getElementById("nombreCliente").value="";
-
-actualizarCifras();
-
-cargarVendidos();
-
-btn.disabled=false;
-
-btn.textContent="Finalizar y Enviar WhatsApp";
+window.location.href=urlWhats;
 
 }
 
