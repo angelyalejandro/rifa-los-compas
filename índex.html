@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -334,9 +334,14 @@ if(!nombre) return alert("Escribe tu nombre");
 const btn=document.getElementById("btnPagar");
 
 btn.disabled=true;
-btn.textContent="Registrando...";
+btn.textContent="Procesando...";
 
 const arrayBol=Array.from(seleccionados);
+
+// abrir whatsapp inmediatamente
+let msgBase=`Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}`;
+
+let ventana=window.open(`https://wa.me/${TELEFONO}?text=${msgBase}`,"_blank");
 
 let textoRegalos="";
 
@@ -360,9 +365,12 @@ console.log("Error registrando boletos");
 
 }
 
-const msg=`Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length*PRECIO}`;
+// mensaje final
+const msgFinal=`Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length*PRECIO}`;
 
-window.open(`https://wa.me/${TELEFONO}?text=${msg}`,"_blank");
+if(ventana){
+ventana.location=`https://wa.me/${TELEFONO}?text=${msgFinal}`;
+}
 
 seleccionados.clear();
 
@@ -377,7 +385,6 @@ btn.disabled=false;
 btn.textContent="Finalizar y Enviar WhatsApp";
 
 }
-
 cargarVendidos();
 
 setInterval(cargarVendidos,30000);
