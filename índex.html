@@ -112,17 +112,19 @@ async function pagar() {
 
     const btn = document.getElementById("btnPagar");
     btn.disabled = true;
-    btn.textContent = "Registrando en sistema...";
+    btn.textContent = "Registrando...";
 
     const arrayBol = Array.from(seleccionados);
 
-    // Abrimos WhatsApp primero
-    const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
+    // Abrimos WhatsApp inmediatamente
+    const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length*PRECIO}`;
     window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
 
+    // Ahora registramos los boletos en la hoja
+    const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
+
     try {
-        const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
-        await fetch(urlRegistro); // registra los boletos
+        await fetch(urlRegistro); // esto enviará GET con los parámetros
         seleccionados.clear();
         document.getElementById("nombreCliente").value = "";
         actualizarCifras();
