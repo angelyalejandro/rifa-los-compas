@@ -120,7 +120,7 @@
     const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}%0A*Total:* $${arrayBol.length * PRECIO}`;
     
     // Abrimos WhatsApp inmediatamente en otra ventana
-    const ventanaWA = window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
+    const ventanaWA = window.open(`https://wa.me/${527421199270}?text=${msg}`, "_blank");
 
     try {
         // Registramos los boletos en la hoja
