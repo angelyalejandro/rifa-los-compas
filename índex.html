@@ -157,49 +157,54 @@ document.getElementById("btnFormasPago").addEventListener("click", function() {
         divTop.style.display="none";
     }
 });
+async function pagar() {
 
-    async function pagar() {
-        const nombre = document.getElementById("nombreCliente").value.trim();
-        if(seleccionados.size === 0) return alert("Selecciona boletos");
-        if(!nombre) return alert("Escribe tu nombre");
+    const nombre = document.getElementById("nombreCliente").value.trim();
 
-        const btn = document.getElementById("btnPagar");
-        btn.disabled = true;
-        btn.textContent = "Registrando...";
+    if(seleccionados.size === 0) return alert("Selecciona boletos");
+    if(!nombre) return alert("Escribe tu nombre");
 
-        const arrayBol = Array.from(seleccionados);
+    const btn = document.getElementById("btnPagar");
+    btn.disabled = true;
+    btn.textContent = "Procesando...";
+
+    const arrayBol = Array.from(seleccionados);
+
+    let textoRegalos = "";
+
+    try {
+
         const urlRegistro = `${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
 
-        try {
-            const res = await fetch(urlRegistro);
-            const resultado = await res.json();
+        const res = await fetch(urlRegistro);
 
-            // Boletos gratis
-            let textoRegalos = "";
-            if(resultado.regalos && resultado.regalos.length>0){
-                textoRegalos = `%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
-            }
+        const resultado = await res.json();
 
-            // WhatsApp con boletos, gratis y total
-            const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length*PRECIO}`;
-            window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
-
-            seleccionados.clear();
-            document.getElementById("nombreCliente").value = "";
-            actualizarCifras();
-            cargarVendidos();
-        } catch(err) {
-            console.error("Error registrando boletos:", err);
-            alert("Ocurrió un error registrando los boletos, pero el mensaje de WhatsApp ya se abrió.");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "Finalizar Compra";
+        if(resultado.regalos && resultado.regalos.length>0){
+            textoRegalos = `%0A🎁 *BOLETOS GRATIS:* ${resultado.regalos.join(", ")}`;
         }
+
+    } catch(err){
+
+        console.log("Script no respondió, continuando a WhatsApp");
+
     }
 
+    // WhatsApp SIEMPRE se abre
+    const msg = `Hola, quiero apartar boletos%0A%0A*Nombre:* ${nombre}%0A*Boletos:* ${arrayBol.join(", ")}${textoRegalos}%0A*Total:* $${arrayBol.length*PRECIO}`;
+
+    window.open(`https://wa.me/${TELEFONO}?text=${msg}`, "_blank");
+
+    seleccionados.clear();
+    document.getElementById("nombreCliente").value = "";
+
+    actualizarCifras();
     cargarVendidos();
-    setInterval(cargarVendidos,30000);
-</script>
+
+    btn.disabled = false;
+    btn.textContent = "Finalizar y Enviar WhatsApp";
+
+}
 
 </body>
 </html>
