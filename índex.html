@@ -53,7 +53,7 @@
     const TELEFONO = "527421199270";
     
     const URL_LECTURA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQPcFnbquGADSgLL6WHeSYdCyl6aCa3VlouguKC57RIxAf0yYbM1HifCC10fgcMnpFwWmv8FVsnQrxU/pub?gid=1689723674&single=true&output=csv";
-    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxApWBqhsLG-aT3e7gf2xwbi26h2-3a5ZelAcbwcV2m0afndEFlRVHJWYrymDWI1IN7Xw/exec";
+    const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxVQhEvMffmnsqY7T14mixQ1f7N6YOno09MVvlaVqvx_U727rkDACT8pHDbjN188WzP6g/exec";
 
     let seleccionados = new Set();
     let vendidos = [];
