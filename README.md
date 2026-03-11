@@ -150,7 +150,39 @@ cursor:pointer;
 Ver Formas de Pago
 </button>
 
-<div id="formasPagoTop" style="margin-top:10px;font-size:16px;color:#0d47a1;display:none;"></div>
+<div id="formasPagoTop" style="
+margin-top:15px;
+display:none;
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+text-align:left;
+">
+
+<h3>VENDEDORES</h3>
+
+<p>
+✅ <b>Luis Alejandro Romero Sebastian</b><br>
+WhatsApp: 7421199270<br>
+Tarjeta Débito BBVA:<br>
+<b>4152 3140 2646 1213</b><br>
+Cuenta CLABE BBVA:<br>
+<b>012180015406075891</b>
+</p>
+
+<hr>
+
+<p>
+✅ <b>Angel Gabriel Urioste Luciano</b><br>
+WhatsApp: 7421292436<br>
+Tarjeta Débito BBVA:<br>
+<b>4152 3145 7352 6715</b><br>
+Cuenta CLABE BBVA:<br>
+<b>012180015751433706</b>
+</p>
+
+</div>
 
 </div>
 
@@ -178,9 +210,10 @@ Total: $<b id="total">0</b>
 </div>
 
 </div>
+
 <script>
 
-const PRECIO = 50;
+const PRECIO = 100;
 const TOTAL_BOLETOS = 333;
 const TELEFONO = "5217421199270";
 
@@ -298,38 +331,13 @@ btn.textContent="Procesando...";
 
 const arrayBol=Array.from(seleccionados);
 
-let regalos=[];
 let total=arrayBol.length*PRECIO;
-
-try{
-
-const urlRegistro=`${URL_SCRIPT}?nombre=${encodeURIComponent(nombre)}&boletos=${arrayBol.join(",")}`;
-
-const res=await fetch(urlRegistro);
-
-const resultado=await res.json();
-
-if(resultado.regalos){
-regalos=resultado.regalos;
-}
-
-}catch(e){
-
-console.log("Error obteniendo regalos");
-
-}
 
 let mensaje="🎟️ RIFA LOS COMPAS\n\n";
 
 mensaje+="👤 Nombre: "+nombre+"\n\n";
 
 mensaje+="🎫 Boletos:\n"+arrayBol.join(", ")+"\n";
-
-if(regalos.length>0){
-
-mensaje+="\n🎁 Boletos GRATIS:\n"+regalos.join(", ")+"\n";
-
-}
 
 mensaje+="\n💰 Total a pagar: $"+total;
 
@@ -339,11 +347,24 @@ window.location.href=urlWhats;
 
 }
 
+document.getElementById("btnFormasPago").onclick=function(){
+
+const div=document.getElementById("formasPagoTop");
+
+if(div.style.display==="none"){
+div.style.display="block";
+this.textContent="Ocultar Formas de Pago";
+}else{
+div.style.display="none";
+this.textContent="Ver Formas de Pago";
+}
+
+};
+
 cargarVendidos();
 
 setInterval(cargarVendidos,30000);
 
 </script>
-
 </body>
 </html>
